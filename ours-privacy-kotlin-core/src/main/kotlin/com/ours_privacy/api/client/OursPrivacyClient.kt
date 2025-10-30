@@ -3,8 +3,8 @@
 package com.ours_privacy.api.client
 
 import com.ours_privacy.api.core.ClientOptions
-import com.ours_privacy.api.services.blocking.IdentifyService
 import com.ours_privacy.api.services.blocking.TrackService
+import com.ours_privacy.api.services.blocking.VisitorService
 
 /**
  * A client for interacting with the Ours Privacy REST API synchronously. You can also switch to
@@ -44,7 +44,7 @@ interface OursPrivacyClient {
 
     fun track(): TrackService
 
-    fun identify(): IdentifyService
+    fun visitor(): VisitorService
 
     /**
      * Closes this client, relinquishing any underlying resources.
@@ -73,6 +73,6 @@ interface OursPrivacyClient {
 
         fun track(): TrackService.WithRawResponse
 
-        fun identify(): IdentifyService.WithRawResponse
+        fun visitor(): VisitorService.WithRawResponse
     }
 }

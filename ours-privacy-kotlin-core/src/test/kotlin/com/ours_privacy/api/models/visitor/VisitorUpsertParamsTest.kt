@@ -1,19 +1,19 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.ours_privacy.api.models.identify
+package com.ours_privacy.api.models.visitor
 
 import com.ours_privacy.api.core.JsonValue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class IdentifyCreateOrUpdateParamsTest {
+internal class VisitorUpsertParamsTest {
 
     @Test
     fun create() {
-        IdentifyCreateOrUpdateParams.builder()
+        VisitorUpsertParams.builder()
             .token("x")
             .userProperties(
-                IdentifyCreateOrUpdateParams.UserProperties.builder()
+                VisitorUpsertParams.UserProperties.builder()
                     .adId("ad_id")
                     .adsetId("adset_id")
                     .campaignId("campaign_id")
@@ -22,13 +22,13 @@ internal class IdentifyCreateOrUpdateParamsTest {
                     .clid("clid")
                     .companyName("company_name")
                     .consent(
-                        IdentifyCreateOrUpdateParams.UserProperties.Consent.builder()
+                        VisitorUpsertParams.UserProperties.Consent.builder()
                             .putAdditionalProperty("foo", JsonValue.from("bar"))
                             .build()
                     )
                     .country("country")
                     .customProperties(
-                        IdentifyCreateOrUpdateParams.UserProperties.CustomProperties.builder()
+                        VisitorUpsertParams.UserProperties.CustomProperties.builder()
                             .putAdditionalProperty("foo", JsonValue.from("bar"))
                             .build()
                     )
@@ -75,7 +75,7 @@ internal class IdentifyCreateOrUpdateParamsTest {
                     .build()
             )
             .defaultProperties(
-                IdentifyCreateOrUpdateParams.DefaultProperties.builder()
+                VisitorUpsertParams.DefaultProperties.builder()
                     .activeDuration(0.0)
                     .adId("ad_id")
                     .adsetId("adset_id")
@@ -151,10 +151,10 @@ internal class IdentifyCreateOrUpdateParamsTest {
     @Test
     fun body() {
         val params =
-            IdentifyCreateOrUpdateParams.builder()
+            VisitorUpsertParams.builder()
                 .token("x")
                 .userProperties(
-                    IdentifyCreateOrUpdateParams.UserProperties.builder()
+                    VisitorUpsertParams.UserProperties.builder()
                         .adId("ad_id")
                         .adsetId("adset_id")
                         .campaignId("campaign_id")
@@ -163,13 +163,13 @@ internal class IdentifyCreateOrUpdateParamsTest {
                         .clid("clid")
                         .companyName("company_name")
                         .consent(
-                            IdentifyCreateOrUpdateParams.UserProperties.Consent.builder()
+                            VisitorUpsertParams.UserProperties.Consent.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
                         .country("country")
                         .customProperties(
-                            IdentifyCreateOrUpdateParams.UserProperties.CustomProperties.builder()
+                            VisitorUpsertParams.UserProperties.CustomProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -216,7 +216,7 @@ internal class IdentifyCreateOrUpdateParamsTest {
                         .build()
                 )
                 .defaultProperties(
-                    IdentifyCreateOrUpdateParams.DefaultProperties.builder()
+                    VisitorUpsertParams.DefaultProperties.builder()
                         .activeDuration(0.0)
                         .adId("ad_id")
                         .adsetId("adset_id")
@@ -293,7 +293,7 @@ internal class IdentifyCreateOrUpdateParamsTest {
         assertThat(body.token()).isEqualTo("x")
         assertThat(body.userProperties())
             .isEqualTo(
-                IdentifyCreateOrUpdateParams.UserProperties.builder()
+                VisitorUpsertParams.UserProperties.builder()
                     .adId("ad_id")
                     .adsetId("adset_id")
                     .campaignId("campaign_id")
@@ -302,13 +302,13 @@ internal class IdentifyCreateOrUpdateParamsTest {
                     .clid("clid")
                     .companyName("company_name")
                     .consent(
-                        IdentifyCreateOrUpdateParams.UserProperties.Consent.builder()
+                        VisitorUpsertParams.UserProperties.Consent.builder()
                             .putAdditionalProperty("foo", JsonValue.from("bar"))
                             .build()
                     )
                     .country("country")
                     .customProperties(
-                        IdentifyCreateOrUpdateParams.UserProperties.CustomProperties.builder()
+                        VisitorUpsertParams.UserProperties.CustomProperties.builder()
                             .putAdditionalProperty("foo", JsonValue.from("bar"))
                             .build()
                     )
@@ -356,7 +356,7 @@ internal class IdentifyCreateOrUpdateParamsTest {
             )
         assertThat(body.defaultProperties())
             .isEqualTo(
-                IdentifyCreateOrUpdateParams.DefaultProperties.builder()
+                VisitorUpsertParams.DefaultProperties.builder()
                     .activeDuration(0.0)
                     .adId("ad_id")
                     .adsetId("adset_id")
@@ -431,15 +431,15 @@ internal class IdentifyCreateOrUpdateParamsTest {
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
-            IdentifyCreateOrUpdateParams.builder()
+            VisitorUpsertParams.builder()
                 .token("x")
-                .userProperties(IdentifyCreateOrUpdateParams.UserProperties.builder().build())
+                .userProperties(VisitorUpsertParams.UserProperties.builder().build())
                 .build()
 
         val body = params._body()
 
         assertThat(body.token()).isEqualTo("x")
         assertThat(body.userProperties())
-            .isEqualTo(IdentifyCreateOrUpdateParams.UserProperties.builder().build())
+            .isEqualTo(VisitorUpsertParams.UserProperties.builder().build())
     }
 }

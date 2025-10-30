@@ -11,7 +11,7 @@ configure<PublishingExtension> {
             pom {
                 name.set("Ours")
                 description.set("The Ours Server-Side REST API")
-                url.set("https://www.github.com/stainless-sdks/ours-privacy-kotlin")
+                url.set("https://docs.oursprivacy.com")
 
                 licenses {
                     license {
@@ -22,6 +22,7 @@ configure<PublishingExtension> {
                 developers {
                     developer {
                         name.set("Ours Privacy")
+                        email.set("support@oursprivacy.com")
                     }
                 }
 

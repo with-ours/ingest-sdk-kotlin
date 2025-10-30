@@ -3,8 +3,8 @@
 package com.ours_privacy.api.client
 
 import com.ours_privacy.api.core.ClientOptions
-import com.ours_privacy.api.services.async.IdentifyServiceAsync
 import com.ours_privacy.api.services.async.TrackServiceAsync
+import com.ours_privacy.api.services.async.VisitorServiceAsync
 
 /**
  * A client for interacting with the Ours Privacy REST API asynchronously. You can also switch to
@@ -44,7 +44,7 @@ interface OursPrivacyClientAsync {
 
     fun track(): TrackServiceAsync
 
-    fun identify(): IdentifyServiceAsync
+    fun visitor(): VisitorServiceAsync
 
     /**
      * Closes this client, relinquishing any underlying resources.
@@ -76,6 +76,6 @@ interface OursPrivacyClientAsync {
 
         fun track(): TrackServiceAsync.WithRawResponse
 
-        fun identify(): IdentifyServiceAsync.WithRawResponse
+        fun visitor(): VisitorServiceAsync.WithRawResponse
     }
 }

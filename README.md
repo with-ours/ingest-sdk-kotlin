@@ -3,11 +3,11 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.ours_privacy.api/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.ours_privacy.api/ours-privacy-kotlin/0.0.1)
 [![javadoc](https://javadoc.io/badge2/com.ours_privacy.api/ours-privacy-kotlin/0.0.1/javadoc.svg)](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/0.0.1)
 
-The Ours Privacy Kotlin SDK provides convenient access to the Ours Privacy REST API from applications written in Kotlin.
+The Ours Privacy Kotlin SDK provides convenient access to the [Ours Privacy REST API](https://docs.oursprivacy.com) from applications written in Kotlin.
 
 It is generated with [Stainless](https://www.stainless.com/).
 
-KDocs are available on [javadoc.io](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/0.0.1).
+The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/0.0.1).
 
 ## Installation
 
@@ -36,18 +36,18 @@ This library requires Java 8 or later.
 ```kotlin
 import com.ours_privacy.api.client.OursPrivacyClient
 import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
-import com.ours_privacy.api.models.track.TrackCreateEventParams
-import com.ours_privacy.api.models.track.TrackCreateEventResponse
+import com.ours_privacy.api.models.track.TrackEventParams
+import com.ours_privacy.api.models.track.TrackEventResponse
 
 // Configures using the `oursprivacy.apiKey` and `oursprivacy.baseUrl` system properties
 // Or configures using the `OURS_PRIVACY_API_KEY` and `OURS_PRIVACY_BASE_URL` environment variables
 val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
 
-val params: TrackCreateEventParams = TrackCreateEventParams.builder()
+val params: TrackEventParams = TrackEventParams.builder()
     .token("REPLACE_ME")
     .event("REPLACE_ME")
     .build()
-val response: TrackCreateEventResponse = client.track().createEvent(params)
+val response: TrackEventResponse = client.track().event(params)
 ```
 
 ## Client configuration
@@ -120,7 +120,7 @@ The `withOptions()` method does not affect the original client or service.
 
 To send a request to the Ours Privacy API, build an instance of some `Params` class and pass it to the corresponding client method. When the response is received, it will be deserialized into an instance of a Kotlin class.
 
-For example, `client.track().createEvent(...)` should be called with an instance of `TrackCreateEventParams`, and it will return an instance of `TrackCreateEventResponse`.
+For example, `client.track().event(...)` should be called with an instance of `TrackEventParams`, and it will return an instance of `TrackEventResponse`.
 
 ## Immutability
 
@@ -137,18 +137,18 @@ The default client is synchronous. To switch to asynchronous execution, call the
 ```kotlin
 import com.ours_privacy.api.client.OursPrivacyClient
 import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
-import com.ours_privacy.api.models.track.TrackCreateEventParams
-import com.ours_privacy.api.models.track.TrackCreateEventResponse
+import com.ours_privacy.api.models.track.TrackEventParams
+import com.ours_privacy.api.models.track.TrackEventResponse
 
 // Configures using the `oursprivacy.apiKey` and `oursprivacy.baseUrl` system properties
 // Or configures using the `OURS_PRIVACY_API_KEY` and `OURS_PRIVACY_BASE_URL` environment variables
 val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
 
-val params: TrackCreateEventParams = TrackCreateEventParams.builder()
+val params: TrackEventParams = TrackEventParams.builder()
     .token("REPLACE_ME")
     .event("REPLACE_ME")
     .build()
-val response: TrackCreateEventResponse = client.async().track().createEvent(params)
+val response: TrackEventResponse = client.async().track().event(params)
 ```
 
 Or create an asynchronous client from the beginning:
@@ -156,18 +156,18 @@ Or create an asynchronous client from the beginning:
 ```kotlin
 import com.ours_privacy.api.client.OursPrivacyClientAsync
 import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClientAsync
-import com.ours_privacy.api.models.track.TrackCreateEventParams
-import com.ours_privacy.api.models.track.TrackCreateEventResponse
+import com.ours_privacy.api.models.track.TrackEventParams
+import com.ours_privacy.api.models.track.TrackEventResponse
 
 // Configures using the `oursprivacy.apiKey` and `oursprivacy.baseUrl` system properties
 // Or configures using the `OURS_PRIVACY_API_KEY` and `OURS_PRIVACY_BASE_URL` environment variables
 val client: OursPrivacyClientAsync = OursPrivacyOkHttpClientAsync.fromEnv()
 
-val params: TrackCreateEventParams = TrackCreateEventParams.builder()
+val params: TrackEventParams = TrackEventParams.builder()
     .token("REPLACE_ME")
     .event("REPLACE_ME")
     .build()
-val response: TrackCreateEventResponse = client.track().createEvent(params)
+val response: TrackEventResponse = client.track().event(params)
 ```
 
 The asynchronous client supports the same options as the synchronous one, except most methods are [suspending](https://kotlinlang.org/docs/coroutines-guide.html).
@@ -181,14 +181,14 @@ To access this data, prefix any HTTP method call on a client or service with `wi
 ```kotlin
 import com.ours_privacy.api.core.http.Headers
 import com.ours_privacy.api.core.http.HttpResponseFor
-import com.ours_privacy.api.models.track.TrackCreateEventParams
-import com.ours_privacy.api.models.track.TrackCreateEventResponse
+import com.ours_privacy.api.models.track.TrackEventParams
+import com.ours_privacy.api.models.track.TrackEventResponse
 
-val params: TrackCreateEventParams = TrackCreateEventParams.builder()
+val params: TrackEventParams = TrackEventParams.builder()
     .token("REPLACE_ME")
     .event("REPLACE_ME")
     .build()
-val response: HttpResponseFor<TrackCreateEventResponse> = client.track().withRawResponse().createEvent(params)
+val response: HttpResponseFor<TrackEventResponse> = client.track().withRawResponse().event(params)
 
 val statusCode: Int = response.statusCode()
 val headers: Headers = response.headers()
@@ -197,9 +197,9 @@ val headers: Headers = response.headers()
 You can still deserialize the response into an instance of a Kotlin class if needed:
 
 ```kotlin
-import com.ours_privacy.api.models.track.TrackCreateEventResponse
+import com.ours_privacy.api.models.track.TrackEventResponse
 
-val parsedResponse: TrackCreateEventResponse = response.parse()
+val parsedResponse: TrackEventResponse = response.parse()
 ```
 
 ## Error handling
@@ -295,9 +295,9 @@ Requests time out after 1 minute by default.
 To set a custom timeout, configure the method call using the `timeout` method:
 
 ```kotlin
-import com.ours_privacy.api.models.track.TrackCreateEventResponse
+import com.ours_privacy.api.models.track.TrackEventResponse
 
-val response: TrackCreateEventResponse = client.track().createEvent(
+val response: TrackEventResponse = client.track().event(
   params, RequestOptions.builder().timeout(Duration.ofSeconds(30)).build()
 )
 ```
@@ -402,9 +402,9 @@ To set undocumented parameters, call the `putAdditionalHeader`, `putAdditionalQu
 
 ```kotlin
 import com.ours_privacy.api.core.JsonValue
-import com.ours_privacy.api.models.track.TrackCreateEventParams
+import com.ours_privacy.api.models.track.TrackEventParams
 
-val params: TrackCreateEventParams = TrackCreateEventParams.builder()
+val params: TrackEventParams = TrackEventParams.builder()
     .putAdditionalHeader("Secret-Header", "42")
     .putAdditionalQueryParam("secret_query_param", "42")
     .putAdditionalBodyProperty("secretProperty", JsonValue.from("42"))
@@ -417,10 +417,10 @@ To set undocumented parameters on _nested_ headers, query params, or body classe
 
 ```kotlin
 import com.ours_privacy.api.core.JsonValue
-import com.ours_privacy.api.models.track.TrackCreateEventParams
+import com.ours_privacy.api.models.track.TrackEventParams
 
-val params: TrackCreateEventParams = TrackCreateEventParams.builder()
-    .defaultProperties(TrackCreateEventParams.DefaultProperties.builder()
+val params: TrackEventParams = TrackEventParams.builder()
+    .defaultProperties(TrackEventParams.DefaultProperties.builder()
         .putAdditionalProperty("secretProperty", JsonValue.from("42"))
         .build())
     .build()
@@ -432,9 +432,9 @@ To set a documented parameter or property to an undocumented or not yet supporte
 
 ```kotlin
 import com.ours_privacy.api.core.JsonValue
-import com.ours_privacy.api.models.track.TrackCreateEventParams
+import com.ours_privacy.api.models.track.TrackEventParams
 
-val params: TrackCreateEventParams = TrackCreateEventParams.builder()
+val params: TrackEventParams = TrackEventParams.builder()
     .token(JsonValue.from(42))
     .event("REPLACE_ME")
     .build()
@@ -481,9 +481,9 @@ To forcibly omit a required parameter or property, pass [`JsonMissing`](ours-pri
 
 ```kotlin
 import com.ours_privacy.api.core.JsonMissing
-import com.ours_privacy.api.models.track.TrackCreateEventParams
+import com.ours_privacy.api.models.track.TrackEventParams
 
-val params: TrackCreateEventParams = TrackCreateEventParams.builder()
+val params: TrackEventParams = TrackEventParams.builder()
     .event("x")
     .token(JsonMissing.of())
     .build()
@@ -499,7 +499,7 @@ import com.ours_privacy.api.core.JsonNull
 import com.ours_privacy.api.core.JsonNumber
 import com.ours_privacy.api.core.JsonValue
 
-val additionalProperties: Map<String, JsonValue> = client.track().createEvent(params)._additionalProperties()
+val additionalProperties: Map<String, JsonValue> = client.track().event(params)._additionalProperties()
 val secretPropertyValue: JsonValue = additionalProperties.get("secretProperty")
 
 val result = when (secretPropertyValue) {
@@ -516,7 +516,7 @@ To access a property's raw JSON value, which may be undocumented, call its `_` p
 ```kotlin
 import com.ours_privacy.api.core.JsonField
 
-val token: JsonField<String> = client.track().createEvent(params)._token()
+val token: JsonField<String> = client.track().event(params)._token()
 
 if (token.isMissing()) {
   // The property is absent from the JSON response
@@ -541,17 +541,17 @@ By default, the SDK will not throw an exception in this case. It will throw [`Ou
 If you would prefer to check that the response is completely well-typed upfront, then either call `validate()`:
 
 ```kotlin
-import com.ours_privacy.api.models.track.TrackCreateEventResponse
+import com.ours_privacy.api.models.track.TrackEventResponse
 
-val response: TrackCreateEventResponse = client.track().createEvent(params).validate()
+val response: TrackEventResponse = client.track().event(params).validate()
 ```
 
 Or configure the method call to validate the response using the `responseValidation` method:
 
 ```kotlin
-import com.ours_privacy.api.models.track.TrackCreateEventResponse
+import com.ours_privacy.api.models.track.TrackEventResponse
 
-val response: TrackCreateEventResponse = client.track().createEvent(
+val response: TrackEventResponse = client.track().event(
   params, RequestOptions.builder().responseValidation(true).build()
 )
 ```

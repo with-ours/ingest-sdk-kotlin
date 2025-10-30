@@ -24,7 +24,7 @@ import java.util.Objects
  * These properties help us associate events with existing users. For all fields, null values unset
  * the property and undefined values do not unset existing properties.
  */
-class TrackCreateEventParams
+class TrackEventParams
 private constructor(
     private val body: Body,
     private val additionalHeaders: Headers,
@@ -200,7 +200,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [TrackCreateEventParams].
+         * Returns a mutable builder for constructing an instance of [TrackEventParams].
          *
          * The following fields are required:
          * ```kotlin
@@ -211,17 +211,17 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [TrackCreateEventParams]. */
+    /** A builder for [TrackEventParams]. */
     class Builder internal constructor() {
 
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
-        internal fun from(trackCreateEventParams: TrackCreateEventParams) = apply {
-            body = trackCreateEventParams.body.toBuilder()
-            additionalHeaders = trackCreateEventParams.additionalHeaders.toBuilder()
-            additionalQueryParams = trackCreateEventParams.additionalQueryParams.toBuilder()
+        internal fun from(trackEventParams: TrackEventParams) = apply {
+            body = trackEventParams.body.toBuilder()
+            additionalHeaders = trackEventParams.additionalHeaders.toBuilder()
+            additionalQueryParams = trackEventParams.additionalQueryParams.toBuilder()
         }
 
         /**
@@ -509,7 +509,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [TrackCreateEventParams].
+         * Returns an immutable instance of [TrackEventParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -521,12 +521,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): TrackCreateEventParams =
-            TrackCreateEventParams(
-                body.build(),
-                additionalHeaders.build(),
-                additionalQueryParams.build(),
-            )
+        fun build(): TrackEventParams =
+            TrackEventParams(body.build(), additionalHeaders.build(), additionalQueryParams.build())
     }
 
     fun _body(): Body = body
@@ -5921,7 +5917,7 @@ private constructor(
             return true
         }
 
-        return other is TrackCreateEventParams &&
+        return other is TrackEventParams &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
@@ -5930,5 +5926,5 @@ private constructor(
     override fun hashCode(): Int = Objects.hash(body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "TrackCreateEventParams{body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "TrackEventParams{body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

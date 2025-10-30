@@ -16,7 +16,7 @@ import com.ours_privacy.api.errors.OursPrivacyInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-class TrackCreateEventResponse
+class TrackEventResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val success: JsonField<Success>,
@@ -56,7 +56,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [TrackCreateEventResponse].
+         * Returns a mutable builder for constructing an instance of [TrackEventResponse].
          *
          * The following fields are required:
          * ```kotlin
@@ -66,15 +66,15 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [TrackCreateEventResponse]. */
+    /** A builder for [TrackEventResponse]. */
     class Builder internal constructor() {
 
         private var success: JsonField<Success>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(trackCreateEventResponse: TrackCreateEventResponse) = apply {
-            success = trackCreateEventResponse.success
-            additionalProperties = trackCreateEventResponse.additionalProperties.toMutableMap()
+        internal fun from(trackEventResponse: TrackEventResponse) = apply {
+            success = trackEventResponse.success
+            additionalProperties = trackEventResponse.additionalProperties.toMutableMap()
         }
 
         fun success(success: Success) = success(JsonField.of(success))
@@ -107,7 +107,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [TrackCreateEventResponse].
+         * Returns an immutable instance of [TrackEventResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -118,8 +118,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): TrackCreateEventResponse =
-            TrackCreateEventResponse(
+        fun build(): TrackEventResponse =
+            TrackEventResponse(
                 checkRequired("success", success),
                 additionalProperties.toMutableMap(),
             )
@@ -127,7 +127,7 @@ private constructor(
 
     private var validated: Boolean = false
 
-    fun validate(): TrackCreateEventResponse = apply {
+    fun validate(): TrackEventResponse = apply {
         if (validated) {
             return@apply
         }
@@ -272,7 +272,7 @@ private constructor(
             return true
         }
 
-        return other is TrackCreateEventResponse &&
+        return other is TrackEventResponse &&
             success == other.success &&
             additionalProperties == other.additionalProperties
     }
@@ -282,5 +282,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "TrackCreateEventResponse{success=$success, additionalProperties=$additionalProperties}"
+        "TrackEventResponse{success=$success, additionalProperties=$additionalProperties}"
 }

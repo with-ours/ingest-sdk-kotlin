@@ -6,15 +6,15 @@ import com.ours_privacy.api.core.JsonValue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class TrackCreateEventParamsTest {
+internal class TrackEventParamsTest {
 
     @Test
     fun create() {
-        TrackCreateEventParams.builder()
+        TrackEventParams.builder()
             .token("x")
             .event("x")
             .defaultProperties(
-                TrackCreateEventParams.DefaultProperties.builder()
+                TrackEventParams.DefaultProperties.builder()
                     .activeDuration(0.0)
                     .adId("ad_id")
                     .adsetId("adset_id")
@@ -84,7 +84,7 @@ internal class TrackCreateEventParamsTest {
             .distinctId("x")
             .email("x")
             .eventProperties(
-                TrackCreateEventParams.EventProperties.builder()
+                TrackEventParams.EventProperties.builder()
                     .putAdditionalProperty("foo", JsonValue.from("bar"))
                     .build()
             )
@@ -92,7 +92,7 @@ internal class TrackCreateEventParamsTest {
             .time(0.0)
             .userId("x")
             .userProperties(
-                TrackCreateEventParams.UserProperties.builder()
+                TrackEventParams.UserProperties.builder()
                     .adId("ad_id")
                     .adsetId("adset_id")
                     .campaignId("campaign_id")
@@ -101,13 +101,13 @@ internal class TrackCreateEventParamsTest {
                     .clid("clid")
                     .companyName("company_name")
                     .consent(
-                        TrackCreateEventParams.UserProperties.Consent.builder()
+                        TrackEventParams.UserProperties.Consent.builder()
                             .putAdditionalProperty("foo", JsonValue.from("bar"))
                             .build()
                     )
                     .country("country")
                     .customProperties(
-                        TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                        TrackEventParams.UserProperties.CustomProperties.builder()
                             .putAdditionalProperty("foo", JsonValue.from("bar"))
                             .build()
                     )
@@ -159,11 +159,11 @@ internal class TrackCreateEventParamsTest {
     @Test
     fun body() {
         val params =
-            TrackCreateEventParams.builder()
+            TrackEventParams.builder()
                 .token("x")
                 .event("x")
                 .defaultProperties(
-                    TrackCreateEventParams.DefaultProperties.builder()
+                    TrackEventParams.DefaultProperties.builder()
                         .activeDuration(0.0)
                         .adId("ad_id")
                         .adsetId("adset_id")
@@ -233,7 +233,7 @@ internal class TrackCreateEventParamsTest {
                 .distinctId("x")
                 .email("x")
                 .eventProperties(
-                    TrackCreateEventParams.EventProperties.builder()
+                    TrackEventParams.EventProperties.builder()
                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                         .build()
                 )
@@ -241,7 +241,7 @@ internal class TrackCreateEventParamsTest {
                 .time(0.0)
                 .userId("x")
                 .userProperties(
-                    TrackCreateEventParams.UserProperties.builder()
+                    TrackEventParams.UserProperties.builder()
                         .adId("ad_id")
                         .adsetId("adset_id")
                         .campaignId("campaign_id")
@@ -250,13 +250,13 @@ internal class TrackCreateEventParamsTest {
                         .clid("clid")
                         .companyName("company_name")
                         .consent(
-                            TrackCreateEventParams.UserProperties.Consent.builder()
+                            TrackEventParams.UserProperties.Consent.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
                         .country("country")
                         .customProperties(
-                            TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                            TrackEventParams.UserProperties.CustomProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -310,7 +310,7 @@ internal class TrackCreateEventParamsTest {
         assertThat(body.event()).isEqualTo("x")
         assertThat(body.defaultProperties())
             .isEqualTo(
-                TrackCreateEventParams.DefaultProperties.builder()
+                TrackEventParams.DefaultProperties.builder()
                     .activeDuration(0.0)
                     .adId("ad_id")
                     .adsetId("adset_id")
@@ -381,7 +381,7 @@ internal class TrackCreateEventParamsTest {
         assertThat(body.email()).isEqualTo("x")
         assertThat(body.eventProperties())
             .isEqualTo(
-                TrackCreateEventParams.EventProperties.builder()
+                TrackEventParams.EventProperties.builder()
                     .putAdditionalProperty("foo", JsonValue.from("bar"))
                     .build()
             )
@@ -390,7 +390,7 @@ internal class TrackCreateEventParamsTest {
         assertThat(body.userId()).isEqualTo("x")
         assertThat(body.userProperties())
             .isEqualTo(
-                TrackCreateEventParams.UserProperties.builder()
+                TrackEventParams.UserProperties.builder()
                     .adId("ad_id")
                     .adsetId("adset_id")
                     .campaignId("campaign_id")
@@ -399,13 +399,13 @@ internal class TrackCreateEventParamsTest {
                     .clid("clid")
                     .companyName("company_name")
                     .consent(
-                        TrackCreateEventParams.UserProperties.Consent.builder()
+                        TrackEventParams.UserProperties.Consent.builder()
                             .putAdditionalProperty("foo", JsonValue.from("bar"))
                             .build()
                     )
                     .country("country")
                     .customProperties(
-                        TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                        TrackEventParams.UserProperties.CustomProperties.builder()
                             .putAdditionalProperty("foo", JsonValue.from("bar"))
                             .build()
                     )
@@ -455,7 +455,7 @@ internal class TrackCreateEventParamsTest {
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = TrackCreateEventParams.builder().token("x").event("x").build()
+        val params = TrackEventParams.builder().token("x").event("x").build()
 
         val body = params._body()
 

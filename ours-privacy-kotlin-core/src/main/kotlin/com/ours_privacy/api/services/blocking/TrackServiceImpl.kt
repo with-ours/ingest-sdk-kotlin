@@ -15,8 +15,8 @@ import com.ours_privacy.api.core.http.HttpResponseFor
 import com.ours_privacy.api.core.http.json
 import com.ours_privacy.api.core.http.parseable
 import com.ours_privacy.api.core.prepare
-import com.ours_privacy.api.models.track.TrackCreateEventParams
-import com.ours_privacy.api.models.track.TrackCreateEventResponse
+import com.ours_privacy.api.models.track.TrackEventParams
+import com.ours_privacy.api.models.track.TrackEventResponse
 
 class TrackServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     TrackService {
@@ -30,12 +30,12 @@ class TrackServiceImpl internal constructor(private val clientOptions: ClientOpt
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): TrackService =
         TrackServiceImpl(clientOptions.toBuilder().apply(modifier).build())
 
-    override fun createEvent(
-        params: TrackCreateEventParams,
+    override fun event(
+        params: TrackEventParams,
         requestOptions: RequestOptions,
-    ): TrackCreateEventResponse =
+    ): TrackEventResponse =
         // post /track
-        withRawResponse().createEvent(params, requestOptions).parse()
+        withRawResponse().event(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         TrackService.WithRawResponse {
@@ -48,13 +48,13 @@ class TrackServiceImpl internal constructor(private val clientOptions: ClientOpt
         ): TrackService.WithRawResponse =
             TrackServiceImpl.WithRawResponseImpl(clientOptions.toBuilder().apply(modifier).build())
 
-        private val createEventHandler: Handler<TrackCreateEventResponse> =
-            jsonHandler<TrackCreateEventResponse>(clientOptions.jsonMapper)
+        private val eventHandler: Handler<TrackEventResponse> =
+            jsonHandler<TrackEventResponse>(clientOptions.jsonMapper)
 
-        override fun createEvent(
-            params: TrackCreateEventParams,
+        override fun event(
+            params: TrackEventParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<TrackCreateEventResponse> {
+        ): HttpResponseFor<TrackEventResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -70,7 +70,7 @@ class TrackServiceImpl internal constructor(private val clientOptions: ClientOpt
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { createEventHandler.handle(it) }
+                    .use { eventHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

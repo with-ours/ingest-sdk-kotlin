@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.ours_privacy.api.services.async
+package com.ours_privacy.api.services.blocking
 
 import com.ours_privacy.api.core.ClientOptions
 import com.ours_privacy.api.core.RequestOptions
@@ -14,49 +14,49 @@ import com.ours_privacy.api.core.http.HttpResponse.Handler
 import com.ours_privacy.api.core.http.HttpResponseFor
 import com.ours_privacy.api.core.http.json
 import com.ours_privacy.api.core.http.parseable
-import com.ours_privacy.api.core.prepareAsync
-import com.ours_privacy.api.models.identify.IdentifyCreateOrUpdateParams
-import com.ours_privacy.api.models.identify.IdentifyCreateOrUpdateResponse
+import com.ours_privacy.api.core.prepare
+import com.ours_privacy.api.models.visitor.VisitorUpsertParams
+import com.ours_privacy.api.models.visitor.VisitorUpsertResponse
 
-class IdentifyServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
-    IdentifyServiceAsync {
+class VisitorServiceImpl internal constructor(private val clientOptions: ClientOptions) :
+    VisitorService {
 
-    private val withRawResponse: IdentifyServiceAsync.WithRawResponse by lazy {
+    private val withRawResponse: VisitorService.WithRawResponse by lazy {
         WithRawResponseImpl(clientOptions)
     }
 
-    override fun withRawResponse(): IdentifyServiceAsync.WithRawResponse = withRawResponse
+    override fun withRawResponse(): VisitorService.WithRawResponse = withRawResponse
 
-    override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): IdentifyServiceAsync =
-        IdentifyServiceAsyncImpl(clientOptions.toBuilder().apply(modifier).build())
+    override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): VisitorService =
+        VisitorServiceImpl(clientOptions.toBuilder().apply(modifier).build())
 
-    override suspend fun createOrUpdate(
-        params: IdentifyCreateOrUpdateParams,
+    override fun upsert(
+        params: VisitorUpsertParams,
         requestOptions: RequestOptions,
-    ): IdentifyCreateOrUpdateResponse =
+    ): VisitorUpsertResponse =
         // post /identify
-        withRawResponse().createOrUpdate(params, requestOptions).parse()
+        withRawResponse().upsert(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
-        IdentifyServiceAsync.WithRawResponse {
+        VisitorService.WithRawResponse {
 
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
         override fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
-        ): IdentifyServiceAsync.WithRawResponse =
-            IdentifyServiceAsyncImpl.WithRawResponseImpl(
+        ): VisitorService.WithRawResponse =
+            VisitorServiceImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val createOrUpdateHandler: Handler<IdentifyCreateOrUpdateResponse> =
-            jsonHandler<IdentifyCreateOrUpdateResponse>(clientOptions.jsonMapper)
+        private val upsertHandler: Handler<VisitorUpsertResponse> =
+            jsonHandler<VisitorUpsertResponse>(clientOptions.jsonMapper)
 
-        override suspend fun createOrUpdate(
-            params: IdentifyCreateOrUpdateParams,
+        override fun upsert(
+            params: VisitorUpsertParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<IdentifyCreateOrUpdateResponse> {
+        ): HttpResponseFor<VisitorUpsertResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -67,12 +67,12 @@ class IdentifyServiceAsyncImpl internal constructor(private val clientOptions: C
                     .addPathSegments("identify")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
-                    .prepareAsync(clientOptions, params)
+                    .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { createOrUpdateHandler.handle(it) }
+                    .use { upsertHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

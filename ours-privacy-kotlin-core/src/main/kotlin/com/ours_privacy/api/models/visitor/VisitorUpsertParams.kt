@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.ours_privacy.api.models.identify
+package com.ours_privacy.api.models.visitor
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -24,7 +24,7 @@ import java.util.Objects
  * fire an event. If you want to fire an event, use the track method and include properties for the
  * visitor.
  */
-class IdentifyCreateOrUpdateParams
+class VisitorUpsertParams
 private constructor(
     private val body: Body,
     private val additionalHeaders: Headers,
@@ -139,7 +139,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [IdentifyCreateOrUpdateParams].
+         * Returns a mutable builder for constructing an instance of [VisitorUpsertParams].
          *
          * The following fields are required:
          * ```kotlin
@@ -150,17 +150,17 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [IdentifyCreateOrUpdateParams]. */
+    /** A builder for [VisitorUpsertParams]. */
     class Builder internal constructor() {
 
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
-        internal fun from(identifyCreateOrUpdateParams: IdentifyCreateOrUpdateParams) = apply {
-            body = identifyCreateOrUpdateParams.body.toBuilder()
-            additionalHeaders = identifyCreateOrUpdateParams.additionalHeaders.toBuilder()
-            additionalQueryParams = identifyCreateOrUpdateParams.additionalQueryParams.toBuilder()
+        internal fun from(visitorUpsertParams: VisitorUpsertParams) = apply {
+            body = visitorUpsertParams.body.toBuilder()
+            additionalHeaders = visitorUpsertParams.additionalHeaders.toBuilder()
+            additionalQueryParams = visitorUpsertParams.additionalQueryParams.toBuilder()
         }
 
         /**
@@ -386,7 +386,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [IdentifyCreateOrUpdateParams].
+         * Returns an immutable instance of [VisitorUpsertParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -398,8 +398,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): IdentifyCreateOrUpdateParams =
-            IdentifyCreateOrUpdateParams(
+        fun build(): VisitorUpsertParams =
+            VisitorUpsertParams(
                 body.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -5526,7 +5526,7 @@ private constructor(
             return true
         }
 
-        return other is IdentifyCreateOrUpdateParams &&
+        return other is VisitorUpsertParams &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
@@ -5535,5 +5535,5 @@ private constructor(
     override fun hashCode(): Int = Objects.hash(body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "IdentifyCreateOrUpdateParams{body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "VisitorUpsertParams{body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
