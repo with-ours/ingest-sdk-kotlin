@@ -46,7 +46,7 @@ internal class ProGuardCompatibilityTest {
 
     @Test
     fun client() {
-        val client = OursPrivacyOkHttpClient.builder().apiKey("My API Key").build()
+        val client = OursPrivacyOkHttpClient.fromEnv()
 
         assertThat(client).isNotNull()
         assertThat(client.track()).isNotNull()

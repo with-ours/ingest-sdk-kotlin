@@ -16,11 +16,7 @@ internal class VisitorServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun upsert() {
-        val client =
-            OursPrivacyOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = OursPrivacyOkHttpClient.builder().baseUrl(TestServerExtension.BASE_URL).build()
         val visitorService = client.visitor()
 
         val response =

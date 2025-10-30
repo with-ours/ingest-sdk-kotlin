@@ -16,11 +16,7 @@ internal class TrackServiceTest {
     @Disabled("Prism tests are disabled")
     @Test
     fun event() {
-        val client =
-            OursPrivacyOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+        val client = OursPrivacyOkHttpClient.builder().baseUrl(TestServerExtension.BASE_URL).build()
         val trackService = client.track()
 
         val response =
