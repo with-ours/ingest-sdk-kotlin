@@ -15,8 +15,8 @@ import com.ours_privacy.api.core.http.HttpResponseFor
 import com.ours_privacy.api.core.http.json
 import com.ours_privacy.api.core.http.parseable
 import com.ours_privacy.api.core.prepareAsync
-import com.ours_privacy.api.models.track.TrackCreateEventParams
-import com.ours_privacy.api.models.track.TrackCreateEventResponse
+import com.ours_privacy.api.models.track.TrackEventParams
+import com.ours_privacy.api.models.track.TrackEventResponse
 
 class TrackServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     TrackServiceAsync {
@@ -30,12 +30,12 @@ class TrackServiceAsyncImpl internal constructor(private val clientOptions: Clie
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): TrackServiceAsync =
         TrackServiceAsyncImpl(clientOptions.toBuilder().apply(modifier).build())
 
-    override suspend fun createEvent(
-        params: TrackCreateEventParams,
+    override suspend fun event(
+        params: TrackEventParams,
         requestOptions: RequestOptions,
-    ): TrackCreateEventResponse =
+    ): TrackEventResponse =
         // post /track
-        withRawResponse().createEvent(params, requestOptions).parse()
+        withRawResponse().event(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         TrackServiceAsync.WithRawResponse {
@@ -50,13 +50,13 @@ class TrackServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val createEventHandler: Handler<TrackCreateEventResponse> =
-            jsonHandler<TrackCreateEventResponse>(clientOptions.jsonMapper)
+        private val eventHandler: Handler<TrackEventResponse> =
+            jsonHandler<TrackEventResponse>(clientOptions.jsonMapper)
 
-        override suspend fun createEvent(
-            params: TrackCreateEventParams,
+        override suspend fun event(
+            params: TrackEventParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<TrackCreateEventResponse> {
+        ): HttpResponseFor<TrackEventResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -72,7 +72,7 @@ class TrackServiceAsyncImpl internal constructor(private val clientOptions: Clie
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { createEventHandler.handle(it) }
+                    .use { eventHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

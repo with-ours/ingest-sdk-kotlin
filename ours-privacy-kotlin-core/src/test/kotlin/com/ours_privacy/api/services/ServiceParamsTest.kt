@@ -15,7 +15,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import com.ours_privacy.api.client.OursPrivacyClient
 import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
 import com.ours_privacy.api.core.JsonValue
-import com.ours_privacy.api.models.track.TrackCreateEventParams
+import com.ours_privacy.api.models.track.TrackEventParams
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -38,16 +38,16 @@ internal class ServiceParamsTest {
 
     @Disabled("Prism tests are disabled")
     @Test
-    fun createEvent() {
+    fun event() {
         val trackService = client.track()
         stubFor(post(anyUrl()).willReturn(ok("{}")))
 
-        trackService.createEvent(
-            TrackCreateEventParams.builder()
+        trackService.event(
+            TrackEventParams.builder()
                 .token("x")
                 .event("x")
                 .defaultProperties(
-                    TrackCreateEventParams.DefaultProperties.builder()
+                    TrackEventParams.DefaultProperties.builder()
                         .activeDuration(0.0)
                         .adId("ad_id")
                         .adsetId("adset_id")
@@ -117,7 +117,7 @@ internal class ServiceParamsTest {
                 .distinctId("x")
                 .email("x")
                 .eventProperties(
-                    TrackCreateEventParams.EventProperties.builder()
+                    TrackEventParams.EventProperties.builder()
                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                         .build()
                 )
@@ -125,7 +125,7 @@ internal class ServiceParamsTest {
                 .time(0.0)
                 .userId("x")
                 .userProperties(
-                    TrackCreateEventParams.UserProperties.builder()
+                    TrackEventParams.UserProperties.builder()
                         .adId("ad_id")
                         .adsetId("adset_id")
                         .campaignId("campaign_id")
@@ -134,13 +134,13 @@ internal class ServiceParamsTest {
                         .clid("clid")
                         .companyName("company_name")
                         .consent(
-                            TrackCreateEventParams.UserProperties.Consent.builder()
+                            TrackEventParams.UserProperties.Consent.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
                         .country("country")
                         .customProperties(
-                            TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                            TrackEventParams.UserProperties.CustomProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )

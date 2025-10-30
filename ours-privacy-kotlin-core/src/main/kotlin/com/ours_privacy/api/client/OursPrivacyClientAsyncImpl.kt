@@ -4,10 +4,10 @@ package com.ours_privacy.api.client
 
 import com.ours_privacy.api.core.ClientOptions
 import com.ours_privacy.api.core.getPackageVersion
-import com.ours_privacy.api.services.async.IdentifyServiceAsync
-import com.ours_privacy.api.services.async.IdentifyServiceAsyncImpl
 import com.ours_privacy.api.services.async.TrackServiceAsync
 import com.ours_privacy.api.services.async.TrackServiceAsyncImpl
+import com.ours_privacy.api.services.async.VisitorServiceAsync
+import com.ours_privacy.api.services.async.VisitorServiceAsyncImpl
 
 class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
     OursPrivacyClientAsync {
@@ -31,8 +31,8 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
         TrackServiceAsyncImpl(clientOptionsWithUserAgent)
     }
 
-    private val identify: IdentifyServiceAsync by lazy {
-        IdentifyServiceAsyncImpl(clientOptionsWithUserAgent)
+    private val visitor: VisitorServiceAsync by lazy {
+        VisitorServiceAsyncImpl(clientOptionsWithUserAgent)
     }
 
     override fun sync(): OursPrivacyClient = sync
@@ -44,7 +44,7 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
 
     override fun track(): TrackServiceAsync = track
 
-    override fun identify(): IdentifyServiceAsync = identify
+    override fun visitor(): VisitorServiceAsync = visitor
 
     override fun close() = clientOptions.close()
 
@@ -55,8 +55,8 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
             TrackServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val identify: IdentifyServiceAsync.WithRawResponse by lazy {
-            IdentifyServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        private val visitor: VisitorServiceAsync.WithRawResponse by lazy {
+            VisitorServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -68,6 +68,6 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
 
         override fun track(): TrackServiceAsync.WithRawResponse = track
 
-        override fun identify(): IdentifyServiceAsync.WithRawResponse = identify
+        override fun visitor(): VisitorServiceAsync.WithRawResponse = visitor
     }
 }

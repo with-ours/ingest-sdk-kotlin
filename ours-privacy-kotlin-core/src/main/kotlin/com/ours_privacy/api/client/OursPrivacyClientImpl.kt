@@ -4,10 +4,10 @@ package com.ours_privacy.api.client
 
 import com.ours_privacy.api.core.ClientOptions
 import com.ours_privacy.api.core.getPackageVersion
-import com.ours_privacy.api.services.blocking.IdentifyService
-import com.ours_privacy.api.services.blocking.IdentifyServiceImpl
 import com.ours_privacy.api.services.blocking.TrackService
 import com.ours_privacy.api.services.blocking.TrackServiceImpl
+import com.ours_privacy.api.services.blocking.VisitorService
+import com.ours_privacy.api.services.blocking.VisitorServiceImpl
 
 class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPrivacyClient {
 
@@ -28,9 +28,7 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
 
     private val track: TrackService by lazy { TrackServiceImpl(clientOptionsWithUserAgent) }
 
-    private val identify: IdentifyService by lazy {
-        IdentifyServiceImpl(clientOptionsWithUserAgent)
-    }
+    private val visitor: VisitorService by lazy { VisitorServiceImpl(clientOptionsWithUserAgent) }
 
     override fun async(): OursPrivacyClientAsync = async
 
@@ -41,7 +39,7 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
 
     override fun track(): TrackService = track
 
-    override fun identify(): IdentifyService = identify
+    override fun visitor(): VisitorService = visitor
 
     override fun close() = clientOptions.close()
 
@@ -52,8 +50,8 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
             TrackServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val identify: IdentifyService.WithRawResponse by lazy {
-            IdentifyServiceImpl.WithRawResponseImpl(clientOptions)
+        private val visitor: VisitorService.WithRawResponse by lazy {
+            VisitorServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -65,6 +63,6 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
 
         override fun track(): TrackService.WithRawResponse = track
 
-        override fun identify(): IdentifyService.WithRawResponse = identify
+        override fun visitor(): VisitorService.WithRawResponse = visitor
     }
 }

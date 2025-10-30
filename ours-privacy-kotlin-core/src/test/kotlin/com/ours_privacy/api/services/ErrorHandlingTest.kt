@@ -22,7 +22,7 @@ import com.ours_privacy.api.errors.RateLimitException
 import com.ours_privacy.api.errors.UnauthorizedException
 import com.ours_privacy.api.errors.UnexpectedStatusCodeException
 import com.ours_privacy.api.errors.UnprocessableEntityException
-import com.ours_privacy.api.models.track.TrackCreateEventParams
+import com.ours_privacy.api.models.track.TrackEventParams
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.BeforeEach
@@ -59,7 +59,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent400() {
+    fun trackEvent400() {
         val trackService = client.track()
         stubFor(
             post(anyUrl())
@@ -70,12 +70,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<BadRequestException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -145,7 +145,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -153,7 +153,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -162,13 +162,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -224,7 +224,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent400WithRawResponse() {
+    fun trackEvent400WithRawResponse() {
         val trackService = client.track().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -235,12 +235,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<BadRequestException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -310,7 +310,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -318,7 +318,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -327,13 +327,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -389,7 +389,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent401() {
+    fun trackEvent401() {
         val trackService = client.track()
         stubFor(
             post(anyUrl())
@@ -400,12 +400,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnauthorizedException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -475,7 +475,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -483,7 +483,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -492,13 +492,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -554,7 +554,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent401WithRawResponse() {
+    fun trackEvent401WithRawResponse() {
         val trackService = client.track().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -565,12 +565,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnauthorizedException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -640,7 +640,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -648,7 +648,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -657,13 +657,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -719,7 +719,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent403() {
+    fun trackEvent403() {
         val trackService = client.track()
         stubFor(
             post(anyUrl())
@@ -730,12 +730,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<PermissionDeniedException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -805,7 +805,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -813,7 +813,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -822,13 +822,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -884,7 +884,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent403WithRawResponse() {
+    fun trackEvent403WithRawResponse() {
         val trackService = client.track().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -895,12 +895,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<PermissionDeniedException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -970,7 +970,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -978,7 +978,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -987,13 +987,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -1049,7 +1049,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent404() {
+    fun trackEvent404() {
         val trackService = client.track()
         stubFor(
             post(anyUrl())
@@ -1060,12 +1060,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<NotFoundException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -1135,7 +1135,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -1143,7 +1143,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -1152,13 +1152,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -1214,7 +1214,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent404WithRawResponse() {
+    fun trackEvent404WithRawResponse() {
         val trackService = client.track().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -1225,12 +1225,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<NotFoundException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -1300,7 +1300,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -1308,7 +1308,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -1317,13 +1317,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -1379,7 +1379,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent422() {
+    fun trackEvent422() {
         val trackService = client.track()
         stubFor(
             post(anyUrl())
@@ -1390,12 +1390,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnprocessableEntityException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -1465,7 +1465,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -1473,7 +1473,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -1482,13 +1482,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -1544,7 +1544,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent422WithRawResponse() {
+    fun trackEvent422WithRawResponse() {
         val trackService = client.track().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -1555,12 +1555,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnprocessableEntityException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -1630,7 +1630,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -1638,7 +1638,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -1647,13 +1647,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -1709,7 +1709,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent429() {
+    fun trackEvent429() {
         val trackService = client.track()
         stubFor(
             post(anyUrl())
@@ -1720,12 +1720,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<RateLimitException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -1795,7 +1795,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -1803,7 +1803,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -1812,13 +1812,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -1874,7 +1874,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent429WithRawResponse() {
+    fun trackEvent429WithRawResponse() {
         val trackService = client.track().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -1885,12 +1885,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<RateLimitException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -1960,7 +1960,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -1968,7 +1968,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -1977,13 +1977,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -2039,7 +2039,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent500() {
+    fun trackEvent500() {
         val trackService = client.track()
         stubFor(
             post(anyUrl())
@@ -2050,12 +2050,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<InternalServerException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -2125,7 +2125,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -2133,7 +2133,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -2142,13 +2142,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -2204,7 +2204,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent500WithRawResponse() {
+    fun trackEvent500WithRawResponse() {
         val trackService = client.track().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -2215,12 +2215,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<InternalServerException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -2290,7 +2290,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -2298,7 +2298,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -2307,13 +2307,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -2369,7 +2369,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent999() {
+    fun trackEvent999() {
         val trackService = client.track()
         stubFor(
             post(anyUrl())
@@ -2380,12 +2380,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnexpectedStatusCodeException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -2455,7 +2455,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -2463,7 +2463,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -2472,13 +2472,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -2534,7 +2534,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEvent999WithRawResponse() {
+    fun trackEvent999WithRawResponse() {
         val trackService = client.track().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -2545,12 +2545,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnexpectedStatusCodeException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -2620,7 +2620,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -2628,7 +2628,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -2637,13 +2637,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -2699,7 +2699,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun trackCreateEventInvalidJsonBody() {
+    fun trackEventInvalidJsonBody() {
         val trackService = client.track()
         stubFor(
             post(anyUrl())
@@ -2708,12 +2708,12 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<OursPrivacyException> {
-                trackService.createEvent(
-                    TrackCreateEventParams.builder()
+                trackService.event(
+                    TrackEventParams.builder()
                         .token("x")
                         .event("x")
                         .defaultProperties(
-                            TrackCreateEventParams.DefaultProperties.builder()
+                            TrackEventParams.DefaultProperties.builder()
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .adsetId("adset_id")
@@ -2783,7 +2783,7 @@ internal class ErrorHandlingTest {
                         .distinctId("x")
                         .email("x")
                         .eventProperties(
-                            TrackCreateEventParams.EventProperties.builder()
+                            TrackEventParams.EventProperties.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -2791,7 +2791,7 @@ internal class ErrorHandlingTest {
                         .time(0.0)
                         .userId("x")
                         .userProperties(
-                            TrackCreateEventParams.UserProperties.builder()
+                            TrackEventParams.UserProperties.builder()
                                 .adId("ad_id")
                                 .adsetId("adset_id")
                                 .campaignId("campaign_id")
@@ -2800,13 +2800,13 @@ internal class ErrorHandlingTest {
                                 .clid("clid")
                                 .companyName("company_name")
                                 .consent(
-                                    TrackCreateEventParams.UserProperties.Consent.builder()
+                                    TrackEventParams.UserProperties.Consent.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
                                 .country("country")
                                 .customProperties(
-                                    TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                    TrackEventParams.UserProperties.CustomProperties.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )

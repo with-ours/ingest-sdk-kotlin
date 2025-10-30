@@ -1,34 +1,34 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.ours_privacy.api.services.blocking
+package com.ours_privacy.api.services.async
 
 import com.ours_privacy.api.TestServerExtension
-import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
+import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClientAsync
 import com.ours_privacy.api.core.JsonValue
-import com.ours_privacy.api.models.identify.IdentifyCreateOrUpdateParams
+import com.ours_privacy.api.models.visitor.VisitorUpsertParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(TestServerExtension::class)
-internal class IdentifyServiceTest {
+internal class VisitorServiceAsyncTest {
 
     @Disabled("Prism tests are disabled")
     @Test
-    fun createOrUpdate() {
+    suspend fun upsert() {
         val client =
-            OursPrivacyOkHttpClient.builder()
+            OursPrivacyOkHttpClientAsync.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
                 .apiKey("My API Key")
                 .build()
-        val identifyService = client.identify()
+        val visitorServiceAsync = client.visitor()
 
         val response =
-            identifyService.createOrUpdate(
-                IdentifyCreateOrUpdateParams.builder()
+            visitorServiceAsync.upsert(
+                VisitorUpsertParams.builder()
                     .token("x")
                     .userProperties(
-                        IdentifyCreateOrUpdateParams.UserProperties.builder()
+                        VisitorUpsertParams.UserProperties.builder()
                             .adId("ad_id")
                             .adsetId("adset_id")
                             .campaignId("campaign_id")
@@ -37,14 +37,13 @@ internal class IdentifyServiceTest {
                             .clid("clid")
                             .companyName("company_name")
                             .consent(
-                                IdentifyCreateOrUpdateParams.UserProperties.Consent.builder()
+                                VisitorUpsertParams.UserProperties.Consent.builder()
                                     .putAdditionalProperty("foo", JsonValue.from("bar"))
                                     .build()
                             )
                             .country("country")
                             .customProperties(
-                                IdentifyCreateOrUpdateParams.UserProperties.CustomProperties
-                                    .builder()
+                                VisitorUpsertParams.UserProperties.CustomProperties.builder()
                                     .putAdditionalProperty("foo", JsonValue.from("bar"))
                                     .build()
                             )
@@ -91,7 +90,7 @@ internal class IdentifyServiceTest {
                             .build()
                     )
                     .defaultProperties(
-                        IdentifyCreateOrUpdateParams.DefaultProperties.builder()
+                        VisitorUpsertParams.DefaultProperties.builder()
                             .activeDuration(0.0)
                             .adId("ad_id")
                             .adsetId("adset_id")

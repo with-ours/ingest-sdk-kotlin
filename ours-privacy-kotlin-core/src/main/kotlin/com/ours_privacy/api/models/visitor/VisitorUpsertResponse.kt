@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.ours_privacy.api.models.identify
+package com.ours_privacy.api.models.visitor
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -16,7 +16,7 @@ import com.ours_privacy.api.errors.OursPrivacyInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-class IdentifyCreateOrUpdateResponse
+class VisitorUpsertResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val success: JsonField<Success>,
@@ -56,8 +56,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of
-         * [IdentifyCreateOrUpdateResponse].
+         * Returns a mutable builder for constructing an instance of [VisitorUpsertResponse].
          *
          * The following fields are required:
          * ```kotlin
@@ -67,16 +66,15 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [IdentifyCreateOrUpdateResponse]. */
+    /** A builder for [VisitorUpsertResponse]. */
     class Builder internal constructor() {
 
         private var success: JsonField<Success>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(identifyCreateOrUpdateResponse: IdentifyCreateOrUpdateResponse) = apply {
-            success = identifyCreateOrUpdateResponse.success
-            additionalProperties =
-                identifyCreateOrUpdateResponse.additionalProperties.toMutableMap()
+        internal fun from(visitorUpsertResponse: VisitorUpsertResponse) = apply {
+            success = visitorUpsertResponse.success
+            additionalProperties = visitorUpsertResponse.additionalProperties.toMutableMap()
         }
 
         fun success(success: Success) = success(JsonField.of(success))
@@ -109,7 +107,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [IdentifyCreateOrUpdateResponse].
+         * Returns an immutable instance of [VisitorUpsertResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -120,8 +118,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): IdentifyCreateOrUpdateResponse =
-            IdentifyCreateOrUpdateResponse(
+        fun build(): VisitorUpsertResponse =
+            VisitorUpsertResponse(
                 checkRequired("success", success),
                 additionalProperties.toMutableMap(),
             )
@@ -129,7 +127,7 @@ private constructor(
 
     private var validated: Boolean = false
 
-    fun validate(): IdentifyCreateOrUpdateResponse = apply {
+    fun validate(): VisitorUpsertResponse = apply {
         if (validated) {
             return@apply
         }
@@ -274,7 +272,7 @@ private constructor(
             return true
         }
 
-        return other is IdentifyCreateOrUpdateResponse &&
+        return other is VisitorUpsertResponse &&
             success == other.success &&
             additionalProperties == other.additionalProperties
     }
@@ -284,5 +282,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IdentifyCreateOrUpdateResponse{success=$success, additionalProperties=$additionalProperties}"
+        "VisitorUpsertResponse{success=$success, additionalProperties=$additionalProperties}"
 }

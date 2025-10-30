@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.ours_privacy.api.core.ClientOptions
 import com.ours_privacy.api.core.RequestOptions
 import com.ours_privacy.api.core.http.HttpResponseFor
-import com.ours_privacy.api.models.track.TrackCreateEventParams
-import com.ours_privacy.api.models.track.TrackCreateEventResponse
+import com.ours_privacy.api.models.track.TrackEventParams
+import com.ours_privacy.api.models.track.TrackEventResponse
 
 interface TrackService {
 
@@ -28,10 +28,10 @@ interface TrackService {
      * These properties help us associate events with existing users. For all fields, null values
      * unset the property and undefined values do not unset existing properties.
      */
-    fun createEvent(
-        params: TrackCreateEventParams,
+    fun event(
+        params: TrackEventParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): TrackCreateEventResponse
+    ): TrackEventResponse
 
     /** A view of [TrackService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -45,12 +45,12 @@ interface TrackService {
 
         /**
          * Returns a raw HTTP response for `post /track`, but is otherwise the same as
-         * [TrackService.createEvent].
+         * [TrackService.event].
          */
         @MustBeClosed
-        fun createEvent(
-            params: TrackCreateEventParams,
+        fun event(
+            params: TrackEventParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<TrackCreateEventResponse>
+        ): HttpResponseFor<TrackEventResponse>
     }
 }

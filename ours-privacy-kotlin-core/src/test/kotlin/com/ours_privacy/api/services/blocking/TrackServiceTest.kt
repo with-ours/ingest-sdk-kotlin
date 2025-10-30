@@ -5,7 +5,7 @@ package com.ours_privacy.api.services.blocking
 import com.ours_privacy.api.TestServerExtension
 import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
 import com.ours_privacy.api.core.JsonValue
-import com.ours_privacy.api.models.track.TrackCreateEventParams
+import com.ours_privacy.api.models.track.TrackEventParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -15,7 +15,7 @@ internal class TrackServiceTest {
 
     @Disabled("Prism tests are disabled")
     @Test
-    fun createEvent() {
+    fun event() {
         val client =
             OursPrivacyOkHttpClient.builder()
                 .baseUrl(TestServerExtension.BASE_URL)
@@ -24,12 +24,12 @@ internal class TrackServiceTest {
         val trackService = client.track()
 
         val response =
-            trackService.createEvent(
-                TrackCreateEventParams.builder()
+            trackService.event(
+                TrackEventParams.builder()
                     .token("x")
                     .event("x")
                     .defaultProperties(
-                        TrackCreateEventParams.DefaultProperties.builder()
+                        TrackEventParams.DefaultProperties.builder()
                             .activeDuration(0.0)
                             .adId("ad_id")
                             .adsetId("adset_id")
@@ -99,7 +99,7 @@ internal class TrackServiceTest {
                     .distinctId("x")
                     .email("x")
                     .eventProperties(
-                        TrackCreateEventParams.EventProperties.builder()
+                        TrackEventParams.EventProperties.builder()
                             .putAdditionalProperty("foo", JsonValue.from("bar"))
                             .build()
                     )
@@ -107,7 +107,7 @@ internal class TrackServiceTest {
                     .time(0.0)
                     .userId("x")
                     .userProperties(
-                        TrackCreateEventParams.UserProperties.builder()
+                        TrackEventParams.UserProperties.builder()
                             .adId("ad_id")
                             .adsetId("adset_id")
                             .campaignId("campaign_id")
@@ -116,13 +116,13 @@ internal class TrackServiceTest {
                             .clid("clid")
                             .companyName("company_name")
                             .consent(
-                                TrackCreateEventParams.UserProperties.Consent.builder()
+                                TrackEventParams.UserProperties.Consent.builder()
                                     .putAdditionalProperty("foo", JsonValue.from("bar"))
                                     .build()
                             )
                             .country("country")
                             .customProperties(
-                                TrackCreateEventParams.UserProperties.CustomProperties.builder()
+                                TrackEventParams.UserProperties.CustomProperties.builder()
                                     .putAdditionalProperty("foo", JsonValue.from("bar"))
                                     .build()
                             )

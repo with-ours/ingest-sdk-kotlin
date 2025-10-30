@@ -5,7 +5,7 @@ package com.ours_privacy.api.proguard
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
 import com.ours_privacy.api.core.jsonMapper
-import com.ours_privacy.api.models.track.TrackCreateEventResponse
+import com.ours_privacy.api.models.track.TrackEventResponse
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
 import org.assertj.core.api.Assertions.assertThat
@@ -50,23 +50,21 @@ internal class ProGuardCompatibilityTest {
 
         assertThat(client).isNotNull()
         assertThat(client.track()).isNotNull()
-        assertThat(client.identify()).isNotNull()
+        assertThat(client.visitor()).isNotNull()
     }
 
     @Test
-    fun trackCreateEventResponseRoundtrip() {
+    fun trackEventResponseRoundtrip() {
         val jsonMapper = jsonMapper()
-        val trackCreateEventResponse =
-            TrackCreateEventResponse.builder()
-                .success(TrackCreateEventResponse.Success.TRUE)
-                .build()
+        val trackEventResponse =
+            TrackEventResponse.builder().success(TrackEventResponse.Success.TRUE).build()
 
-        val roundtrippedTrackCreateEventResponse =
+        val roundtrippedTrackEventResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(trackCreateEventResponse),
-                jacksonTypeRef<TrackCreateEventResponse>(),
+                jsonMapper.writeValueAsString(trackEventResponse),
+                jacksonTypeRef<TrackEventResponse>(),
             )
 
-        assertThat(roundtrippedTrackCreateEventResponse).isEqualTo(trackCreateEventResponse)
+        assertThat(roundtrippedTrackEventResponse).isEqualTo(trackEventResponse)
     }
 }
