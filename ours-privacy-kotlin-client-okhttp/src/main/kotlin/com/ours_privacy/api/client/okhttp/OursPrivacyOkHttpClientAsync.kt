@@ -175,8 +175,6 @@ class OursPrivacyOkHttpClientAsync private constructor() {
          */
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
 
-        fun apiKey(apiKey: String?) = apply { clientOptions.apiKey(apiKey) }
-
         fun headers(headers: Headers) = apply { clientOptions.headers(headers) }
 
         fun headers(headers: Map<String, Iterable<String>>) = apply {

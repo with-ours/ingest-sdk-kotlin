@@ -17,10 +17,7 @@ internal class TrackServiceAsyncTest {
     @Test
     suspend fun event() {
         val client =
-            OursPrivacyOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+            OursPrivacyOkHttpClientAsync.builder().baseUrl(TestServerExtension.BASE_URL).build()
         val trackServiceAsync = client.track()
 
         val response =

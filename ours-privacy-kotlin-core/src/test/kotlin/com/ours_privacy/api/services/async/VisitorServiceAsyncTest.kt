@@ -17,10 +17,7 @@ internal class VisitorServiceAsyncTest {
     @Test
     suspend fun upsert() {
         val client =
-            OursPrivacyOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
-                .apiKey("My API Key")
-                .build()
+            OursPrivacyOkHttpClientAsync.builder().baseUrl(TestServerExtension.BASE_URL).build()
         val visitorServiceAsync = client.visitor()
 
         val response =

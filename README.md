@@ -39,8 +39,8 @@ import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
 import com.ours_privacy.api.models.track.TrackEventParams
 import com.ours_privacy.api.models.track.TrackEventResponse
 
-// Configures using the `oursprivacy.apiKey` and `oursprivacy.baseUrl` system properties
-// Or configures using the `OURS_PRIVACY_API_KEY` and `OURS_PRIVACY_BASE_URL` environment variables
+// Configures using the `oursprivacy.baseUrl` system property
+// Or configures using the `OURS_PRIVACY_BASE_URL` environment variable
 val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
 
 val params: TrackEventParams = TrackEventParams.builder()
@@ -58,8 +58,8 @@ Configure the client using system properties or environment variables:
 import com.ours_privacy.api.client.OursPrivacyClient
 import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
 
-// Configures using the `oursprivacy.apiKey` and `oursprivacy.baseUrl` system properties
-// Or configures using the `OURS_PRIVACY_API_KEY` and `OURS_PRIVACY_BASE_URL` environment variables
+// Configures using the `oursprivacy.baseUrl` system property
+// Or configures using the `OURS_PRIVACY_BASE_URL` environment variable
 val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
 ```
 
@@ -69,9 +69,7 @@ Or manually:
 import com.ours_privacy.api.client.OursPrivacyClient
 import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
 
-val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
-    .apiKey("My API Key")
-    .build()
+val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
 ```
 
 Or using a combination of the two approaches:
@@ -80,19 +78,15 @@ Or using a combination of the two approaches:
 import com.ours_privacy.api.client.OursPrivacyClient
 import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
 
-val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
-    // Configures using the `oursprivacy.apiKey` and `oursprivacy.baseUrl` system properties
-    // Or configures using the `OURS_PRIVACY_API_KEY` and `OURS_PRIVACY_BASE_URL` environment variables
-    .fromEnv()
-    .apiKey("My API Key")
-    .build()
+// Configures using the `oursprivacy.baseUrl` system property
+// Or configures using the `OURS_PRIVACY_BASE_URL` environment variable
+val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
 ```
 
 See this table for the available options:
 
 | Setter    | System property       | Environment variable    | Required | Default value                          |
 | --------- | --------------------- | ----------------------- | -------- | -------------------------------------- |
-| `apiKey`  | `oursprivacy.apiKey`  | `OURS_PRIVACY_API_KEY`  | false    | -                                      |
 | `baseUrl` | `oursprivacy.baseUrl` | `OURS_PRIVACY_BASE_URL` | true     | `"https://api.oursprivacy.com/api/v1"` |
 
 System properties take precedence over environment variables.
@@ -140,8 +134,8 @@ import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
 import com.ours_privacy.api.models.track.TrackEventParams
 import com.ours_privacy.api.models.track.TrackEventResponse
 
-// Configures using the `oursprivacy.apiKey` and `oursprivacy.baseUrl` system properties
-// Or configures using the `OURS_PRIVACY_API_KEY` and `OURS_PRIVACY_BASE_URL` environment variables
+// Configures using the `oursprivacy.baseUrl` system property
+// Or configures using the `OURS_PRIVACY_BASE_URL` environment variable
 val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
 
 val params: TrackEventParams = TrackEventParams.builder()
@@ -159,8 +153,8 @@ import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClientAsync
 import com.ours_privacy.api.models.track.TrackEventParams
 import com.ours_privacy.api.models.track.TrackEventResponse
 
-// Configures using the `oursprivacy.apiKey` and `oursprivacy.baseUrl` system properties
-// Or configures using the `OURS_PRIVACY_API_KEY` and `OURS_PRIVACY_BASE_URL` environment variables
+// Configures using the `oursprivacy.baseUrl` system property
+// Or configures using the `OURS_PRIVACY_BASE_URL` environment variable
 val client: OursPrivacyClientAsync = OursPrivacyOkHttpClientAsync.fromEnv()
 
 val params: TrackEventParams = TrackEventParams.builder()

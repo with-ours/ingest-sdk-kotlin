@@ -29,11 +29,7 @@ internal class ServiceParamsTest {
 
     @BeforeEach
     fun beforeEach(wmRuntimeInfo: WireMockRuntimeInfo) {
-        client =
-            OursPrivacyOkHttpClient.builder()
-                .baseUrl(wmRuntimeInfo.httpBaseUrl)
-                .apiKey("My API Key")
-                .build()
+        client = OursPrivacyOkHttpClient.builder().baseUrl(wmRuntimeInfo.httpBaseUrl).build()
     }
 
     @Disabled("Prism tests are disabled")

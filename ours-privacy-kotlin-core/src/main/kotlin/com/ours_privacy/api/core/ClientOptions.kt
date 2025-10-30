@@ -91,7 +91,6 @@ private constructor(
      * Defaults to 2.
      */
     val maxRetries: Int,
-    val apiKey: String?,
 ) {
 
     init {
@@ -147,7 +146,6 @@ private constructor(
         private var responseValidation: Boolean = false
         private var timeout: Timeout = Timeout.default()
         private var maxRetries: Int = 2
-        private var apiKey: String? = null
 
         internal fun from(clientOptions: ClientOptions) = apply {
             httpClient = clientOptions.originalHttpClient
@@ -161,7 +159,6 @@ private constructor(
             responseValidation = clientOptions.responseValidation
             timeout = clientOptions.timeout
             maxRetries = clientOptions.maxRetries
-            apiKey = clientOptions.apiKey
         }
 
         /**
@@ -265,8 +262,6 @@ private constructor(
          */
         fun maxRetries(maxRetries: Int) = apply { this.maxRetries = maxRetries }
 
-        fun apiKey(apiKey: String?) = apply { this.apiKey = apiKey }
-
         fun headers(headers: Headers) = apply {
             this.headers.clear()
             putAllHeaders(headers)
@@ -356,7 +351,6 @@ private constructor(
          *
          * |Setter   |System property      |Environment variable   |Required|Default value                         |
          * |---------|---------------------|-----------------------|--------|--------------------------------------|
-         * |`apiKey` |`oursprivacy.apiKey` |`OURS_PRIVACY_API_KEY` |false   |-                                     |
          * |`baseUrl`|`oursprivacy.baseUrl`|`OURS_PRIVACY_BASE_URL`|true    |`"https://api.oursprivacy.com/api/v1"`|
          *
          * System properties take precedence over environment variables.
@@ -364,8 +358,6 @@ private constructor(
         fun fromEnv() = apply {
             (System.getProperty("oursprivacy.baseUrl") ?: System.getenv("OURS_PRIVACY_BASE_URL"))
                 ?.let { baseUrl(it) }
-            (System.getProperty("oursprivacy.apiKey") ?: System.getenv("OURS_PRIVACY_API_KEY"))
-                ?.let { apiKey(it) }
         }
 
         /**
@@ -393,11 +385,6 @@ private constructor(
             headers.put("X-Stainless-Package-Version", getPackageVersion())
             headers.put("X-Stainless-Runtime", "JRE")
             headers.put("X-Stainless-Runtime-Version", getJavaVersion())
-            apiKey?.let {
-                if (!it.isEmpty()) {
-                    headers.put("Authorization", "Bearer $it")
-                }
-            }
             headers.replaceAll(this.headers.build())
             queryParams.replaceAll(this.queryParams.build())
 
@@ -419,7 +406,6 @@ private constructor(
                 responseValidation,
                 timeout,
                 maxRetries,
-                apiKey,
             )
         }
     }

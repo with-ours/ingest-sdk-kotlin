@@ -51,11 +51,7 @@ internal class ErrorHandlingTest {
 
     @BeforeEach
     fun beforeEach(wmRuntimeInfo: WireMockRuntimeInfo) {
-        client =
-            OursPrivacyOkHttpClient.builder()
-                .baseUrl(wmRuntimeInfo.httpBaseUrl)
-                .apiKey("My API Key")
-                .build()
+        client = OursPrivacyOkHttpClient.builder().baseUrl(wmRuntimeInfo.httpBaseUrl).build()
     }
 
     @Test
