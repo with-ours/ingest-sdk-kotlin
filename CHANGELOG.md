@@ -1,0 +1,16 @@
+# Changelog
+
+## 0.1.0 (2025-11-05)
+
+Full Changelog: [v0.0.1...v0.1.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.0.1...v0.1.0)
+
+### Features
+
+* **api:** manual updates ([021ec33](https://github.com/with-ours/ingest-sdk-kotlin/commit/021ec330e0816b8b7605676d35aedb8c15ff3378))
+* **api:** manual updates ([e983c0a](https://github.com/with-ours/ingest-sdk-kotlin/commit/e983c0ae3d76b81c252c957f2f33d90a33378713))
+
+
+### Chores
+
+* configure new SDK language ([5e753e9](https://github.com/with-ours/ingest-sdk-kotlin/commit/5e753e9e8dfb3892011908f2ae0df8893a38ac9c))
+* update SDK settings ([72b2b29](https://github.com/with-ours/ingest-sdk-kotlin/commit/72b2b29242c683f825f083cfdb10f43602317a81))

@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.ours_privacy.api/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.ours_privacy.api/ours-privacy-kotlin/0.0.1)
-[![javadoc](https://javadoc.io/badge2/com.ours_privacy.api/ours-privacy-kotlin/0.0.1/javadoc.svg)](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/0.0.1)
+[![Maven Central](https://img.shields.io/maven-central/v/com.ours_privacy.api/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.ours_privacy.api/ours-privacy-kotlin/0.1.0)
+[![javadoc](https://javadoc.io/badge2/com.ours_privacy.api/ours-privacy-kotlin/0.1.0/javadoc.svg)](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/0.1.0)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/0.0.1).
+The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/0.1.0).
 
 <!-- x-release-please-end -->
 
@@ -24,7 +24,7 @@ The REST API documentation can be found on [docs.oursprivacy.com](https://docs.o
 ### Gradle
 
 ```kotlin
-implementation("com.ours_privacy.api:ours-privacy-kotlin:0.0.1")
+implementation("com.ours_privacy.api:ours-privacy-kotlin:0.1.0")
 ```
 
 ### Maven
@@ -33,7 +33,7 @@ implementation("com.ours_privacy.api:ours-privacy-kotlin:0.0.1")
 <dependency>
   <groupId>com.ours_privacy.api</groupId>
   <artifactId>ours-privacy-kotlin</artifactId>
-  <version>0.0.1</version>
+  <version>0.1.0</version>
 </dependency>
 ```
 
