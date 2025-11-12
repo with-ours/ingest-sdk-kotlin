@@ -27,9 +27,9 @@ configure<PublishingExtension> {
                 }
 
                 scm {
-                    connection.set("scm:git:git://github.com/stainless-sdks/ours-privacy-kotlin.git")
-                    developerConnection.set("scm:git:git://github.com/stainless-sdks/ours-privacy-kotlin.git")
-                    url.set("https://github.com/stainless-sdks/ours-privacy-kotlin")
+                    connection.set("scm:git:git://github.com/with-ours/ingest-sdk-kotlin.git")
+                    developerConnection.set("scm:git:git://github.com/with-ours/ingest-sdk-kotlin.git")
+                    url.set("https://github.com/with-ours/ingest-sdk-kotlin")
                 }
 
                 versionMapping {

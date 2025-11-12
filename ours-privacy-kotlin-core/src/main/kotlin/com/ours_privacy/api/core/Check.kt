@@ -67,7 +67,7 @@ This can happen if you are either:
 
 Double-check that you are depending on compatible Jackson versions.
 
-See https://www.github.com/stainless-sdks/ours-privacy-kotlin#jackson for more information.
+See https://www.github.com/with-ours/ingest-sdk-kotlin#jackson for more information.
         """
             .trimIndent()
     }
