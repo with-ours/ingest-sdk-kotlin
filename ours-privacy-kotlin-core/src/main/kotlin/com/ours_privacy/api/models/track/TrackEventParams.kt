@@ -1133,6 +1133,7 @@ private constructor(
         private val host: JsonField<String>,
         private val iframe: JsonField<Boolean>,
         private val ip: JsonField<String>,
+        private val irclickid: JsonField<String>,
         private val isBot: JsonValue,
         private val liFatId: JsonField<String>,
         private val msclkid: JsonField<String>,
@@ -1232,6 +1233,9 @@ private constructor(
             @JsonProperty("host") @ExcludeMissing host: JsonField<String> = JsonMissing.of(),
             @JsonProperty("iframe") @ExcludeMissing iframe: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("ip") @ExcludeMissing ip: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("irclickid")
+            @ExcludeMissing
+            irclickid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("is_bot") @ExcludeMissing isBot: JsonValue = JsonMissing.of(),
             @JsonProperty("li_fat_id")
             @ExcludeMissing
@@ -1325,6 +1329,7 @@ private constructor(
             host,
             iframe,
             ip,
+            irclickid,
             isBot,
             liFatId,
             msclkid,
@@ -1604,6 +1609,14 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun ip(): String? = ip.getNullable("ip")
+
+        /**
+         * The Impact Click ID. Ex: irclickid123
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun irclickid(): String? = irclickid.getNullable("irclickid")
 
         /**
          * Whether we have detected that the user is a bot. This is set automatically by the Ours
@@ -2115,6 +2128,13 @@ private constructor(
         @JsonProperty("ip") @ExcludeMissing fun _ip(): JsonField<String> = ip
 
         /**
+         * Returns the raw JSON value of [irclickid].
+         *
+         * Unlike [irclickid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("irclickid") @ExcludeMissing fun _irclickid(): JsonField<String> = irclickid
+
+        /**
          * Returns the raw JSON value of [liFatId].
          *
          * Unlike [liFatId], this method doesn't throw if the JSON field has an unexpected type.
@@ -2410,6 +2430,7 @@ private constructor(
             private var host: JsonField<String> = JsonMissing.of()
             private var iframe: JsonField<Boolean> = JsonMissing.of()
             private var ip: JsonField<String> = JsonMissing.of()
+            private var irclickid: JsonField<String> = JsonMissing.of()
             private var isBot: JsonValue = JsonMissing.of()
             private var liFatId: JsonField<String> = JsonMissing.of()
             private var msclkid: JsonField<String> = JsonMissing.of()
@@ -2477,6 +2498,7 @@ private constructor(
                 host = defaultProperties.host
                 iframe = defaultProperties.iframe
                 ip = defaultProperties.ip
+                irclickid = defaultProperties.irclickid
                 isBot = defaultProperties.isBot
                 liFatId = defaultProperties.liFatId
                 msclkid = defaultProperties.msclkid
@@ -2937,6 +2959,18 @@ private constructor(
              * value.
              */
             fun ip(ip: JsonField<String>) = apply { this.ip = ip }
+
+            /** The Impact Click ID. Ex: irclickid123 */
+            fun irclickid(irclickid: String?) = irclickid(JsonField.ofNullable(irclickid))
+
+            /**
+             * Sets [Builder.irclickid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.irclickid] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun irclickid(irclickid: JsonField<String>) = apply { this.irclickid = irclickid }
 
             /**
              * Whether we have detected that the user is a bot. This is set automatically by the
@@ -3452,6 +3486,7 @@ private constructor(
                     host,
                     iframe,
                     ip,
+                    irclickid,
                     isBot,
                     liFatId,
                     msclkid,
@@ -3527,6 +3562,7 @@ private constructor(
             host()
             iframe()
             ip()
+            irclickid()
             liFatId()
             msclkid()
             ndclid()
@@ -3608,6 +3644,7 @@ private constructor(
                 (if (host.asKnown() == null) 0 else 1) +
                 (if (iframe.asKnown() == null) 0 else 1) +
                 (if (ip.asKnown() == null) 0 else 1) +
+                (if (irclickid.asKnown() == null) 0 else 1) +
                 (if (liFatId.asKnown() == null) 0 else 1) +
                 (if (msclkid.asKnown() == null) 0 else 1) +
                 (if (ndclid.asKnown() == null) 0 else 1) +
@@ -3678,6 +3715,7 @@ private constructor(
                 host == other.host &&
                 iframe == other.iframe &&
                 ip == other.ip &&
+                irclickid == other.irclickid &&
                 isBot == other.isBot &&
                 liFatId == other.liFatId &&
                 msclkid == other.msclkid &&
@@ -3747,6 +3785,7 @@ private constructor(
                 host,
                 iframe,
                 ip,
+                irclickid,
                 isBot,
                 liFatId,
                 msclkid,
@@ -3788,7 +3827,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "DefaultProperties{activeDuration=$activeDuration, adId=$adId, adsetId=$adsetId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, ip=$ip, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
+            "DefaultProperties{activeDuration=$activeDuration, adId=$adId, adsetId=$adsetId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
     }
 
     /** Any additional event properties you want to pass along. */
@@ -3920,6 +3959,7 @@ private constructor(
         private val gclid: JsonField<String>,
         private val gender: JsonField<String>,
         private val ip: JsonField<String>,
+        private val irclickid: JsonField<String>,
         private val isBot: JsonValue,
         private val jobTitle: JsonField<String>,
         private val lastName: JsonField<String>,
@@ -3989,6 +4029,9 @@ private constructor(
             @JsonProperty("gclid") @ExcludeMissing gclid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("gender") @ExcludeMissing gender: JsonField<String> = JsonMissing.of(),
             @JsonProperty("ip") @ExcludeMissing ip: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("irclickid")
+            @ExcludeMissing
+            irclickid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("is_bot") @ExcludeMissing isBot: JsonValue = JsonMissing.of(),
             @JsonProperty("job_title")
             @ExcludeMissing
@@ -4060,6 +4103,7 @@ private constructor(
             gclid,
             gender,
             ip,
+            irclickid,
             isBot,
             jobTitle,
             lastName,
@@ -4235,6 +4279,12 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun ip(): String? = ip.getNullable("ip")
+
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun irclickid(): String? = irclickid.getNullable("irclickid")
 
         @JsonProperty("is_bot") @ExcludeMissing fun _isBot(): JsonValue = isBot
 
@@ -4560,6 +4610,13 @@ private constructor(
         @JsonProperty("ip") @ExcludeMissing fun _ip(): JsonField<String> = ip
 
         /**
+         * Returns the raw JSON value of [irclickid].
+         *
+         * Unlike [irclickid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("irclickid") @ExcludeMissing fun _irclickid(): JsonField<String> = irclickid
+
+        /**
          * Returns the raw JSON value of [jobTitle].
          *
          * Unlike [jobTitle], this method doesn't throw if the JSON field has an unexpected type.
@@ -4772,6 +4829,7 @@ private constructor(
             private var gclid: JsonField<String> = JsonMissing.of()
             private var gender: JsonField<String> = JsonMissing.of()
             private var ip: JsonField<String> = JsonMissing.of()
+            private var irclickid: JsonField<String> = JsonMissing.of()
             private var isBot: JsonValue = JsonMissing.of()
             private var jobTitle: JsonField<String> = JsonMissing.of()
             private var lastName: JsonField<String> = JsonMissing.of()
@@ -4825,6 +4883,7 @@ private constructor(
                 gclid = userProperties.gclid
                 gender = userProperties.gender
                 ip = userProperties.ip
+                irclickid = userProperties.irclickid
                 isBot = userProperties.isBot
                 jobTitle = userProperties.jobTitle
                 lastName = userProperties.lastName
@@ -5125,6 +5184,17 @@ private constructor(
              * value.
              */
             fun ip(ip: JsonField<String>) = apply { this.ip = ip }
+
+            fun irclickid(irclickid: String?) = irclickid(JsonField.ofNullable(irclickid))
+
+            /**
+             * Sets [Builder.irclickid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.irclickid] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun irclickid(irclickid: JsonField<String>) = apply { this.irclickid = irclickid }
 
             fun isBot(isBot: JsonValue) = apply { this.isBot = isBot }
 
@@ -5440,6 +5510,7 @@ private constructor(
                     gclid,
                     gender,
                     ip,
+                    irclickid,
                     isBot,
                     jobTitle,
                     lastName,
@@ -5501,6 +5572,7 @@ private constructor(
             gclid()
             gender()
             ip()
+            irclickid()
             jobTitle()
             lastName()
             liFatId()
@@ -5566,6 +5638,7 @@ private constructor(
                 (if (gclid.asKnown() == null) 0 else 1) +
                 (if (gender.asKnown() == null) 0 else 1) +
                 (if (ip.asKnown() == null) 0 else 1) +
+                (if (irclickid.asKnown() == null) 0 else 1) +
                 (if (jobTitle.asKnown() == null) 0 else 1) +
                 (if (lastName.asKnown() == null) 0 else 1) +
                 (if (liFatId.asKnown() == null) 0 else 1) +
@@ -5821,6 +5894,7 @@ private constructor(
                 gclid == other.gclid &&
                 gender == other.gender &&
                 ip == other.ip &&
+                irclickid == other.irclickid &&
                 isBot == other.isBot &&
                 jobTitle == other.jobTitle &&
                 lastName == other.lastName &&
@@ -5876,6 +5950,7 @@ private constructor(
                 gclid,
                 gender,
                 ip,
+                irclickid,
                 isBot,
                 jobTitle,
                 lastName,
@@ -5909,7 +5984,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "UserProperties{adId=$adId, adsetId=$adsetId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, ip=$ip, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
+            "UserProperties{adId=$adId, adsetId=$adsetId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
