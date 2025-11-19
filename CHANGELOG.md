@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.0 (2025-11-19)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* **api:** manual updates ([ef35598](https://github.com/with-ours/ingest-sdk-kotlin/commit/ef355986ce0df949ec1d08de43fe2ea7b4e1cb50))
+
+
+### Bug Fixes
+
+* **client:** multi-value header serialization ([70c72ed](https://github.com/with-ours/ingest-sdk-kotlin/commit/70c72ed3867943de40404e3188a9b4aea503ac85))
+
 ## 0.1.0 (2025-11-05)
 
 Full Changelog: [v0.0.1...v0.1.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.0.1...v0.1.0)
