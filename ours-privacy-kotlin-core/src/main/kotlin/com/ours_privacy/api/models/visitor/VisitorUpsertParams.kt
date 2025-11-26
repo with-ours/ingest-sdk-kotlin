@@ -837,6 +837,7 @@ private constructor(
         private val gclid: JsonField<String>,
         private val gender: JsonField<String>,
         private val ip: JsonField<String>,
+        private val irclickid: JsonField<String>,
         private val isBot: JsonValue,
         private val jobTitle: JsonField<String>,
         private val lastName: JsonField<String>,
@@ -847,6 +848,7 @@ private constructor(
         private val qclid: JsonField<String>,
         private val rdtCid: JsonField<String>,
         private val referrer: JsonField<String>,
+        private val referringDomain: JsonField<String>,
         private val sacid: JsonField<String>,
         private val sccid: JsonField<String>,
         private val sid: JsonField<String>,
@@ -906,6 +908,9 @@ private constructor(
             @JsonProperty("gclid") @ExcludeMissing gclid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("gender") @ExcludeMissing gender: JsonField<String> = JsonMissing.of(),
             @JsonProperty("ip") @ExcludeMissing ip: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("irclickid")
+            @ExcludeMissing
+            irclickid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("is_bot") @ExcludeMissing isBot: JsonValue = JsonMissing.of(),
             @JsonProperty("job_title")
             @ExcludeMissing
@@ -924,6 +929,9 @@ private constructor(
             @JsonProperty("referrer")
             @ExcludeMissing
             referrer: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("referring_domain")
+            @ExcludeMissing
+            referringDomain: JsonField<String> = JsonMissing.of(),
             @JsonProperty("sacid") @ExcludeMissing sacid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("sccid") @ExcludeMissing sccid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("sid") @ExcludeMissing sid: JsonField<String> = JsonMissing.of(),
@@ -977,6 +985,7 @@ private constructor(
             gclid,
             gender,
             ip,
+            irclickid,
             isBot,
             jobTitle,
             lastName,
@@ -987,6 +996,7 @@ private constructor(
             qclid,
             rdtCid,
             referrer,
+            referringDomain,
             sacid,
             sccid,
             sid,
@@ -1153,6 +1163,12 @@ private constructor(
          */
         fun ip(): String? = ip.getNullable("ip")
 
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun irclickid(): String? = irclickid.getNullable("irclickid")
+
         @JsonProperty("is_bot") @ExcludeMissing fun _isBot(): JsonValue = isBot
 
         /**
@@ -1204,6 +1220,12 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun referrer(): String? = referrer.getNullable("referrer")
+
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun referringDomain(): String? = referringDomain.getNullable("referring_domain")
 
         /**
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -1477,6 +1499,13 @@ private constructor(
         @JsonProperty("ip") @ExcludeMissing fun _ip(): JsonField<String> = ip
 
         /**
+         * Returns the raw JSON value of [irclickid].
+         *
+         * Unlike [irclickid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("irclickid") @ExcludeMissing fun _irclickid(): JsonField<String> = irclickid
+
+        /**
          * Returns the raw JSON value of [jobTitle].
          *
          * Unlike [jobTitle], this method doesn't throw if the JSON field has an unexpected type.
@@ -1531,6 +1560,16 @@ private constructor(
          * Unlike [referrer], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("referrer") @ExcludeMissing fun _referrer(): JsonField<String> = referrer
+
+        /**
+         * Returns the raw JSON value of [referringDomain].
+         *
+         * Unlike [referringDomain], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("referring_domain")
+        @ExcludeMissing
+        fun _referringDomain(): JsonField<String> = referringDomain
 
         /**
          * Returns the raw JSON value of [sacid].
@@ -1689,6 +1728,7 @@ private constructor(
             private var gclid: JsonField<String> = JsonMissing.of()
             private var gender: JsonField<String> = JsonMissing.of()
             private var ip: JsonField<String> = JsonMissing.of()
+            private var irclickid: JsonField<String> = JsonMissing.of()
             private var isBot: JsonValue = JsonMissing.of()
             private var jobTitle: JsonField<String> = JsonMissing.of()
             private var lastName: JsonField<String> = JsonMissing.of()
@@ -1699,6 +1739,7 @@ private constructor(
             private var qclid: JsonField<String> = JsonMissing.of()
             private var rdtCid: JsonField<String> = JsonMissing.of()
             private var referrer: JsonField<String> = JsonMissing.of()
+            private var referringDomain: JsonField<String> = JsonMissing.of()
             private var sacid: JsonField<String> = JsonMissing.of()
             private var sccid: JsonField<String> = JsonMissing.of()
             private var sid: JsonField<String> = JsonMissing.of()
@@ -1742,6 +1783,7 @@ private constructor(
                 gclid = userProperties.gclid
                 gender = userProperties.gender
                 ip = userProperties.ip
+                irclickid = userProperties.irclickid
                 isBot = userProperties.isBot
                 jobTitle = userProperties.jobTitle
                 lastName = userProperties.lastName
@@ -1752,6 +1794,7 @@ private constructor(
                 qclid = userProperties.qclid
                 rdtCid = userProperties.rdtCid
                 referrer = userProperties.referrer
+                referringDomain = userProperties.referringDomain
                 sacid = userProperties.sacid
                 sccid = userProperties.sccid
                 sid = userProperties.sid
@@ -2043,6 +2086,17 @@ private constructor(
              */
             fun ip(ip: JsonField<String>) = apply { this.ip = ip }
 
+            fun irclickid(irclickid: String?) = irclickid(JsonField.ofNullable(irclickid))
+
+            /**
+             * Sets [Builder.irclickid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.irclickid] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun irclickid(irclickid: JsonField<String>) = apply { this.irclickid = irclickid }
+
             fun isBot(isBot: JsonValue) = apply { this.isBot = isBot }
 
             fun jobTitle(jobTitle: String?) = jobTitle(JsonField.ofNullable(jobTitle))
@@ -2134,6 +2188,20 @@ private constructor(
              * supported value.
              */
             fun referrer(referrer: JsonField<String>) = apply { this.referrer = referrer }
+
+            fun referringDomain(referringDomain: String?) =
+                referringDomain(JsonField.ofNullable(referringDomain))
+
+            /**
+             * Sets [Builder.referringDomain] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.referringDomain] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun referringDomain(referringDomain: JsonField<String>) = apply {
+                this.referringDomain = referringDomain
+            }
 
             fun sacid(sacid: String?) = sacid(JsonField.ofNullable(sacid))
 
@@ -2357,6 +2425,7 @@ private constructor(
                     gclid,
                     gender,
                     ip,
+                    irclickid,
                     isBot,
                     jobTitle,
                     lastName,
@@ -2367,6 +2436,7 @@ private constructor(
                     qclid,
                     rdtCid,
                     referrer,
+                    referringDomain,
                     sacid,
                     sccid,
                     sid,
@@ -2418,6 +2488,7 @@ private constructor(
             gclid()
             gender()
             ip()
+            irclickid()
             jobTitle()
             lastName()
             liFatId()
@@ -2426,6 +2497,7 @@ private constructor(
             qclid()
             rdtCid()
             referrer()
+            referringDomain()
             sacid()
             sccid()
             sid()
@@ -2483,6 +2555,7 @@ private constructor(
                 (if (gclid.asKnown() == null) 0 else 1) +
                 (if (gender.asKnown() == null) 0 else 1) +
                 (if (ip.asKnown() == null) 0 else 1) +
+                (if (irclickid.asKnown() == null) 0 else 1) +
                 (if (jobTitle.asKnown() == null) 0 else 1) +
                 (if (lastName.asKnown() == null) 0 else 1) +
                 (if (liFatId.asKnown() == null) 0 else 1) +
@@ -2491,6 +2564,7 @@ private constructor(
                 (if (qclid.asKnown() == null) 0 else 1) +
                 (if (rdtCid.asKnown() == null) 0 else 1) +
                 (if (referrer.asKnown() == null) 0 else 1) +
+                (if (referringDomain.asKnown() == null) 0 else 1) +
                 (if (sacid.asKnown() == null) 0 else 1) +
                 (if (sccid.asKnown() == null) 0 else 1) +
                 (if (sid.asKnown() == null) 0 else 1) +
@@ -2738,6 +2812,7 @@ private constructor(
                 gclid == other.gclid &&
                 gender == other.gender &&
                 ip == other.ip &&
+                irclickid == other.irclickid &&
                 isBot == other.isBot &&
                 jobTitle == other.jobTitle &&
                 lastName == other.lastName &&
@@ -2748,6 +2823,7 @@ private constructor(
                 qclid == other.qclid &&
                 rdtCid == other.rdtCid &&
                 referrer == other.referrer &&
+                referringDomain == other.referringDomain &&
                 sacid == other.sacid &&
                 sccid == other.sccid &&
                 sid == other.sid &&
@@ -2793,6 +2869,7 @@ private constructor(
                 gclid,
                 gender,
                 ip,
+                irclickid,
                 isBot,
                 jobTitle,
                 lastName,
@@ -2803,6 +2880,7 @@ private constructor(
                 qclid,
                 rdtCid,
                 referrer,
+                referringDomain,
                 sacid,
                 sccid,
                 sid,
@@ -2826,7 +2904,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "UserProperties{adId=$adId, adsetId=$adsetId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, ip=$ip, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
+            "UserProperties{adId=$adId, adsetId=$adsetId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
     }
 
     /** These properties are used throughout the Ours app to pass known values onto destinations */
@@ -2863,6 +2941,7 @@ private constructor(
         private val host: JsonField<String>,
         private val iframe: JsonField<Boolean>,
         private val ip: JsonField<String>,
+        private val irclickid: JsonField<String>,
         private val isBot: JsonValue,
         private val liFatId: JsonField<String>,
         private val msclkid: JsonField<String>,
@@ -2876,6 +2955,7 @@ private constructor(
         private val rdtCid: JsonField<String>,
         private val receivedAt: JsonField<String>,
         private val referrer: JsonField<String>,
+        private val referringDomain: JsonField<String>,
         private val sacid: JsonField<String>,
         private val sccid: JsonField<String>,
         private val screenHeight: JsonField<Double>,
@@ -2962,6 +3042,9 @@ private constructor(
             @JsonProperty("host") @ExcludeMissing host: JsonField<String> = JsonMissing.of(),
             @JsonProperty("iframe") @ExcludeMissing iframe: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("ip") @ExcludeMissing ip: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("irclickid")
+            @ExcludeMissing
+            irclickid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("is_bot") @ExcludeMissing isBot: JsonValue = JsonMissing.of(),
             @JsonProperty("li_fat_id")
             @ExcludeMissing
@@ -2987,6 +3070,9 @@ private constructor(
             @JsonProperty("referrer")
             @ExcludeMissing
             referrer: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("referring_domain")
+            @ExcludeMissing
+            referringDomain: JsonField<String> = JsonMissing.of(),
             @JsonProperty("sacid") @ExcludeMissing sacid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("sccid") @ExcludeMissing sccid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("screen_height")
@@ -3055,6 +3141,7 @@ private constructor(
             host,
             iframe,
             ip,
+            irclickid,
             isBot,
             liFatId,
             msclkid,
@@ -3068,6 +3155,7 @@ private constructor(
             rdtCid,
             receivedAt,
             referrer,
+            referringDomain,
             sacid,
             sccid,
             screenHeight,
@@ -3336,6 +3424,14 @@ private constructor(
         fun ip(): String? = ip.getNullable("ip")
 
         /**
+         * The Impact Click ID. Ex: irclickid123
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun irclickid(): String? = irclickid.getNullable("irclickid")
+
+        /**
          * Whether we have detected that the user is a bot. This is set automatically by the Ours
          * server primarily for events tracked through the web SDK.
          */
@@ -3436,6 +3532,14 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun referrer(): String? = referrer.getNullable("referrer")
+
+        /**
+         * The referring domain of the current page
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun referringDomain(): String? = referringDomain.getNullable("referring_domain")
 
         /**
          * The StackAdapt Tracking ID. Ex: sacid123
@@ -3845,6 +3949,13 @@ private constructor(
         @JsonProperty("ip") @ExcludeMissing fun _ip(): JsonField<String> = ip
 
         /**
+         * Returns the raw JSON value of [irclickid].
+         *
+         * Unlike [irclickid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("irclickid") @ExcludeMissing fun _irclickid(): JsonField<String> = irclickid
+
+        /**
          * Returns the raw JSON value of [liFatId].
          *
          * Unlike [liFatId], this method doesn't throw if the JSON field has an unexpected type.
@@ -3929,6 +4040,16 @@ private constructor(
          * Unlike [referrer], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("referrer") @ExcludeMissing fun _referrer(): JsonField<String> = referrer
+
+        /**
+         * Returns the raw JSON value of [referringDomain].
+         *
+         * Unlike [referringDomain], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("referring_domain")
+        @ExcludeMissing
+        fun _referringDomain(): JsonField<String> = referringDomain
 
         /**
          * Returns the raw JSON value of [sacid].
@@ -4140,6 +4261,7 @@ private constructor(
             private var host: JsonField<String> = JsonMissing.of()
             private var iframe: JsonField<Boolean> = JsonMissing.of()
             private var ip: JsonField<String> = JsonMissing.of()
+            private var irclickid: JsonField<String> = JsonMissing.of()
             private var isBot: JsonValue = JsonMissing.of()
             private var liFatId: JsonField<String> = JsonMissing.of()
             private var msclkid: JsonField<String> = JsonMissing.of()
@@ -4153,6 +4275,7 @@ private constructor(
             private var rdtCid: JsonField<String> = JsonMissing.of()
             private var receivedAt: JsonField<String> = JsonMissing.of()
             private var referrer: JsonField<String> = JsonMissing.of()
+            private var referringDomain: JsonField<String> = JsonMissing.of()
             private var sacid: JsonField<String> = JsonMissing.of()
             private var sccid: JsonField<String> = JsonMissing.of()
             private var screenHeight: JsonField<Double> = JsonMissing.of()
@@ -4207,6 +4330,7 @@ private constructor(
                 host = defaultProperties.host
                 iframe = defaultProperties.iframe
                 ip = defaultProperties.ip
+                irclickid = defaultProperties.irclickid
                 isBot = defaultProperties.isBot
                 liFatId = defaultProperties.liFatId
                 msclkid = defaultProperties.msclkid
@@ -4220,6 +4344,7 @@ private constructor(
                 rdtCid = defaultProperties.rdtCid
                 receivedAt = defaultProperties.receivedAt
                 referrer = defaultProperties.referrer
+                referringDomain = defaultProperties.referringDomain
                 sacid = defaultProperties.sacid
                 sccid = defaultProperties.sccid
                 screenHeight = defaultProperties.screenHeight
@@ -4668,6 +4793,18 @@ private constructor(
              */
             fun ip(ip: JsonField<String>) = apply { this.ip = ip }
 
+            /** The Impact Click ID. Ex: irclickid123 */
+            fun irclickid(irclickid: String?) = irclickid(JsonField.ofNullable(irclickid))
+
+            /**
+             * Sets [Builder.irclickid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.irclickid] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun irclickid(irclickid: JsonField<String>) = apply { this.irclickid = irclickid }
+
             /**
              * Whether we have detected that the user is a bot. This is set automatically by the
              * Ours server primarily for events tracked through the web SDK.
@@ -4831,6 +4968,21 @@ private constructor(
              * supported value.
              */
             fun referrer(referrer: JsonField<String>) = apply { this.referrer = referrer }
+
+            /** The referring domain of the current page */
+            fun referringDomain(referringDomain: String?) =
+                referringDomain(JsonField.ofNullable(referringDomain))
+
+            /**
+             * Sets [Builder.referringDomain] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.referringDomain] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun referringDomain(referringDomain: JsonField<String>) = apply {
+                this.referringDomain = referringDomain
+            }
 
             /** The StackAdapt Tracking ID. Ex: sacid123 */
             fun sacid(sacid: String?) = sacid(JsonField.ofNullable(sacid))
@@ -5182,6 +5334,7 @@ private constructor(
                     host,
                     iframe,
                     ip,
+                    irclickid,
                     isBot,
                     liFatId,
                     msclkid,
@@ -5195,6 +5348,7 @@ private constructor(
                     rdtCid,
                     receivedAt,
                     referrer,
+                    referringDomain,
                     sacid,
                     sccid,
                     screenHeight,
@@ -5257,6 +5411,7 @@ private constructor(
             host()
             iframe()
             ip()
+            irclickid()
             liFatId()
             msclkid()
             ndclid()
@@ -5269,6 +5424,7 @@ private constructor(
             rdtCid()
             receivedAt()
             referrer()
+            referringDomain()
             sacid()
             sccid()
             screenHeight()
@@ -5338,6 +5494,7 @@ private constructor(
                 (if (host.asKnown() == null) 0 else 1) +
                 (if (iframe.asKnown() == null) 0 else 1) +
                 (if (ip.asKnown() == null) 0 else 1) +
+                (if (irclickid.asKnown() == null) 0 else 1) +
                 (if (liFatId.asKnown() == null) 0 else 1) +
                 (if (msclkid.asKnown() == null) 0 else 1) +
                 (if (ndclid.asKnown() == null) 0 else 1) +
@@ -5350,6 +5507,7 @@ private constructor(
                 (if (rdtCid.asKnown() == null) 0 else 1) +
                 (if (receivedAt.asKnown() == null) 0 else 1) +
                 (if (referrer.asKnown() == null) 0 else 1) +
+                (if (referringDomain.asKnown() == null) 0 else 1) +
                 (if (sacid.asKnown() == null) 0 else 1) +
                 (if (sccid.asKnown() == null) 0 else 1) +
                 (if (screenHeight.asKnown() == null) 0 else 1) +
@@ -5408,6 +5566,7 @@ private constructor(
                 host == other.host &&
                 iframe == other.iframe &&
                 ip == other.ip &&
+                irclickid == other.irclickid &&
                 isBot == other.isBot &&
                 liFatId == other.liFatId &&
                 msclkid == other.msclkid &&
@@ -5421,6 +5580,7 @@ private constructor(
                 rdtCid == other.rdtCid &&
                 receivedAt == other.receivedAt &&
                 referrer == other.referrer &&
+                referringDomain == other.referringDomain &&
                 sacid == other.sacid &&
                 sccid == other.sccid &&
                 screenHeight == other.screenHeight &&
@@ -5477,6 +5637,7 @@ private constructor(
                 host,
                 iframe,
                 ip,
+                irclickid,
                 isBot,
                 liFatId,
                 msclkid,
@@ -5490,6 +5651,7 @@ private constructor(
                 rdtCid,
                 receivedAt,
                 referrer,
+                referringDomain,
                 sacid,
                 sccid,
                 screenHeight,
@@ -5518,7 +5680,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "DefaultProperties{activeDuration=$activeDuration, adId=$adId, adsetId=$adsetId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, ip=$ip, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
+            "DefaultProperties{activeDuration=$activeDuration, adId=$adId, adsetId=$adsetId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
