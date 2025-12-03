@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.1 (2025-12-03)
+
+Full Changelog: [v0.3.0...v0.3.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.3.0...v0.3.1)
+
+### Documentation
+
+* remove `$` for better copy-pasteabality ([aa74d5f](https://github.com/with-ours/ingest-sdk-kotlin/commit/aa74d5fea764d2cb26188f541d7684bb976cd1cc))
+
 ## 0.3.0 (2025-11-19)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.2.0...v0.3.0)
