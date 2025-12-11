@@ -1106,6 +1106,7 @@ private constructor(
         private val activeDuration: JsonField<Double>,
         private val adId: JsonField<String>,
         private val adsetId: JsonField<String>,
+        private val basisCid: JsonField<String>,
         private val browserLanguage: JsonField<String>,
         private val browserName: JsonField<String>,
         private val browserVersion: JsonField<String>,
@@ -1132,6 +1133,7 @@ private constructor(
         private val gclid: JsonField<String>,
         private val host: JsonField<String>,
         private val iframe: JsonField<Boolean>,
+        private val imRef: JsonField<String>,
         private val ip: JsonField<String>,
         private val irclickid: JsonField<String>,
         private val isBot: JsonValue,
@@ -1179,6 +1181,9 @@ private constructor(
             activeDuration: JsonField<Double> = JsonMissing.of(),
             @JsonProperty("ad_id") @ExcludeMissing adId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("adset_id") @ExcludeMissing adsetId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("basis_cid")
+            @ExcludeMissing
+            basisCid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("browser_language")
             @ExcludeMissing
             browserLanguage: JsonField<String> = JsonMissing.of(),
@@ -1233,6 +1238,7 @@ private constructor(
             @JsonProperty("gclid") @ExcludeMissing gclid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("host") @ExcludeMissing host: JsonField<String> = JsonMissing.of(),
             @JsonProperty("iframe") @ExcludeMissing iframe: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("im_ref") @ExcludeMissing imRef: JsonField<String> = JsonMissing.of(),
             @JsonProperty("ip") @ExcludeMissing ip: JsonField<String> = JsonMissing.of(),
             @JsonProperty("irclickid")
             @ExcludeMissing
@@ -1306,6 +1312,7 @@ private constructor(
             activeDuration,
             adId,
             adsetId,
+            basisCid,
             browserLanguage,
             browserName,
             browserVersion,
@@ -1332,6 +1339,7 @@ private constructor(
             gclid,
             host,
             iframe,
+            imRef,
             ip,
             irclickid,
             isBot,
@@ -1395,6 +1403,14 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun adsetId(): String? = adsetId.getNullable("adset_id")
+
+        /**
+         * The Basis DSP Click ID. Ex: basis_cid123
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun basisCid(): String? = basisCid.getNullable("basis_cid")
 
         /**
          * The language of the browser. Ex: en-US
@@ -1606,6 +1622,14 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun iframe(): Boolean? = iframe.getNullable("iframe")
+
+        /**
+         * The Impact Click ID reference. Ex: im_ref123
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun imRef(): String? = imRef.getNullable("im_ref")
 
         /**
          * The IP address of the user. Ex: 127.0.0.1
@@ -1925,6 +1949,13 @@ private constructor(
         @JsonProperty("adset_id") @ExcludeMissing fun _adsetId(): JsonField<String> = adsetId
 
         /**
+         * Returns the raw JSON value of [basisCid].
+         *
+         * Unlike [basisCid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("basis_cid") @ExcludeMissing fun _basisCid(): JsonField<String> = basisCid
+
+        /**
          * Returns the raw JSON value of [browserLanguage].
          *
          * Unlike [browserLanguage], this method doesn't throw if the JSON field has an unexpected
@@ -2132,6 +2163,13 @@ private constructor(
          * Unlike [iframe], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("iframe") @ExcludeMissing fun _iframe(): JsonField<Boolean> = iframe
+
+        /**
+         * Returns the raw JSON value of [imRef].
+         *
+         * Unlike [imRef], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("im_ref") @ExcludeMissing fun _imRef(): JsonField<String> = imRef
 
         /**
          * Returns the raw JSON value of [ip].
@@ -2426,6 +2464,7 @@ private constructor(
             private var activeDuration: JsonField<Double> = JsonMissing.of()
             private var adId: JsonField<String> = JsonMissing.of()
             private var adsetId: JsonField<String> = JsonMissing.of()
+            private var basisCid: JsonField<String> = JsonMissing.of()
             private var browserLanguage: JsonField<String> = JsonMissing.of()
             private var browserName: JsonField<String> = JsonMissing.of()
             private var browserVersion: JsonField<String> = JsonMissing.of()
@@ -2452,6 +2491,7 @@ private constructor(
             private var gclid: JsonField<String> = JsonMissing.of()
             private var host: JsonField<String> = JsonMissing.of()
             private var iframe: JsonField<Boolean> = JsonMissing.of()
+            private var imRef: JsonField<String> = JsonMissing.of()
             private var ip: JsonField<String> = JsonMissing.of()
             private var irclickid: JsonField<String> = JsonMissing.of()
             private var isBot: JsonValue = JsonMissing.of()
@@ -2495,6 +2535,7 @@ private constructor(
                 activeDuration = defaultProperties.activeDuration
                 adId = defaultProperties.adId
                 adsetId = defaultProperties.adsetId
+                basisCid = defaultProperties.basisCid
                 browserLanguage = defaultProperties.browserLanguage
                 browserName = defaultProperties.browserName
                 browserVersion = defaultProperties.browserVersion
@@ -2521,6 +2562,7 @@ private constructor(
                 gclid = defaultProperties.gclid
                 host = defaultProperties.host
                 iframe = defaultProperties.iframe
+                imRef = defaultProperties.imRef
                 ip = defaultProperties.ip
                 irclickid = defaultProperties.irclickid
                 isBot = defaultProperties.isBot
@@ -2608,6 +2650,18 @@ private constructor(
              * supported value.
              */
             fun adsetId(adsetId: JsonField<String>) = apply { this.adsetId = adsetId }
+
+            /** The Basis DSP Click ID. Ex: basis_cid123 */
+            fun basisCid(basisCid: String?) = basisCid(JsonField.ofNullable(basisCid))
+
+            /**
+             * Sets [Builder.basisCid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.basisCid] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun basisCid(basisCid: JsonField<String>) = apply { this.basisCid = basisCid }
 
             /** The language of the browser. Ex: en-US */
             fun browserLanguage(browserLanguage: String?) =
@@ -2972,6 +3026,18 @@ private constructor(
              * supported value.
              */
             fun iframe(iframe: JsonField<Boolean>) = apply { this.iframe = iframe }
+
+            /** The Impact Click ID reference. Ex: im_ref123 */
+            fun imRef(imRef: String?) = imRef(JsonField.ofNullable(imRef))
+
+            /**
+             * Sets [Builder.imRef] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.imRef] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun imRef(imRef: JsonField<String>) = apply { this.imRef = imRef }
 
             /** The IP address of the user. Ex: 127.0.0.1 */
             fun ip(ip: String?) = ip(JsonField.ofNullable(ip))
@@ -3499,6 +3565,7 @@ private constructor(
                     activeDuration,
                     adId,
                     adsetId,
+                    basisCid,
                     browserLanguage,
                     browserName,
                     browserVersion,
@@ -3525,6 +3592,7 @@ private constructor(
                     gclid,
                     host,
                     iframe,
+                    imRef,
                     ip,
                     irclickid,
                     isBot,
@@ -3576,6 +3644,7 @@ private constructor(
             activeDuration()
             adId()
             adsetId()
+            basisCid()
             browserLanguage()
             browserName()
             browserVersion()
@@ -3602,6 +3671,7 @@ private constructor(
             gclid()
             host()
             iframe()
+            imRef()
             ip()
             irclickid()
             liFatId()
@@ -3659,6 +3729,7 @@ private constructor(
             (if (activeDuration.asKnown() == null) 0 else 1) +
                 (if (adId.asKnown() == null) 0 else 1) +
                 (if (adsetId.asKnown() == null) 0 else 1) +
+                (if (basisCid.asKnown() == null) 0 else 1) +
                 (if (browserLanguage.asKnown() == null) 0 else 1) +
                 (if (browserName.asKnown() == null) 0 else 1) +
                 (if (browserVersion.asKnown() == null) 0 else 1) +
@@ -3685,6 +3756,7 @@ private constructor(
                 (if (gclid.asKnown() == null) 0 else 1) +
                 (if (host.asKnown() == null) 0 else 1) +
                 (if (iframe.asKnown() == null) 0 else 1) +
+                (if (imRef.asKnown() == null) 0 else 1) +
                 (if (ip.asKnown() == null) 0 else 1) +
                 (if (irclickid.asKnown() == null) 0 else 1) +
                 (if (liFatId.asKnown() == null) 0 else 1) +
@@ -3731,6 +3803,7 @@ private constructor(
                 activeDuration == other.activeDuration &&
                 adId == other.adId &&
                 adsetId == other.adsetId &&
+                basisCid == other.basisCid &&
                 browserLanguage == other.browserLanguage &&
                 browserName == other.browserName &&
                 browserVersion == other.browserVersion &&
@@ -3757,6 +3830,7 @@ private constructor(
                 gclid == other.gclid &&
                 host == other.host &&
                 iframe == other.iframe &&
+                imRef == other.imRef &&
                 ip == other.ip &&
                 irclickid == other.irclickid &&
                 isBot == other.isBot &&
@@ -3802,6 +3876,7 @@ private constructor(
                 activeDuration,
                 adId,
                 adsetId,
+                basisCid,
                 browserLanguage,
                 browserName,
                 browserVersion,
@@ -3828,6 +3903,7 @@ private constructor(
                 gclid,
                 host,
                 iframe,
+                imRef,
                 ip,
                 irclickid,
                 isBot,
@@ -3872,7 +3948,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "DefaultProperties{activeDuration=$activeDuration, adId=$adId, adsetId=$adsetId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
+            "DefaultProperties{activeDuration=$activeDuration, adId=$adId, adsetId=$adsetId, basisCid=$basisCid, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
     }
 
     /** Any additional event properties you want to pass along. */
@@ -3982,6 +4058,7 @@ private constructor(
     private constructor(
         private val adId: JsonField<String>,
         private val adsetId: JsonField<String>,
+        private val basisCid: JsonField<String>,
         private val campaignId: JsonField<String>,
         private val city: JsonField<String>,
         private val clickid: JsonField<String>,
@@ -4003,6 +4080,7 @@ private constructor(
         private val gbraid: JsonField<String>,
         private val gclid: JsonField<String>,
         private val gender: JsonField<String>,
+        private val imRef: JsonField<String>,
         private val ip: JsonField<String>,
         private val irclickid: JsonField<String>,
         private val isBot: JsonValue,
@@ -4039,6 +4117,9 @@ private constructor(
         private constructor(
             @JsonProperty("ad_id") @ExcludeMissing adId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("adset_id") @ExcludeMissing adsetId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("basis_cid")
+            @ExcludeMissing
+            basisCid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("campaign_id")
             @ExcludeMissing
             campaignId: JsonField<String> = JsonMissing.of(),
@@ -4074,6 +4155,7 @@ private constructor(
             @JsonProperty("gbraid") @ExcludeMissing gbraid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("gclid") @ExcludeMissing gclid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("gender") @ExcludeMissing gender: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("im_ref") @ExcludeMissing imRef: JsonField<String> = JsonMissing.of(),
             @JsonProperty("ip") @ExcludeMissing ip: JsonField<String> = JsonMissing.of(),
             @JsonProperty("irclickid")
             @ExcludeMissing
@@ -4130,6 +4212,7 @@ private constructor(
         ) : this(
             adId,
             adsetId,
+            basisCid,
             campaignId,
             city,
             clickid,
@@ -4151,6 +4234,7 @@ private constructor(
             gbraid,
             gclid,
             gender,
+            imRef,
             ip,
             irclickid,
             isBot,
@@ -4194,6 +4278,12 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun adsetId(): String? = adsetId.getNullable("adset_id")
+
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun basisCid(): String? = basisCid.getNullable("basis_cid")
 
         /**
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -4321,6 +4411,12 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun gender(): String? = gender.getNullable("gender")
+
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun imRef(): String? = imRef.getNullable("im_ref")
 
         /**
          * The IP address of the user
@@ -4501,6 +4597,13 @@ private constructor(
         @JsonProperty("adset_id") @ExcludeMissing fun _adsetId(): JsonField<String> = adsetId
 
         /**
+         * Returns the raw JSON value of [basisCid].
+         *
+         * Unlike [basisCid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("basis_cid") @ExcludeMissing fun _basisCid(): JsonField<String> = basisCid
+
+        /**
          * Returns the raw JSON value of [campaignId].
          *
          * Unlike [campaignId], this method doesn't throw if the JSON field has an unexpected type.
@@ -4657,6 +4760,13 @@ private constructor(
          * Unlike [gender], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("gender") @ExcludeMissing fun _gender(): JsonField<String> = gender
+
+        /**
+         * Returns the raw JSON value of [imRef].
+         *
+         * Unlike [imRef], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("im_ref") @ExcludeMissing fun _imRef(): JsonField<String> = imRef
 
         /**
          * Returns the raw JSON value of [ip].
@@ -4873,6 +4983,7 @@ private constructor(
 
             private var adId: JsonField<String> = JsonMissing.of()
             private var adsetId: JsonField<String> = JsonMissing.of()
+            private var basisCid: JsonField<String> = JsonMissing.of()
             private var campaignId: JsonField<String> = JsonMissing.of()
             private var city: JsonField<String> = JsonMissing.of()
             private var clickid: JsonField<String> = JsonMissing.of()
@@ -4894,6 +5005,7 @@ private constructor(
             private var gbraid: JsonField<String> = JsonMissing.of()
             private var gclid: JsonField<String> = JsonMissing.of()
             private var gender: JsonField<String> = JsonMissing.of()
+            private var imRef: JsonField<String> = JsonMissing.of()
             private var ip: JsonField<String> = JsonMissing.of()
             private var irclickid: JsonField<String> = JsonMissing.of()
             private var isBot: JsonValue = JsonMissing.of()
@@ -4928,6 +5040,7 @@ private constructor(
             internal fun from(userProperties: UserProperties) = apply {
                 adId = userProperties.adId
                 adsetId = userProperties.adsetId
+                basisCid = userProperties.basisCid
                 campaignId = userProperties.campaignId
                 city = userProperties.city
                 clickid = userProperties.clickid
@@ -4949,6 +5062,7 @@ private constructor(
                 gbraid = userProperties.gbraid
                 gclid = userProperties.gclid
                 gender = userProperties.gender
+                imRef = userProperties.imRef
                 ip = userProperties.ip
                 irclickid = userProperties.irclickid
                 isBot = userProperties.isBot
@@ -5002,6 +5116,17 @@ private constructor(
              * supported value.
              */
             fun adsetId(adsetId: JsonField<String>) = apply { this.adsetId = adsetId }
+
+            fun basisCid(basisCid: String?) = basisCid(JsonField.ofNullable(basisCid))
+
+            /**
+             * Sets [Builder.basisCid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.basisCid] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun basisCid(basisCid: JsonField<String>) = apply { this.basisCid = basisCid }
 
             fun campaignId(campaignId: String?) = campaignId(JsonField.ofNullable(campaignId))
 
@@ -5240,6 +5365,17 @@ private constructor(
              * supported value.
              */
             fun gender(gender: JsonField<String>) = apply { this.gender = gender }
+
+            fun imRef(imRef: String?) = imRef(JsonField.ofNullable(imRef))
+
+            /**
+             * Sets [Builder.imRef] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.imRef] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun imRef(imRef: JsonField<String>) = apply { this.imRef = imRef }
 
             /** The IP address of the user */
             fun ip(ip: String?) = ip(JsonField.ofNullable(ip))
@@ -5570,6 +5706,7 @@ private constructor(
                 UserProperties(
                     adId,
                     adsetId,
+                    basisCid,
                     campaignId,
                     city,
                     clickid,
@@ -5591,6 +5728,7 @@ private constructor(
                     gbraid,
                     gclid,
                     gender,
+                    imRef,
                     ip,
                     irclickid,
                     isBot,
@@ -5633,6 +5771,7 @@ private constructor(
 
             adId()
             adsetId()
+            basisCid()
             campaignId()
             city()
             clickid()
@@ -5654,6 +5793,7 @@ private constructor(
             gbraid()
             gclid()
             gender()
+            imRef()
             ip()
             irclickid()
             jobTitle()
@@ -5700,6 +5840,7 @@ private constructor(
         internal fun validity(): Int =
             (if (adId.asKnown() == null) 0 else 1) +
                 (if (adsetId.asKnown() == null) 0 else 1) +
+                (if (basisCid.asKnown() == null) 0 else 1) +
                 (if (campaignId.asKnown() == null) 0 else 1) +
                 (if (city.asKnown() == null) 0 else 1) +
                 (if (clickid.asKnown() == null) 0 else 1) +
@@ -5721,6 +5862,7 @@ private constructor(
                 (if (gbraid.asKnown() == null) 0 else 1) +
                 (if (gclid.asKnown() == null) 0 else 1) +
                 (if (gender.asKnown() == null) 0 else 1) +
+                (if (imRef.asKnown() == null) 0 else 1) +
                 (if (ip.asKnown() == null) 0 else 1) +
                 (if (irclickid.asKnown() == null) 0 else 1) +
                 (if (jobTitle.asKnown() == null) 0 else 1) +
@@ -5957,6 +6099,7 @@ private constructor(
             return other is UserProperties &&
                 adId == other.adId &&
                 adsetId == other.adsetId &&
+                basisCid == other.basisCid &&
                 campaignId == other.campaignId &&
                 city == other.city &&
                 clickid == other.clickid &&
@@ -5978,6 +6121,7 @@ private constructor(
                 gbraid == other.gbraid &&
                 gclid == other.gclid &&
                 gender == other.gender &&
+                imRef == other.imRef &&
                 ip == other.ip &&
                 irclickid == other.irclickid &&
                 isBot == other.isBot &&
@@ -6014,6 +6158,7 @@ private constructor(
             Objects.hash(
                 adId,
                 adsetId,
+                basisCid,
                 campaignId,
                 city,
                 clickid,
@@ -6035,6 +6180,7 @@ private constructor(
                 gbraid,
                 gclid,
                 gender,
+                imRef,
                 ip,
                 irclickid,
                 isBot,
@@ -6071,7 +6217,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "UserProperties{adId=$adId, adsetId=$adsetId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
+            "UserProperties{adId=$adId, adsetId=$adsetId, basisCid=$basisCid, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
