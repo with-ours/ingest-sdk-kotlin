@@ -1136,7 +1136,7 @@ private constructor(
         private val imRef: JsonField<String>,
         private val ip: JsonField<String>,
         private val irclickid: JsonField<String>,
-        private val isBot: JsonValue,
+        private val isBot: JsonField<String>,
         private val liFatId: JsonField<String>,
         private val msclkid: JsonField<String>,
         private val ndclid: JsonField<String>,
@@ -1243,7 +1243,7 @@ private constructor(
             @JsonProperty("irclickid")
             @ExcludeMissing
             irclickid: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("is_bot") @ExcludeMissing isBot: JsonValue = JsonMissing.of(),
+            @JsonProperty("is_bot") @ExcludeMissing isBot: JsonField<String> = JsonMissing.of(),
             @JsonProperty("li_fat_id")
             @ExcludeMissing
             liFatId: JsonField<String> = JsonMissing.of(),
@@ -1650,8 +1650,11 @@ private constructor(
         /**
          * Whether we have detected that the user is a bot. This is set automatically by the Ours
          * server primarily for events tracked through the web SDK.
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
          */
-        @JsonProperty("is_bot") @ExcludeMissing fun _isBot(): JsonValue = isBot
+        fun isBot(): String? = isBot.getNullable("is_bot")
 
         /**
          * The LinkedIn Click ID. Ex: li_fat_id123
@@ -2186,6 +2189,13 @@ private constructor(
         @JsonProperty("irclickid") @ExcludeMissing fun _irclickid(): JsonField<String> = irclickid
 
         /**
+         * Returns the raw JSON value of [isBot].
+         *
+         * Unlike [isBot], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("is_bot") @ExcludeMissing fun _isBot(): JsonField<String> = isBot
+
+        /**
          * Returns the raw JSON value of [liFatId].
          *
          * Unlike [liFatId], this method doesn't throw if the JSON field has an unexpected type.
@@ -2494,7 +2504,7 @@ private constructor(
             private var imRef: JsonField<String> = JsonMissing.of()
             private var ip: JsonField<String> = JsonMissing.of()
             private var irclickid: JsonField<String> = JsonMissing.of()
-            private var isBot: JsonValue = JsonMissing.of()
+            private var isBot: JsonField<String> = JsonMissing.of()
             private var liFatId: JsonField<String> = JsonMissing.of()
             private var msclkid: JsonField<String> = JsonMissing.of()
             private var ndclid: JsonField<String> = JsonMissing.of()
@@ -3067,7 +3077,16 @@ private constructor(
              * Whether we have detected that the user is a bot. This is set automatically by the
              * Ours server primarily for events tracked through the web SDK.
              */
-            fun isBot(isBot: JsonValue) = apply { this.isBot = isBot }
+            fun isBot(isBot: String?) = isBot(JsonField.ofNullable(isBot))
+
+            /**
+             * Sets [Builder.isBot] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.isBot] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun isBot(isBot: JsonField<String>) = apply { this.isBot = isBot }
 
             /** The LinkedIn Click ID. Ex: li_fat_id123 */
             fun liFatId(liFatId: String?) = liFatId(JsonField.ofNullable(liFatId))
@@ -3674,6 +3693,7 @@ private constructor(
             imRef()
             ip()
             irclickid()
+            isBot()
             liFatId()
             msclkid()
             ndclid()
@@ -3759,6 +3779,7 @@ private constructor(
                 (if (imRef.asKnown() == null) 0 else 1) +
                 (if (ip.asKnown() == null) 0 else 1) +
                 (if (irclickid.asKnown() == null) 0 else 1) +
+                (if (isBot.asKnown() == null) 0 else 1) +
                 (if (liFatId.asKnown() == null) 0 else 1) +
                 (if (msclkid.asKnown() == null) 0 else 1) +
                 (if (ndclid.asKnown() == null) 0 else 1) +
@@ -4083,13 +4104,13 @@ private constructor(
         private val imRef: JsonField<String>,
         private val ip: JsonField<String>,
         private val irclickid: JsonField<String>,
-        private val isBot: JsonValue,
+        private val isBot: JsonField<String>,
         private val jobTitle: JsonField<String>,
         private val lastName: JsonField<String>,
         private val liFatId: JsonField<String>,
         private val msclkid: JsonField<String>,
         private val ndclid: JsonField<String>,
-        private val phoneNumber: JsonValue,
+        private val phoneNumber: JsonField<String>,
         private val qclid: JsonField<String>,
         private val rdtCid: JsonField<String>,
         private val referrer: JsonField<String>,
@@ -4109,7 +4130,7 @@ private constructor(
         private val utmSource: JsonField<String>,
         private val utmTerm: JsonField<String>,
         private val wbraid: JsonField<String>,
-        private val zip: JsonValue,
+        private val zip: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -4160,7 +4181,7 @@ private constructor(
             @JsonProperty("irclickid")
             @ExcludeMissing
             irclickid: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("is_bot") @ExcludeMissing isBot: JsonValue = JsonMissing.of(),
+            @JsonProperty("is_bot") @ExcludeMissing isBot: JsonField<String> = JsonMissing.of(),
             @JsonProperty("job_title")
             @ExcludeMissing
             jobTitle: JsonField<String> = JsonMissing.of(),
@@ -4172,7 +4193,9 @@ private constructor(
             liFatId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("msclkid") @ExcludeMissing msclkid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("ndclid") @ExcludeMissing ndclid: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("phone_number") @ExcludeMissing phoneNumber: JsonValue = JsonMissing.of(),
+            @JsonProperty("phone_number")
+            @ExcludeMissing
+            phoneNumber: JsonField<String> = JsonMissing.of(),
             @JsonProperty("qclid") @ExcludeMissing qclid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("rdt_cid") @ExcludeMissing rdtCid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("referrer")
@@ -4208,7 +4231,7 @@ private constructor(
             utmSource: JsonField<String> = JsonMissing.of(),
             @JsonProperty("utm_term") @ExcludeMissing utmTerm: JsonField<String> = JsonMissing.of(),
             @JsonProperty("wbraid") @ExcludeMissing wbraid: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("zip") @ExcludeMissing zip: JsonValue = JsonMissing.of(),
+            @JsonProperty("zip") @ExcludeMissing zip: JsonField<String> = JsonMissing.of(),
         ) : this(
             adId,
             adsetId,
@@ -4432,7 +4455,11 @@ private constructor(
          */
         fun irclickid(): String? = irclickid.getNullable("irclickid")
 
-        @JsonProperty("is_bot") @ExcludeMissing fun _isBot(): JsonValue = isBot
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun isBot(): String? = isBot.getNullable("is_bot")
 
         /**
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -4464,7 +4491,11 @@ private constructor(
          */
         fun ndclid(): String? = ndclid.getNullable("ndclid")
 
-        @JsonProperty("phone_number") @ExcludeMissing fun _phoneNumber(): JsonValue = phoneNumber
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun phoneNumber(): String? = phoneNumber.getNullable("phone_number")
 
         /**
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -4580,7 +4611,11 @@ private constructor(
          */
         fun wbraid(): String? = wbraid.getNullable("wbraid")
 
-        @JsonProperty("zip") @ExcludeMissing fun _zip(): JsonValue = zip
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun zip(): String? = zip.getNullable("zip")
 
         /**
          * Returns the raw JSON value of [adId].
@@ -4783,6 +4818,13 @@ private constructor(
         @JsonProperty("irclickid") @ExcludeMissing fun _irclickid(): JsonField<String> = irclickid
 
         /**
+         * Returns the raw JSON value of [isBot].
+         *
+         * Unlike [isBot], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("is_bot") @ExcludeMissing fun _isBot(): JsonField<String> = isBot
+
+        /**
          * Returns the raw JSON value of [jobTitle].
          *
          * Unlike [jobTitle], this method doesn't throw if the JSON field has an unexpected type.
@@ -4816,6 +4858,15 @@ private constructor(
          * Unlike [ndclid], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("ndclid") @ExcludeMissing fun _ndclid(): JsonField<String> = ndclid
+
+        /**
+         * Returns the raw JSON value of [phoneNumber].
+         *
+         * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("phone_number")
+        @ExcludeMissing
+        fun _phoneNumber(): JsonField<String> = phoneNumber
 
         /**
          * Returns the raw JSON value of [qclid].
@@ -4960,6 +5011,13 @@ private constructor(
          */
         @JsonProperty("wbraid") @ExcludeMissing fun _wbraid(): JsonField<String> = wbraid
 
+        /**
+         * Returns the raw JSON value of [zip].
+         *
+         * Unlike [zip], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("zip") @ExcludeMissing fun _zip(): JsonField<String> = zip
+
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
             additionalProperties.put(key, value)
@@ -5008,13 +5066,13 @@ private constructor(
             private var imRef: JsonField<String> = JsonMissing.of()
             private var ip: JsonField<String> = JsonMissing.of()
             private var irclickid: JsonField<String> = JsonMissing.of()
-            private var isBot: JsonValue = JsonMissing.of()
+            private var isBot: JsonField<String> = JsonMissing.of()
             private var jobTitle: JsonField<String> = JsonMissing.of()
             private var lastName: JsonField<String> = JsonMissing.of()
             private var liFatId: JsonField<String> = JsonMissing.of()
             private var msclkid: JsonField<String> = JsonMissing.of()
             private var ndclid: JsonField<String> = JsonMissing.of()
-            private var phoneNumber: JsonValue = JsonMissing.of()
+            private var phoneNumber: JsonField<String> = JsonMissing.of()
             private var qclid: JsonField<String> = JsonMissing.of()
             private var rdtCid: JsonField<String> = JsonMissing.of()
             private var referrer: JsonField<String> = JsonMissing.of()
@@ -5034,7 +5092,7 @@ private constructor(
             private var utmSource: JsonField<String> = JsonMissing.of()
             private var utmTerm: JsonField<String> = JsonMissing.of()
             private var wbraid: JsonField<String> = JsonMissing.of()
-            private var zip: JsonValue = JsonMissing.of()
+            private var zip: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(userProperties: UserProperties) = apply {
@@ -5400,7 +5458,16 @@ private constructor(
              */
             fun irclickid(irclickid: JsonField<String>) = apply { this.irclickid = irclickid }
 
-            fun isBot(isBot: JsonValue) = apply { this.isBot = isBot }
+            fun isBot(isBot: String?) = isBot(JsonField.ofNullable(isBot))
+
+            /**
+             * Sets [Builder.isBot] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.isBot] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun isBot(isBot: JsonField<String>) = apply { this.isBot = isBot }
 
             fun jobTitle(jobTitle: String?) = jobTitle(JsonField.ofNullable(jobTitle))
 
@@ -5457,7 +5524,18 @@ private constructor(
              */
             fun ndclid(ndclid: JsonField<String>) = apply { this.ndclid = ndclid }
 
-            fun phoneNumber(phoneNumber: JsonValue) = apply { this.phoneNumber = phoneNumber }
+            fun phoneNumber(phoneNumber: String?) = phoneNumber(JsonField.ofNullable(phoneNumber))
+
+            /**
+             * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.phoneNumber] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun phoneNumber(phoneNumber: JsonField<String>) = apply {
+                this.phoneNumber = phoneNumber
+            }
 
             fun qclid(qclid: String?) = qclid(JsonField.ofNullable(qclid))
 
@@ -5676,7 +5754,16 @@ private constructor(
              */
             fun wbraid(wbraid: JsonField<String>) = apply { this.wbraid = wbraid }
 
-            fun zip(zip: JsonValue) = apply { this.zip = zip }
+            fun zip(zip: String?) = zip(JsonField.ofNullable(zip))
+
+            /**
+             * Sets [Builder.zip] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.zip] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun zip(zip: JsonField<String>) = apply { this.zip = zip }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -5796,11 +5883,13 @@ private constructor(
             imRef()
             ip()
             irclickid()
+            isBot()
             jobTitle()
             lastName()
             liFatId()
             msclkid()
             ndclid()
+            phoneNumber()
             qclid()
             rdtCid()
             referrer()
@@ -5820,6 +5909,7 @@ private constructor(
             utmSource()
             utmTerm()
             wbraid()
+            zip()
             validated = true
         }
 
@@ -5865,11 +5955,13 @@ private constructor(
                 (if (imRef.asKnown() == null) 0 else 1) +
                 (if (ip.asKnown() == null) 0 else 1) +
                 (if (irclickid.asKnown() == null) 0 else 1) +
+                (if (isBot.asKnown() == null) 0 else 1) +
                 (if (jobTitle.asKnown() == null) 0 else 1) +
                 (if (lastName.asKnown() == null) 0 else 1) +
                 (if (liFatId.asKnown() == null) 0 else 1) +
                 (if (msclkid.asKnown() == null) 0 else 1) +
                 (if (ndclid.asKnown() == null) 0 else 1) +
+                (if (phoneNumber.asKnown() == null) 0 else 1) +
                 (if (qclid.asKnown() == null) 0 else 1) +
                 (if (rdtCid.asKnown() == null) 0 else 1) +
                 (if (referrer.asKnown() == null) 0 else 1) +
@@ -5888,7 +5980,8 @@ private constructor(
                 (if (utmName.asKnown() == null) 0 else 1) +
                 (if (utmSource.asKnown() == null) 0 else 1) +
                 (if (utmTerm.asKnown() == null) 0 else 1) +
-                (if (wbraid.asKnown() == null) 0 else 1)
+                (if (wbraid.asKnown() == null) 0 else 1) +
+                (if (zip.asKnown() == null) 0 else 1)
 
         class Consent
         @JsonCreator
