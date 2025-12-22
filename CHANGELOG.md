@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.1 (2025-12-19)
+
+Full Changelog: [v0.6.0...v0.6.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.6.0...v0.6.1)
+
+### Chores
+
+* **internal:** codegen related update ([eddf21c](https://github.com/with-ours/ingest-sdk-kotlin/commit/eddf21cfc4a36182fcb9c17e28ae4ce8cc130289))
+* **internal:** codegen related update ([f35a425](https://github.com/with-ours/ingest-sdk-kotlin/commit/f35a4257334ef589ec4d2d9cc9b218a6ce89c719))
+* **internal:** codegen related update ([3e49183](https://github.com/with-ours/ingest-sdk-kotlin/commit/3e49183f8f4ecf2bff26ed2f7c03e52d03fe9608))
+* **internal:** codegen related update ([9a66c2a](https://github.com/with-ours/ingest-sdk-kotlin/commit/9a66c2a62fdd2018b19d82f202db2b0731bc6087))
+
 ## 0.6.0 (2025-12-17)
 
 Full Changelog: [v0.5.0...v0.6.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.5.0...v0.6.0)
