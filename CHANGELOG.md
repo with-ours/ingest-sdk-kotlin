@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0 (2026-01-06)
+
+Full Changelog: [v0.6.1...v0.7.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.6.1...v0.7.0)
+
+### Features
+
+* **client:** add `HttpRequest#url()` method ([01614d6](https://github.com/with-ours/ingest-sdk-kotlin/commit/01614d692a25abb6c9341442540a3bcdcec4e3f0))
+
 ## 0.6.1 (2025-12-19)
 
 Full Changelog: [v0.6.0...v0.6.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.6.0...v0.6.1)
