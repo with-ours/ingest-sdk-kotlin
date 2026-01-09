@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0 (2026-01-09)
+
+Full Changelog: [v0.7.0...v0.8.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.7.0...v0.8.0)
+
+### Features
+
+* **client:** allow configuring dispatcher executor service ([2203f80](https://github.com/with-ours/ingest-sdk-kotlin/commit/2203f80342bac4295fd592d40e9d400da591f314))
+
 ## 0.7.0 (2026-01-06)
 
 Full Changelog: [v0.6.1...v0.7.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.6.1...v0.7.0)
