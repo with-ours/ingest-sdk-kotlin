@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.8.1 (2026-01-17)
+
+Full Changelog: [v0.8.0...v0.8.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.8.0...v0.8.1)
+
+### Bug Fixes
+
+* **client:** disallow coercion from float to int ([b21607f](https://github.com/with-ours/ingest-sdk-kotlin/commit/b21607fe09d844beffeba1dc87bbfeede113e7d3))
+* **client:** fully respect max retries ([ad7a18f](https://github.com/with-ours/ingest-sdk-kotlin/commit/ad7a18fe31c5f3d89d7f8f9f074099feb3acbb09))
+* **client:** send retry count header for max retries 0 ([ad7a18f](https://github.com/with-ours/ingest-sdk-kotlin/commit/ad7a18fe31c5f3d89d7f8f9f074099feb3acbb09))
+* date time deserialization leniency ([9473bec](https://github.com/with-ours/ingest-sdk-kotlin/commit/9473beca07c52e8ab31e1eb55018603f280a8786))
+
+
+### Chores
+
+* **ci:** upgrade `actions/setup-java` ([2fb2b06](https://github.com/with-ours/ingest-sdk-kotlin/commit/2fb2b069c2b20c6cfe57783b7222d498b6d8cfef))
+* **internal:** codegen related update ([409cfba](https://github.com/with-ours/ingest-sdk-kotlin/commit/409cfbae78271dd4428818609217d8611d57e89c))
+* **internal:** codegen related update ([8e116b4](https://github.com/with-ours/ingest-sdk-kotlin/commit/8e116b4000abed0657c8ea8fe37793036a8a4ccf))
+* **internal:** depend on packages directly in example ([ad7a18f](https://github.com/with-ours/ingest-sdk-kotlin/commit/ad7a18fe31c5f3d89d7f8f9f074099feb3acbb09))
+* **internal:** refactor build files to support future stainless package uploads ([851aa33](https://github.com/with-ours/ingest-sdk-kotlin/commit/851aa33c71ee35de1372fae02800bd0b98685111))
+* **internal:** update `actions/checkout` version ([0f8f880](https://github.com/with-ours/ingest-sdk-kotlin/commit/0f8f880494f2adf0d7217ff7eac9d8900d555a11))
+* test on Jackson 2.14.0 to avoid encountering FasterXML/jackson-databind[#3240](https://github.com/with-ours/ingest-sdk-kotlin/issues/3240) in tests ([9473bec](https://github.com/with-ours/ingest-sdk-kotlin/commit/9473beca07c52e8ab31e1eb55018603f280a8786))
+
 ## 0.8.0 (2026-01-09)
 
 Full Changelog: [v0.7.0...v0.8.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.7.0...v0.8.0)
