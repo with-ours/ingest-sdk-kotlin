@@ -4,7 +4,8 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":ours-privacy-kotlin"))
+    implementation(project(":ours-privacy-kotlin-core"))
+    implementation(project(":ours-privacy-kotlin-client-okhttp"))
 }
 
 application {

@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.ours_privacy.api/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.ours_privacy.api/ours-privacy-kotlin/0.8.0)
-[![javadoc](https://javadoc.io/badge2/com.ours_privacy.api/ours-privacy-kotlin/0.8.0/javadoc.svg)](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/0.8.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.ours_privacy.api/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.ours_privacy.api/ours-privacy-kotlin/0.8.1)
+[![javadoc](https://javadoc.io/badge2/com.ours_privacy.api/ours-privacy-kotlin/0.8.1/javadoc.svg)](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/0.8.1)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/0.8.0).
+The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/0.8.1).
 
 <!-- x-release-please-end -->
 
@@ -24,7 +24,7 @@ The REST API documentation can be found on [docs.oursprivacy.com](https://docs.o
 ### Gradle
 
 ```kotlin
-implementation("com.ours_privacy.api:ours-privacy-kotlin:0.8.0")
+implementation("com.ours_privacy.api:ours-privacy-kotlin:0.8.1")
 ```
 
 ### Maven
@@ -33,7 +33,7 @@ implementation("com.ours_privacy.api:ours-privacy-kotlin:0.8.0")
 <dependency>
   <groupId>com.ours_privacy.api</groupId>
   <artifactId>ours-privacy-kotlin</artifactId>
-  <version>0.8.0</version>
+  <version>0.8.1</version>
 </dependency>
 ```
 
@@ -265,6 +265,8 @@ If the SDK threw an exception, but you're _certain_ the version is compatible, t
 
 > [!CAUTION]
 > We make no guarantee that the SDK works correctly when the Jackson version check is disabled.
+
+Also note that there are bugs in older Jackson versions that can affect the SDK. We don't work around all Jackson bugs ([example](https://github.com/FasterXML/jackson-databind/issues/3240)) and expect users to upgrade Jackson for those instead.
 
 ## Network options
 
