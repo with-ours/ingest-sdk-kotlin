@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.0 (2026-01-22)
+
+Full Changelog: [v0.8.1...v0.9.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.8.1...v0.9.0)
+
+### Features
+
+* **client:** send `X-Stainless-Kotlin-Version` header ([a0307fa](https://github.com/with-ours/ingest-sdk-kotlin/commit/a0307fa9ea9fc4582a04089770bdf9956a7c323e))
+
 ## 0.8.1 (2026-01-17)
 
 Full Changelog: [v0.8.0...v0.8.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.8.0...v0.8.1)
