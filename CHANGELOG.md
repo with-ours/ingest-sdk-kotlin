@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.9.1 (2026-01-26)
+
+Full Changelog: [v0.9.0...v0.9.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.9.0...v0.9.1)
+
+### Bug Fixes
+
+* **client:** preserve time zone in lenient date-time parsing ([2713482](https://github.com/with-ours/ingest-sdk-kotlin/commit/27134823d2b2aaf354bdecc3ab984501088b0778))
+
+
+### Chores
+
+* **internal:** correct cache invalidation for `SKIP_MOCK_TESTS` ([7a397bd](https://github.com/with-ours/ingest-sdk-kotlin/commit/7a397bd5d7837cfdcd6536c40c7e9af0f1af8d7f))
+
 ## 0.9.0 (2026-01-22)
 
 Full Changelog: [v0.8.1...v0.9.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.8.1...v0.9.0)
