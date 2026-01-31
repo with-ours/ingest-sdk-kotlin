@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.2 (2026-01-31)
+
+Full Changelog: [v0.9.1...v0.9.2](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.9.1...v0.9.2)
+
+### Chores
+
+* **internal:** allow passing args to `./scripts/test` ([78bb51c](https://github.com/with-ours/ingest-sdk-kotlin/commit/78bb51cd066f5bde5ed1fa3c011e4b2c35f2b1c5))
+
 ## 0.9.1 (2026-01-26)
 
 Full Changelog: [v0.9.0...v0.9.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.9.0...v0.9.1)
