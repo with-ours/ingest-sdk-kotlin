@@ -32,7 +32,7 @@ private constructor(
 ) : Params {
 
     /**
-     * The token for your Ours Privacy Source. You can find this in the Ours dashboard.
+     * The token for your Source. You can find this in the dashboard.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -177,7 +177,7 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** The token for your Ours Privacy Source. You can find this in the Ours dashboard. */
+        /** The token for your Source. You can find this in the dashboard. */
         fun token(token: String) = apply { body.token(token) }
 
         /**
@@ -449,7 +449,7 @@ private constructor(
         )
 
         /**
-         * The token for your Ours Privacy Source. You can find this in the Ours dashboard.
+         * The token for your Source. You can find this in the dashboard.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -598,7 +598,7 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** The token for your Ours Privacy Source. You can find this in the Ours dashboard. */
+            /** The token for your Source. You can find this in the dashboard. */
             fun token(token: String) = token(JsonField.of(token))
 
             /**
