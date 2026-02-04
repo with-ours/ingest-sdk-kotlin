@@ -9,7 +9,7 @@ repositories {
 
 allprojects {
     group = "com.ours_privacy.api"
-    version = "0.9.2" // x-release-please-version
+    version = "0.10.0" // x-release-please-version
 }
 
 subprojects {
