@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.1 (2026-02-07)
+
+Full Changelog: [v0.10.0...v0.10.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.10.0...v0.10.1)
+
+### Chores
+
+* **internal:** upgrade AssertJ ([61fadec](https://github.com/with-ours/ingest-sdk-kotlin/commit/61fadec3bc30af55e531205598a60541d24e9e0a))
+
 ## 0.10.0 (2026-02-04)
 
 Full Changelog: [v0.9.2...v0.10.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.9.2...v0.10.0)
