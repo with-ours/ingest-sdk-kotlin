@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 
 internal class VisitorServiceTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun upsert() {
         val client = OursPrivacyOkHttpClient.fromEnv()
