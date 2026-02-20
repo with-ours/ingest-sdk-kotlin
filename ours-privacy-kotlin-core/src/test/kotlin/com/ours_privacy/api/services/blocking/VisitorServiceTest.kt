@@ -2,21 +2,18 @@
 
 package com.ours_privacy.api.services.blocking
 
-import com.ours_privacy.api.TestServerExtension
 import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
 import com.ours_privacy.api.core.JsonValue
 import com.ours_privacy.api.models.visitor.VisitorUpsertParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class VisitorServiceTest {
 
     @Disabled("Prism tests are disabled")
     @Test
     fun upsert() {
-        val client = OursPrivacyOkHttpClient.builder().baseUrl(TestServerExtension.BASE_URL).build()
+        val client = OursPrivacyOkHttpClient.fromEnv()
         val visitorService = client.visitor()
 
         val response =

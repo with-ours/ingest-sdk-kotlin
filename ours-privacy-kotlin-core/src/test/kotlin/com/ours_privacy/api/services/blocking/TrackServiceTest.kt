@@ -2,21 +2,18 @@
 
 package com.ours_privacy.api.services.blocking
 
-import com.ours_privacy.api.TestServerExtension
 import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
 import com.ours_privacy.api.core.JsonValue
 import com.ours_privacy.api.models.track.TrackEventParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class TrackServiceTest {
 
     @Disabled("Prism tests are disabled")
     @Test
     fun event() {
-        val client = OursPrivacyOkHttpClient.builder().baseUrl(TestServerExtension.BASE_URL).build()
+        val client = OursPrivacyOkHttpClient.fromEnv()
         val trackService = client.track()
 
         val response =
