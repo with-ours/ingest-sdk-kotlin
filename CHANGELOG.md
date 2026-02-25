@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.0.0 (2026-02-25)
+
+Full Changelog: [v0.10.1...v1.0.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.10.1...v1.0.0)
+
+### Features
+
+* **api:** api update ([827b49f](https://github.com/with-ours/ingest-sdk-kotlin/commit/827b49f5c2a27b05417d115dde8d372a5f331509))
+* **client:** add connection pooling option ([df34ad2](https://github.com/with-ours/ingest-sdk-kotlin/commit/df34ad28a26df98192e2860bdca47a41310a98e7))
+
+
+### Chores
+
+* drop apache dependency ([e432258](https://github.com/with-ours/ingest-sdk-kotlin/commit/e43225805885046ad69f89abc41c6788601c3adc))
+* **internal:** expand imports ([33c98cc](https://github.com/with-ours/ingest-sdk-kotlin/commit/33c98cc62e0dca030e5d9bdd998b4678f5d833ca))
+* **internal:** make `OkHttp` constructor internal ([d460e6d](https://github.com/with-ours/ingest-sdk-kotlin/commit/d460e6d9ce88f3e8fef777bfaa97c0d580e529d5))
+* **internal:** remove mock server code ([821903e](https://github.com/with-ours/ingest-sdk-kotlin/commit/821903e0fe644a39bc35d8caec67490c9bacc562))
+* **internal:** update `TestServerExtension` comment ([d3af332](https://github.com/with-ours/ingest-sdk-kotlin/commit/d3af332b976ef2d3eef7feb4be2bceffc919e808))
+* make `Properties` more resilient to `null` ([9ebd8a9](https://github.com/with-ours/ingest-sdk-kotlin/commit/9ebd8a9ab41b0dc51562f234bb6b8c98283070fa))
+* update mock server docs ([1462f8c](https://github.com/with-ours/ingest-sdk-kotlin/commit/1462f8c904e0f9103c85970129214552176d3b92))
+
 ## 0.10.1 (2026-02-07)
 
 Full Changelog: [v0.10.0...v0.10.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.10.0...v0.10.1)
