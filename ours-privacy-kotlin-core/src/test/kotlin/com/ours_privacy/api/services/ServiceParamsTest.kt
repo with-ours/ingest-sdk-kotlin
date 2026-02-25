@@ -32,7 +32,7 @@ internal class ServiceParamsTest {
         client = OursPrivacyOkHttpClient.builder().baseUrl(wmRuntimeInfo.httpBaseUrl).build()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun event() {
         val trackService = client.track()

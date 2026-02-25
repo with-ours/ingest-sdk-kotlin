@@ -2,22 +2,18 @@
 
 package com.ours_privacy.api.services.async
 
-import com.ours_privacy.api.TestServerExtension
 import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClientAsync
 import com.ours_privacy.api.core.JsonValue
 import com.ours_privacy.api.models.track.TrackEventParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class TrackServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun event() {
-        val client =
-            OursPrivacyOkHttpClientAsync.builder().baseUrl(TestServerExtension.BASE_URL).build()
+        val client = OursPrivacyOkHttpClientAsync.fromEnv()
         val trackServiceAsync = client.track()
 
         val response =

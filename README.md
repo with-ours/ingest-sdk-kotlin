@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.ours_privacy.api/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.ours_privacy.api/ours-privacy-kotlin/0.10.1)
-[![javadoc](https://javadoc.io/badge2/com.ours_privacy.api/ours-privacy-kotlin/0.10.1/javadoc.svg)](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/0.10.1)
+[![Maven Central](https://img.shields.io/maven-central/v/com.ours_privacy.api/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.ours_privacy.api/ours-privacy-kotlin/1.0.0)
+[![javadoc](https://javadoc.io/badge2/com.ours_privacy.api/ours-privacy-kotlin/1.0.0/javadoc.svg)](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/1.0.0)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/0.10.1).
+The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/1.0.0).
 
 <!-- x-release-please-end -->
 
@@ -24,7 +24,7 @@ The REST API documentation can be found on [docs.oursprivacy.com](https://docs.o
 ### Gradle
 
 ```kotlin
-implementation("com.ours_privacy.api:ours-privacy-kotlin:0.10.1")
+implementation("com.ours_privacy.api:ours-privacy-kotlin:1.0.0")
 ```
 
 ### Maven
@@ -33,7 +33,7 @@ implementation("com.ours_privacy.api:ours-privacy-kotlin:0.10.1")
 <dependency>
   <groupId>com.ours_privacy.api</groupId>
   <artifactId>ours-privacy-kotlin</artifactId>
-  <version>0.10.1</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
@@ -342,6 +342,25 @@ val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
     ))
     .build()
 ```
+
+### Connection pooling
+
+To customize the underlying OkHttp connection pool, configure the client using the `maxIdleConnections` and `keepAliveDuration` methods:
+
+```kotlin
+import com.ours_privacy.api.client.OursPrivacyClient
+import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
+import java.time.Duration
+
+val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
+    .fromEnv()
+    // If `maxIdleConnections` is set, then `keepAliveDuration` must be set, and vice versa.
+    .maxIdleConnections(10)
+    .keepAliveDuration(Duration.ofMinutes(2))
+    .build()
+```
+
+If both options are unset, OkHttp's default connection pool settings are used.
 
 ### HTTPS
 
