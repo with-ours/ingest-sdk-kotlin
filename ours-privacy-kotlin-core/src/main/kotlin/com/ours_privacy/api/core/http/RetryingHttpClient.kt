@@ -1,3 +1,5 @@
+// File generated from our OpenAPI spec by Stainless.
+
 package com.ours_privacy.api.core.http
 
 import com.ours_privacy.api.core.DefaultSleeper
