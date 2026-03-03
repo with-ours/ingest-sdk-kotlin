@@ -156,6 +156,12 @@ internal class VisitorUpsertParamsTest {
             )
             .email("x")
             .externalId("x")
+            .identityContext(
+                VisitorUpsertParams.IdentityContext.builder()
+                    .ip("ip")
+                    .userAgent("userAgent")
+                    .build()
+            )
             .userId("x")
             .build()
     }
@@ -309,6 +315,12 @@ internal class VisitorUpsertParamsTest {
                 )
                 .email("x")
                 .externalId("x")
+                .identityContext(
+                    VisitorUpsertParams.IdentityContext.builder()
+                        .ip("ip")
+                        .userAgent("userAgent")
+                        .build()
+                )
                 .userId("x")
                 .build()
 
@@ -461,6 +473,13 @@ internal class VisitorUpsertParamsTest {
             )
         assertThat(body.email()).isEqualTo("x")
         assertThat(body.externalId()).isEqualTo("x")
+        assertThat(body.identityContext())
+            .isEqualTo(
+                VisitorUpsertParams.IdentityContext.builder()
+                    .ip("ip")
+                    .userAgent("userAgent")
+                    .build()
+            )
         assertThat(body.userId()).isEqualTo("x")
     }
 
