@@ -164,6 +164,12 @@ internal class VisitorServiceAsyncTest {
                     )
                     .email("x")
                     .externalId("x")
+                    .identityContext(
+                        VisitorUpsertParams.IdentityContext.builder()
+                            .ip("ip")
+                            .userAgent("userAgent")
+                            .build()
+                    )
                     .userId("x")
                     .build()
             )

@@ -103,6 +103,12 @@ internal class TrackServiceTest {
                             .build()
                     )
                     .externalId("x")
+                    .identityContext(
+                        TrackEventParams.IdentityContext.builder()
+                            .ip("ip")
+                            .userAgent("userAgent")
+                            .build()
+                    )
                     .time(0.0)
                     .userId("x")
                     .userProperties(
