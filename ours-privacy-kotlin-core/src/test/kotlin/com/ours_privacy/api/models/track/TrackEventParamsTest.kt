@@ -95,6 +95,9 @@ internal class TrackEventParamsTest {
                     .build()
             )
             .externalId("x")
+            .identityContext(
+                TrackEventParams.IdentityContext.builder().ip("ip").userAgent("userAgent").build()
+            )
             .time(0.0)
             .userId("x")
             .userProperties(
@@ -256,6 +259,12 @@ internal class TrackEventParamsTest {
                         .build()
                 )
                 .externalId("x")
+                .identityContext(
+                    TrackEventParams.IdentityContext.builder()
+                        .ip("ip")
+                        .userAgent("userAgent")
+                        .build()
+                )
                 .time(0.0)
                 .userId("x")
                 .userProperties(
@@ -416,6 +425,10 @@ internal class TrackEventParamsTest {
                     .build()
             )
         assertThat(body.externalId()).isEqualTo("x")
+        assertThat(body.identityContext())
+            .isEqualTo(
+                TrackEventParams.IdentityContext.builder().ip("ip").userAgent("userAgent").build()
+            )
         assertThat(body.time()).isEqualTo(0.0)
         assertThat(body.userId()).isEqualTo("x")
         assertThat(body.userProperties())

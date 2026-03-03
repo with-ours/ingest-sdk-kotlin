@@ -74,6 +74,15 @@ private constructor(
     fun externalId(): String? = body.externalId()
 
     /**
+     * End-user network context for server-side calls. Required for probabilistic identity
+     * resolution when the caller is a backend server rather than an end-user browser.
+     *
+     * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun identityContext(): IdentityContext? = body.identityContext()
+
+    /**
      * The Ours user id stored in local storage and cookies on your web properties. If userId is
      * included in the request, we do not lookup the user by email or externalId.
      *
@@ -117,6 +126,13 @@ private constructor(
      * Unlike [externalId], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _externalId(): JsonField<String> = body._externalId()
+
+    /**
+     * Returns the raw JSON value of [identityContext].
+     *
+     * Unlike [identityContext], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _identityContext(): JsonField<IdentityContext> = body._identityContext()
 
     /**
      * Returns the raw JSON value of [userId].
@@ -252,6 +268,25 @@ private constructor(
          * value.
          */
         fun externalId(externalId: JsonField<String>) = apply { body.externalId(externalId) }
+
+        /**
+         * End-user network context for server-side calls. Required for probabilistic identity
+         * resolution when the caller is a backend server rather than an end-user browser.
+         */
+        fun identityContext(identityContext: IdentityContext?) = apply {
+            body.identityContext(identityContext)
+        }
+
+        /**
+         * Sets [Builder.identityContext] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.identityContext] with a well-typed [IdentityContext]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun identityContext(identityContext: JsonField<IdentityContext>) = apply {
+            body.identityContext(identityContext)
+        }
 
         /**
          * The Ours user id stored in local storage and cookies on your web properties. If userId is
@@ -419,6 +454,7 @@ private constructor(
         private val defaultProperties: JsonField<DefaultProperties>,
         private val email: JsonField<String>,
         private val externalId: JsonField<String>,
+        private val identityContext: JsonField<IdentityContext>,
         private val userId: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -436,6 +472,9 @@ private constructor(
             @JsonProperty("externalId")
             @ExcludeMissing
             externalId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("identityContext")
+            @ExcludeMissing
+            identityContext: JsonField<IdentityContext> = JsonMissing.of(),
             @JsonProperty("userId") @ExcludeMissing userId: JsonField<String> = JsonMissing.of(),
         ) : this(
             token,
@@ -443,6 +482,7 @@ private constructor(
             defaultProperties,
             email,
             externalId,
+            identityContext,
             userId,
             mutableMapOf(),
         )
@@ -490,6 +530,15 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun externalId(): String? = externalId.getNullable("externalId")
+
+        /**
+         * End-user network context for server-side calls. Required for probabilistic identity
+         * resolution when the caller is a backend server rather than an end-user browser.
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun identityContext(): IdentityContext? = identityContext.getNullable("identityContext")
 
         /**
          * The Ours user id stored in local storage and cookies on your web properties. If userId is
@@ -544,6 +593,16 @@ private constructor(
         fun _externalId(): JsonField<String> = externalId
 
         /**
+         * Returns the raw JSON value of [identityContext].
+         *
+         * Unlike [identityContext], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("identityContext")
+        @ExcludeMissing
+        fun _identityContext(): JsonField<IdentityContext> = identityContext
+
+        /**
          * Returns the raw JSON value of [userId].
          *
          * Unlike [userId], this method doesn't throw if the JSON field has an unexpected type.
@@ -584,6 +643,7 @@ private constructor(
             private var defaultProperties: JsonField<DefaultProperties> = JsonMissing.of()
             private var email: JsonField<String> = JsonMissing.of()
             private var externalId: JsonField<String> = JsonMissing.of()
+            private var identityContext: JsonField<IdentityContext> = JsonMissing.of()
             private var userId: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -593,6 +653,7 @@ private constructor(
                 defaultProperties = body.defaultProperties
                 email = body.email
                 externalId = body.externalId
+                identityContext = body.identityContext
                 userId = body.userId
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
@@ -676,6 +737,24 @@ private constructor(
             fun externalId(externalId: JsonField<String>) = apply { this.externalId = externalId }
 
             /**
+             * End-user network context for server-side calls. Required for probabilistic identity
+             * resolution when the caller is a backend server rather than an end-user browser.
+             */
+            fun identityContext(identityContext: IdentityContext?) =
+                identityContext(JsonField.ofNullable(identityContext))
+
+            /**
+             * Sets [Builder.identityContext] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.identityContext] with a well-typed [IdentityContext]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun identityContext(identityContext: JsonField<IdentityContext>) = apply {
+                this.identityContext = identityContext
+            }
+
+            /**
              * The Ours user id stored in local storage and cookies on your web properties. If
              * userId is included in the request, we do not lookup the user by email or externalId.
              */
@@ -729,6 +808,7 @@ private constructor(
                     defaultProperties,
                     email,
                     externalId,
+                    identityContext,
                     userId,
                     additionalProperties.toMutableMap(),
                 )
@@ -746,6 +826,7 @@ private constructor(
             defaultProperties()?.validate()
             email()
             externalId()
+            identityContext()?.validate()
             userId()
             validated = true
         }
@@ -770,6 +851,7 @@ private constructor(
                 (defaultProperties.asKnown()?.validity() ?: 0) +
                 (if (email.asKnown() == null) 0 else 1) +
                 (if (externalId.asKnown() == null) 0 else 1) +
+                (identityContext.asKnown()?.validity() ?: 0) +
                 (if (userId.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
@@ -783,6 +865,7 @@ private constructor(
                 defaultProperties == other.defaultProperties &&
                 email == other.email &&
                 externalId == other.externalId &&
+                identityContext == other.identityContext &&
                 userId == other.userId &&
                 additionalProperties == other.additionalProperties
         }
@@ -794,6 +877,7 @@ private constructor(
                 defaultProperties,
                 email,
                 externalId,
+                identityContext,
                 userId,
                 additionalProperties,
             )
@@ -802,7 +886,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{token=$token, userProperties=$userProperties, defaultProperties=$defaultProperties, email=$email, externalId=$externalId, userId=$userId, additionalProperties=$additionalProperties}"
+            "Body{token=$token, userProperties=$userProperties, defaultProperties=$defaultProperties, email=$email, externalId=$externalId, identityContext=$identityContext, userId=$userId, additionalProperties=$additionalProperties}"
     }
 
     /**
@@ -6061,6 +6145,207 @@ private constructor(
 
         override fun toString() =
             "DefaultProperties{activeDuration=$activeDuration, adId=$adId, adsetId=$adsetId, alart=$alart, aleid=$aleid, basisCid=$basisCid, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
+    }
+
+    /**
+     * End-user network context for server-side calls. Required for probabilistic identity
+     * resolution when the caller is a backend server rather than an end-user browser.
+     */
+    class IdentityContext
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val ip: JsonField<String>,
+        private val userAgent: JsonField<String>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("ip") @ExcludeMissing ip: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("userAgent")
+            @ExcludeMissing
+            userAgent: JsonField<String> = JsonMissing.of(),
+        ) : this(ip, userAgent, mutableMapOf())
+
+        /**
+         * The end-user IP address (not the server IP).
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun ip(): String = ip.getRequired("ip")
+
+        /**
+         * The end-user User-Agent string (not the server UA).
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun userAgent(): String = userAgent.getRequired("userAgent")
+
+        /**
+         * Returns the raw JSON value of [ip].
+         *
+         * Unlike [ip], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("ip") @ExcludeMissing fun _ip(): JsonField<String> = ip
+
+        /**
+         * Returns the raw JSON value of [userAgent].
+         *
+         * Unlike [userAgent], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("userAgent") @ExcludeMissing fun _userAgent(): JsonField<String> = userAgent
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [IdentityContext].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .ip()
+             * .userAgent()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [IdentityContext]. */
+        class Builder internal constructor() {
+
+            private var ip: JsonField<String>? = null
+            private var userAgent: JsonField<String>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(identityContext: IdentityContext) = apply {
+                ip = identityContext.ip
+                userAgent = identityContext.userAgent
+                additionalProperties = identityContext.additionalProperties.toMutableMap()
+            }
+
+            /** The end-user IP address (not the server IP). */
+            fun ip(ip: String) = ip(JsonField.of(ip))
+
+            /**
+             * Sets [Builder.ip] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.ip] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun ip(ip: JsonField<String>) = apply { this.ip = ip }
+
+            /** The end-user User-Agent string (not the server UA). */
+            fun userAgent(userAgent: String) = userAgent(JsonField.of(userAgent))
+
+            /**
+             * Sets [Builder.userAgent] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.userAgent] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun userAgent(userAgent: JsonField<String>) = apply { this.userAgent = userAgent }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [IdentityContext].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .ip()
+             * .userAgent()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): IdentityContext =
+                IdentityContext(
+                    checkRequired("ip", ip),
+                    checkRequired("userAgent", userAgent),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): IdentityContext = apply {
+            if (validated) {
+                return@apply
+            }
+
+            ip()
+            userAgent()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: OursPrivacyInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (if (ip.asKnown() == null) 0 else 1) + (if (userAgent.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is IdentityContext &&
+                ip == other.ip &&
+                userAgent == other.userAgent &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(ip, userAgent, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "IdentityContext{ip=$ip, userAgent=$userAgent, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
