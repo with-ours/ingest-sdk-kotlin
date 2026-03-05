@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.1.0 (2026-03-05)
+
+Full Changelog: [v1.0.0...v1.1.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.0.0...v1.1.0)
+
+### Features
+
+* **api:** api update ([32c3caf](https://github.com/with-ours/ingest-sdk-kotlin/commit/32c3cafc1f03cfdf68c8e6995d6816ba26bb5ebe))
+* **api:** manual updates ([3d86a60](https://github.com/with-ours/ingest-sdk-kotlin/commit/3d86a6091aa172db465b1a5328436d980ea51d99))
+
+
+### Bug Fixes
+
+* fix request delays for retrying to be more respectful of high requested delays ([054d683](https://github.com/with-ours/ingest-sdk-kotlin/commit/054d683fadf1742a1cd9f5b51c57480f0dfceabf))
+
+
+### Chores
+
+* **internal:** bump palantir-java-format ([5ba8838](https://github.com/with-ours/ingest-sdk-kotlin/commit/5ba8838654bc204e65328af911429f3f2d37a4ba))
+
 ## 1.0.0 (2026-02-25)
 
 Full Changelog: [v0.10.1...v1.0.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v0.10.1...v1.0.0)
