@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.ours_privacy.api/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.ours_privacy.api/ours-privacy-kotlin/1.0.0)
-[![javadoc](https://javadoc.io/badge2/com.ours_privacy.api/ours-privacy-kotlin/1.0.0/javadoc.svg)](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/1.0.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.oursprivacy/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.oursprivacy/ours-privacy-kotlin/1.0.0)
+[![javadoc](https://javadoc.io/badge2/com.oursprivacy/ours-privacy-kotlin/1.0.0/javadoc.svg)](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.0.0)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.ours_privacy.api/ours-privacy-kotlin/1.0.0).
+The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.0.0).
 
 <!-- x-release-please-end -->
 
@@ -24,14 +24,14 @@ The REST API documentation can be found on [docs.oursprivacy.com](https://docs.o
 ### Gradle
 
 ```kotlin
-implementation("com.ours_privacy.api:ours-privacy-kotlin:1.0.0")
+implementation("com.oursprivacy:ours-privacy-kotlin:1.0.0")
 ```
 
 ### Maven
 
 ```xml
 <dependency>
-  <groupId>com.ours_privacy.api</groupId>
+  <groupId>com.oursprivacy</groupId>
   <artifactId>ours-privacy-kotlin</artifactId>
   <version>1.0.0</version>
 </dependency>
@@ -46,10 +46,10 @@ This library requires Java 8 or later.
 ## Usage
 
 ```kotlin
-import com.ours_privacy.api.client.OursPrivacyClient
-import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
-import com.ours_privacy.api.models.track.TrackEventParams
-import com.ours_privacy.api.models.track.TrackEventResponse
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.models.track.TrackEventParams
+import com.oursprivacy.models.track.TrackEventResponse
 
 // Configures using the `oursprivacy.baseUrl` system property
 // Or configures using the `OURS_PRIVACY_BASE_URL` environment variable
@@ -67,8 +67,8 @@ val response: TrackEventResponse = client.track().event(params)
 Configure the client using system properties or environment variables:
 
 ```kotlin
-import com.ours_privacy.api.client.OursPrivacyClient
-import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
 
 // Configures using the `oursprivacy.baseUrl` system property
 // Or configures using the `OURS_PRIVACY_BASE_URL` environment variable
@@ -78,8 +78,8 @@ val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
 Or manually:
 
 ```kotlin
-import com.ours_privacy.api.client.OursPrivacyClient
-import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
 
 val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
 ```
@@ -87,8 +87,8 @@ val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
 Or using a combination of the two approaches:
 
 ```kotlin
-import com.ours_privacy.api.client.OursPrivacyClient
-import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
 
 // Configures using the `oursprivacy.baseUrl` system property
 // Or configures using the `OURS_PRIVACY_BASE_URL` environment variable
@@ -112,7 +112,7 @@ System properties take precedence over environment variables.
 To temporarily use a modified client configuration, while reusing the same connection and thread pools, call `withOptions()` on any client or service:
 
 ```kotlin
-import com.ours_privacy.api.client.OursPrivacyClient
+import com.oursprivacy.client.OursPrivacyClient
 
 val clientWithOptions: OursPrivacyClient = client.withOptions {
     it.baseUrl("https://example.com")
@@ -141,10 +141,10 @@ Because each class is immutable, builder modification will _never_ affect alread
 The default client is synchronous. To switch to asynchronous execution, call the `async()` method:
 
 ```kotlin
-import com.ours_privacy.api.client.OursPrivacyClient
-import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
-import com.ours_privacy.api.models.track.TrackEventParams
-import com.ours_privacy.api.models.track.TrackEventResponse
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.models.track.TrackEventParams
+import com.oursprivacy.models.track.TrackEventResponse
 
 // Configures using the `oursprivacy.baseUrl` system property
 // Or configures using the `OURS_PRIVACY_BASE_URL` environment variable
@@ -160,10 +160,10 @@ val response: TrackEventResponse = client.async().track().event(params)
 Or create an asynchronous client from the beginning:
 
 ```kotlin
-import com.ours_privacy.api.client.OursPrivacyClientAsync
-import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClientAsync
-import com.ours_privacy.api.models.track.TrackEventParams
-import com.ours_privacy.api.models.track.TrackEventResponse
+import com.oursprivacy.client.OursPrivacyClientAsync
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClientAsync
+import com.oursprivacy.models.track.TrackEventParams
+import com.oursprivacy.models.track.TrackEventResponse
 
 // Configures using the `oursprivacy.baseUrl` system property
 // Or configures using the `OURS_PRIVACY_BASE_URL` environment variable
@@ -185,10 +185,10 @@ The SDK defines methods that deserialize responses into instances of Kotlin clas
 To access this data, prefix any HTTP method call on a client or service with `withRawResponse()`:
 
 ```kotlin
-import com.ours_privacy.api.core.http.Headers
-import com.ours_privacy.api.core.http.HttpResponseFor
-import com.ours_privacy.api.models.track.TrackEventParams
-import com.ours_privacy.api.models.track.TrackEventResponse
+import com.oursprivacy.core.http.Headers
+import com.oursprivacy.core.http.HttpResponseFor
+import com.oursprivacy.models.track.TrackEventParams
+import com.oursprivacy.models.track.TrackEventResponse
 
 val params: TrackEventParams = TrackEventParams.builder()
     .token("REPLACE_ME")
@@ -203,7 +203,7 @@ val headers: Headers = response.headers()
 You can still deserialize the response into an instance of a Kotlin class if needed:
 
 ```kotlin
-import com.ours_privacy.api.models.track.TrackEventResponse
+import com.oursprivacy.models.track.TrackEventResponse
 
 val parsedResponse: TrackEventResponse = response.parse()
 ```
@@ -212,26 +212,26 @@ val parsedResponse: TrackEventResponse = response.parse()
 
 The SDK throws custom unchecked exception types:
 
-- [`OursPrivacyServiceException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/OursPrivacyServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
+- [`OursPrivacyServiceException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/OursPrivacyServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
 
-  | Status | Exception                                                                                                                                |
-  | ------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-  | 400    | [`BadRequestException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/BadRequestException.kt)                     |
-  | 401    | [`UnauthorizedException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/UnauthorizedException.kt)                 |
-  | 403    | [`PermissionDeniedException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/PermissionDeniedException.kt)         |
-  | 404    | [`NotFoundException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/NotFoundException.kt)                         |
-  | 422    | [`UnprocessableEntityException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/UnprocessableEntityException.kt)   |
-  | 429    | [`RateLimitException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/RateLimitException.kt)                       |
-  | 5xx    | [`InternalServerException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/InternalServerException.kt)             |
-  | others | [`UnexpectedStatusCodeException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/UnexpectedStatusCodeException.kt) |
+  | Status | Exception                                                                                                                           |
+  | ------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+  | 400    | [`BadRequestException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/BadRequestException.kt)                     |
+  | 401    | [`UnauthorizedException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/UnauthorizedException.kt)                 |
+  | 403    | [`PermissionDeniedException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/PermissionDeniedException.kt)         |
+  | 404    | [`NotFoundException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/NotFoundException.kt)                         |
+  | 422    | [`UnprocessableEntityException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/UnprocessableEntityException.kt)   |
+  | 429    | [`RateLimitException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/RateLimitException.kt)                       |
+  | 5xx    | [`InternalServerException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/InternalServerException.kt)             |
+  | others | [`UnexpectedStatusCodeException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/UnexpectedStatusCodeException.kt) |
 
-- [`OursPrivacyIoException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/OursPrivacyIoException.kt): I/O networking errors.
+- [`OursPrivacyIoException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/OursPrivacyIoException.kt): I/O networking errors.
 
-- [`OursPrivacyRetryableException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/OursPrivacyRetryableException.kt): Generic error indicating a failure that could be retried by the client.
+- [`OursPrivacyRetryableException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/OursPrivacyRetryableException.kt): Generic error indicating a failure that could be retried by the client.
 
-- [`OursPrivacyInvalidDataException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/OursPrivacyInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
+- [`OursPrivacyInvalidDataException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/OursPrivacyInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
 
-- [`OursPrivacyException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/OursPrivacyException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
+- [`OursPrivacyException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/OursPrivacyException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
 
 ## Logging
 
@@ -261,7 +261,7 @@ The SDK depends on [Jackson](https://github.com/FasterXML/jackson) for JSON seri
 
 The SDK throws an exception if it detects an incompatible Jackson version at runtime (e.g. if the default version was overridden in your Maven or Gradle config).
 
-If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`OursPrivacyOkHttpClient`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/ours_privacy/api/client/okhttp/OursPrivacyOkHttpClient.kt) or [`OursPrivacyOkHttpClientAsync`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/ours_privacy/api/client/okhttp/OursPrivacyOkHttpClientAsync.kt).
+If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`OursPrivacyOkHttpClient`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/oursprivacy/client/okhttp/OursPrivacyOkHttpClient.kt) or [`OursPrivacyOkHttpClientAsync`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/oursprivacy/client/okhttp/OursPrivacyOkHttpClientAsync.kt).
 
 > [!CAUTION]
 > We make no guarantee that the SDK works correctly when the Jackson version check is disabled.
@@ -287,8 +287,8 @@ The API may also explicitly instruct the SDK to retry or not retry a request.
 To set a custom number of retries, configure the client using the `maxRetries` method:
 
 ```kotlin
-import com.ours_privacy.api.client.OursPrivacyClient
-import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
 
 val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
     .fromEnv()
@@ -303,7 +303,7 @@ Requests time out after 1 minute by default.
 To set a custom timeout, configure the method call using the `timeout` method:
 
 ```kotlin
-import com.ours_privacy.api.models.track.TrackEventResponse
+import com.oursprivacy.models.track.TrackEventResponse
 
 val response: TrackEventResponse = client.track().event(
   params, RequestOptions.builder().timeout(Duration.ofSeconds(30)).build()
@@ -313,8 +313,8 @@ val response: TrackEventResponse = client.track().event(
 Or configure the default for all method calls at the client level:
 
 ```kotlin
-import com.ours_privacy.api.client.OursPrivacyClient
-import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
 import java.time.Duration
 
 val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
@@ -328,8 +328,8 @@ val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
 To route requests through a proxy, configure the client using the `proxy` method:
 
 ```kotlin
-import com.ours_privacy.api.client.OursPrivacyClient
-import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
 import java.net.InetSocketAddress
 import java.net.Proxy
 
@@ -348,8 +348,8 @@ val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
 To customize the underlying OkHttp connection pool, configure the client using the `maxIdleConnections` and `keepAliveDuration` methods:
 
 ```kotlin
-import com.ours_privacy.api.client.OursPrivacyClient
-import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
 import java.time.Duration
 
 val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
@@ -371,8 +371,8 @@ If both options are unset, OkHttp's default connection pool settings are used.
 To configure how HTTPS connections are secured, configure the client using the `sslSocketFactory`, `trustManager`, and `hostnameVerifier` methods:
 
 ```kotlin
-import com.ours_privacy.api.client.OursPrivacyClient
-import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
 
 val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
     .fromEnv()
@@ -390,10 +390,10 @@ The SDK consists of three artifacts:
 - `ours-privacy-kotlin-core`
   - Contains core SDK logic
   - Does not depend on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`OursPrivacyClient`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/client/OursPrivacyClient.kt), [`OursPrivacyClientAsync`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/client/OursPrivacyClientAsync.kt), [`OursPrivacyClientImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/client/OursPrivacyClientImpl.kt), and [`OursPrivacyClientAsyncImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/client/OursPrivacyClientAsyncImpl.kt), all of which can work with any HTTP client
+  - Exposes [`OursPrivacyClient`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/client/OursPrivacyClient.kt), [`OursPrivacyClientAsync`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/client/OursPrivacyClientAsync.kt), [`OursPrivacyClientImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/client/OursPrivacyClientImpl.kt), and [`OursPrivacyClientAsyncImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/client/OursPrivacyClientAsyncImpl.kt), all of which can work with any HTTP client
 - `ours-privacy-kotlin-client-okhttp`
   - Depends on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`OursPrivacyOkHttpClient`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/ours_privacy/api/client/okhttp/OursPrivacyOkHttpClient.kt) and [`OursPrivacyOkHttpClientAsync`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/ours_privacy/api/client/okhttp/OursPrivacyOkHttpClientAsync.kt), which provide a way to construct [`OursPrivacyClientImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/client/OursPrivacyClientImpl.kt) and [`OursPrivacyClientAsyncImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/client/OursPrivacyClientAsyncImpl.kt), respectively, using OkHttp
+  - Exposes [`OursPrivacyOkHttpClient`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/oursprivacy/client/okhttp/OursPrivacyOkHttpClient.kt) and [`OursPrivacyOkHttpClientAsync`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/oursprivacy/client/okhttp/OursPrivacyOkHttpClientAsync.kt), which provide a way to construct [`OursPrivacyClientImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/client/OursPrivacyClientImpl.kt) and [`OursPrivacyClientAsyncImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/client/OursPrivacyClientAsyncImpl.kt), respectively, using OkHttp
 - `ours-privacy-kotlin`
   - Depends on and exposes the APIs of both `ours-privacy-kotlin-core` and `ours-privacy-kotlin-client-okhttp`
   - Does not have its own logic
@@ -408,16 +408,16 @@ This structure allows replacing the SDK's default HTTP client without pulling in
 To use a customized `OkHttpClient`:
 
 1. Replace your [`ours-privacy-kotlin` dependency](#installation) with `ours-privacy-kotlin-core`
-2. Copy `ours-privacy-kotlin-client-okhttp`'s [`OkHttpClient`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/ours_privacy/api/client/okhttp/OkHttpClient.kt) class into your code and customize it
-3. Construct [`OursPrivacyClientImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/client/OursPrivacyClientImpl.kt) or [`OursPrivacyClientAsyncImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/client/OursPrivacyClientAsyncImpl.kt), similarly to [`OursPrivacyOkHttpClient`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/ours_privacy/api/client/okhttp/OursPrivacyOkHttpClient.kt) or [`OursPrivacyOkHttpClientAsync`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/ours_privacy/api/client/okhttp/OursPrivacyOkHttpClientAsync.kt), using your customized client
+2. Copy `ours-privacy-kotlin-client-okhttp`'s [`OkHttpClient`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/oursprivacy/client/okhttp/OkHttpClient.kt) class into your code and customize it
+3. Construct [`OursPrivacyClientImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/client/OursPrivacyClientImpl.kt) or [`OursPrivacyClientAsyncImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/client/OursPrivacyClientAsyncImpl.kt), similarly to [`OursPrivacyOkHttpClient`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/oursprivacy/client/okhttp/OursPrivacyOkHttpClient.kt) or [`OursPrivacyOkHttpClientAsync`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/oursprivacy/client/okhttp/OursPrivacyOkHttpClientAsync.kt), using your customized client
 
 ### Completely custom HTTP client
 
 To use a completely custom HTTP client:
 
 1. Replace your [`ours-privacy-kotlin` dependency](#installation) with `ours-privacy-kotlin-core`
-2. Write a class that implements the [`HttpClient`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/core/http/HttpClient.kt) interface
-3. Construct [`OursPrivacyClientImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/client/OursPrivacyClientImpl.kt) or [`OursPrivacyClientAsyncImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/client/OursPrivacyClientAsyncImpl.kt), similarly to [`OursPrivacyOkHttpClient`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/ours_privacy/api/client/okhttp/OursPrivacyOkHttpClient.kt) or [`OursPrivacyOkHttpClientAsync`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/ours_privacy/api/client/okhttp/OursPrivacyOkHttpClientAsync.kt), using your new client class
+2. Write a class that implements the [`HttpClient`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/core/http/HttpClient.kt) interface
+3. Construct [`OursPrivacyClientImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/client/OursPrivacyClientImpl.kt) or [`OursPrivacyClientAsyncImpl`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/client/OursPrivacyClientAsyncImpl.kt), similarly to [`OursPrivacyOkHttpClient`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/oursprivacy/client/okhttp/OursPrivacyOkHttpClient.kt) or [`OursPrivacyOkHttpClientAsync`](ours-privacy-kotlin-client-okhttp/src/main/kotlin/com/oursprivacy/client/okhttp/OursPrivacyOkHttpClientAsync.kt), using your new client class
 
 ## Undocumented API functionality
 
@@ -428,8 +428,8 @@ The SDK is typed for convenient usage of the documented API. However, it also su
 To set undocumented parameters, call the `putAdditionalHeader`, `putAdditionalQueryParam`, or `putAdditionalBodyProperty` methods on any `Params` class:
 
 ```kotlin
-import com.ours_privacy.api.core.JsonValue
-import com.ours_privacy.api.models.track.TrackEventParams
+import com.oursprivacy.core.JsonValue
+import com.oursprivacy.models.track.TrackEventParams
 
 val params: TrackEventParams = TrackEventParams.builder()
     .putAdditionalHeader("Secret-Header", "42")
@@ -443,8 +443,8 @@ These can be accessed on the built object later using the `_additionalHeaders()`
 To set undocumented parameters on _nested_ headers, query params, or body classes, call the `putAdditionalProperty` method on the nested class:
 
 ```kotlin
-import com.ours_privacy.api.core.JsonValue
-import com.ours_privacy.api.models.track.TrackEventParams
+import com.oursprivacy.core.JsonValue
+import com.oursprivacy.models.track.TrackEventParams
 
 val params: TrackEventParams = TrackEventParams.builder()
     .defaultProperties(TrackEventParams.DefaultProperties.builder()
@@ -455,11 +455,11 @@ val params: TrackEventParams = TrackEventParams.builder()
 
 These properties can be accessed on the nested built object later using the `_additionalProperties()` method.
 
-To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/core/Values.kt) object to its setter:
+To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/core/Values.kt) object to its setter:
 
 ```kotlin
-import com.ours_privacy.api.core.JsonValue
-import com.ours_privacy.api.models.track.TrackEventParams
+import com.oursprivacy.core.JsonValue
+import com.oursprivacy.models.track.TrackEventParams
 
 val params: TrackEventParams = TrackEventParams.builder()
     .token(JsonValue.from(42))
@@ -467,10 +467,10 @@ val params: TrackEventParams = TrackEventParams.builder()
     .build()
 ```
 
-The most straightforward way to create a [`JsonValue`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/core/Values.kt) is using its `from(...)` method:
+The most straightforward way to create a [`JsonValue`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/core/Values.kt) is using its `from(...)` method:
 
 ```kotlin
-import com.ours_privacy.api.core.JsonValue
+import com.oursprivacy.core.JsonValue
 
 // Create primitive JSON values
 val nullValue: JsonValue = JsonValue.from(null)
@@ -504,11 +504,11 @@ val complexValue: JsonValue = JsonValue.from(mapOf(
 
 Normally a `Builder` class's `build` method will throw [`IllegalStateException`](https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalStateException.html) if any required parameter or property is unset.
 
-To forcibly omit a required parameter or property, pass [`JsonMissing`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/core/Values.kt):
+To forcibly omit a required parameter or property, pass [`JsonMissing`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/core/Values.kt):
 
 ```kotlin
-import com.ours_privacy.api.core.JsonMissing
-import com.ours_privacy.api.models.track.TrackEventParams
+import com.oursprivacy.core.JsonMissing
+import com.oursprivacy.models.track.TrackEventParams
 
 val params: TrackEventParams = TrackEventParams.builder()
     .event("x")
@@ -521,10 +521,10 @@ val params: TrackEventParams = TrackEventParams.builder()
 To access undocumented response properties, call the `_additionalProperties()` method:
 
 ```kotlin
-import com.ours_privacy.api.core.JsonBoolean
-import com.ours_privacy.api.core.JsonNull
-import com.ours_privacy.api.core.JsonNumber
-import com.ours_privacy.api.core.JsonValue
+import com.oursprivacy.core.JsonBoolean
+import com.oursprivacy.core.JsonNull
+import com.oursprivacy.core.JsonNumber
+import com.oursprivacy.core.JsonValue
 
 val additionalProperties: Map<String, JsonValue> = client.track().event(params)._additionalProperties()
 val secretPropertyValue: JsonValue = additionalProperties.get("secretProperty")
@@ -541,7 +541,7 @@ val result = when (secretPropertyValue) {
 To access a property's raw JSON value, which may be undocumented, call its `_` prefixed method:
 
 ```kotlin
-import com.ours_privacy.api.core.JsonField
+import com.oursprivacy.core.JsonField
 
 val token: JsonField<String> = client.track().event(params)._token()
 
@@ -563,12 +563,12 @@ if (token.isMissing()) {
 
 In rare cases, the API may return a response that doesn't match the expected type. For example, the SDK may expect a property to contain a `String`, but the API could return something else.
 
-By default, the SDK will not throw an exception in this case. It will throw [`OursPrivacyInvalidDataException`](ours-privacy-kotlin-core/src/main/kotlin/com/ours_privacy/api/errors/OursPrivacyInvalidDataException.kt) only if you directly access the property.
+By default, the SDK will not throw an exception in this case. It will throw [`OursPrivacyInvalidDataException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/OursPrivacyInvalidDataException.kt) only if you directly access the property.
 
 If you would prefer to check that the response is completely well-typed upfront, then either call `validate()`:
 
 ```kotlin
-import com.ours_privacy.api.models.track.TrackEventResponse
+import com.oursprivacy.models.track.TrackEventResponse
 
 val response: TrackEventResponse = client.track().event(params).validate()
 ```
@@ -576,7 +576,7 @@ val response: TrackEventResponse = client.track().event(params).validate()
 Or configure the method call to validate the response using the `responseValidation` method:
 
 ```kotlin
-import com.ours_privacy.api.models.track.TrackEventResponse
+import com.oursprivacy.models.track.TrackEventResponse
 
 val response: TrackEventResponse = client.track().event(
   params, RequestOptions.builder().responseValidation(true).build()
@@ -586,8 +586,8 @@ val response: TrackEventResponse = client.track().event(
 Or configure the default for all method calls at the client level:
 
 ```kotlin
-import com.ours_privacy.api.client.OursPrivacyClient
-import com.ours_privacy.api.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
 
 val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
     .fromEnv()

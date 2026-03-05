@@ -1,5 +1,5 @@
 # Specify the entrypoint where ProGuard starts to determine what's reachable.
--keep class com.ours_privacy.api.proguard.** { *; }
+-keep class com.oursprivacy.proguard.** { *; }
 
 # For the testing framework.
 -keep class org.junit.** { *; }
