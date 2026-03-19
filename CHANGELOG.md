@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.1.2 (2026-03-18)
+
+Full Changelog: [v1.1.1...v1.1.2](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.1.1...v1.1.2)
+
+### Bug Fixes
+
+* **client:** allow updating header/query affecting fields in `toBuilder()` ([5860519](https://github.com/with-ours/ingest-sdk-kotlin/commit/5860519e4ee720f6b4c0f7e13f985d8d49b8ecd4))
+
+
+### Chores
+
+* **internal:** tweak CI branches ([f7319ca](https://github.com/with-ours/ingest-sdk-kotlin/commit/f7319ca332d35399ab0dcc4e4cd6ca2d1039635d))
+* **internal:** update retry delay tests ([c4a05fd](https://github.com/with-ours/ingest-sdk-kotlin/commit/c4a05fdbacaebd91c1d0faa7591990d5216e859a))
+
 ## 1.1.1 (2026-03-11)
 
 Full Changelog: [v1.1.0...v1.1.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.1.0...v1.1.1)
