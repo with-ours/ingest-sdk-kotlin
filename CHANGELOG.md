@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.3 (2026-03-20)
+
+Full Changelog: [v1.1.2...v1.1.3](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.1.2...v1.1.3)
+
+### Chores
+
+* **internal:** bump ktfmt ([81fae95](https://github.com/with-ours/ingest-sdk-kotlin/commit/81fae95cac48132e089442ebaedc4b63b2d3fbee))
+
 ## 1.1.2 (2026-03-18)
 
 Full Changelog: [v1.1.1...v1.1.2](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.1.1...v1.1.2)
