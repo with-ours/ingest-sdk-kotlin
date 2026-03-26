@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.4 (2026-03-25)
+
+Full Changelog: [v1.1.3...v1.1.4](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.1.3...v1.1.4)
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([5ecdad2](https://github.com/with-ours/ingest-sdk-kotlin/commit/5ecdad2428bf01f330537abb9c5d63b1a500b71a))
+* **internal:** update gitignore ([3eccda0](https://github.com/with-ours/ingest-sdk-kotlin/commit/3eccda0d5a5ee0c7d2f5d64a947accd161d3d55a))
+
 ## 1.1.3 (2026-03-20)
 
 Full Changelog: [v1.1.2...v1.1.3](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.1.2...v1.1.3)
