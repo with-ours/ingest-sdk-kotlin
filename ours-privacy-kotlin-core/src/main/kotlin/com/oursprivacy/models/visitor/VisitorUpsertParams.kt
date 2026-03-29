@@ -900,6 +900,7 @@ private constructor(
         private val adsetId: JsonField<String>,
         private val alart: JsonField<String>,
         private val aleid: JsonField<String>,
+        private val axwrt: JsonField<String>,
         private val basisCid: JsonField<String>,
         private val campaignId: JsonField<String>,
         private val city: JsonField<String>,
@@ -961,6 +962,7 @@ private constructor(
             @JsonProperty("adset_id") @ExcludeMissing adsetId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("alart") @ExcludeMissing alart: JsonField<String> = JsonMissing.of(),
             @JsonProperty("aleid") @ExcludeMissing aleid: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("axwrt") @ExcludeMissing axwrt: JsonField<String> = JsonMissing.of(),
             @JsonProperty("basis_cid")
             @ExcludeMissing
             basisCid: JsonField<String> = JsonMissing.of(),
@@ -1060,6 +1062,7 @@ private constructor(
             adsetId,
             alart,
             aleid,
+            axwrt,
             basisCid,
             campaignId,
             city,
@@ -1138,6 +1141,12 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun aleid(): String? = aleid.getNullable("aleid")
+
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun axwrt(): String? = axwrt.getNullable("axwrt")
 
         /**
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -1481,6 +1490,13 @@ private constructor(
          * Unlike [aleid], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("aleid") @ExcludeMissing fun _aleid(): JsonField<String> = aleid
+
+        /**
+         * Returns the raw JSON value of [axwrt].
+         *
+         * Unlike [axwrt], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("axwrt") @ExcludeMissing fun _axwrt(): JsonField<String> = axwrt
 
         /**
          * Returns the raw JSON value of [basisCid].
@@ -1894,6 +1910,7 @@ private constructor(
             private var adsetId: JsonField<String> = JsonMissing.of()
             private var alart: JsonField<String> = JsonMissing.of()
             private var aleid: JsonField<String> = JsonMissing.of()
+            private var axwrt: JsonField<String> = JsonMissing.of()
             private var basisCid: JsonField<String> = JsonMissing.of()
             private var campaignId: JsonField<String> = JsonMissing.of()
             private var city: JsonField<String> = JsonMissing.of()
@@ -1953,6 +1970,7 @@ private constructor(
                 adsetId = userProperties.adsetId
                 alart = userProperties.alart
                 aleid = userProperties.aleid
+                axwrt = userProperties.axwrt
                 basisCid = userProperties.basisCid
                 campaignId = userProperties.campaignId
                 city = userProperties.city
@@ -2051,6 +2069,17 @@ private constructor(
              * supported value.
              */
             fun aleid(aleid: JsonField<String>) = apply { this.aleid = aleid }
+
+            fun axwrt(axwrt: String?) = axwrt(JsonField.ofNullable(axwrt))
+
+            /**
+             * Sets [Builder.axwrt] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.axwrt] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun axwrt(axwrt: JsonField<String>) = apply { this.axwrt = axwrt }
 
             fun basisCid(basisCid: String?) = basisCid(JsonField.ofNullable(basisCid))
 
@@ -2672,6 +2701,7 @@ private constructor(
                     adsetId,
                     alart,
                     aleid,
+                    axwrt,
                     basisCid,
                     campaignId,
                     city,
@@ -2739,6 +2769,7 @@ private constructor(
             adsetId()
             alart()
             aleid()
+            axwrt()
             basisCid()
             campaignId()
             city()
@@ -2813,6 +2844,7 @@ private constructor(
                 (if (adsetId.asKnown() == null) 0 else 1) +
                 (if (alart.asKnown() == null) 0 else 1) +
                 (if (aleid.asKnown() == null) 0 else 1) +
+                (if (axwrt.asKnown() == null) 0 else 1) +
                 (if (basisCid.asKnown() == null) 0 else 1) +
                 (if (campaignId.asKnown() == null) 0 else 1) +
                 (if (city.asKnown() == null) 0 else 1) +
@@ -3077,6 +3109,7 @@ private constructor(
                 adsetId == other.adsetId &&
                 alart == other.alart &&
                 aleid == other.aleid &&
+                axwrt == other.axwrt &&
                 basisCid == other.basisCid &&
                 campaignId == other.campaignId &&
                 city == other.city &&
@@ -3138,6 +3171,7 @@ private constructor(
                 adsetId,
                 alart,
                 aleid,
+                axwrt,
                 basisCid,
                 campaignId,
                 city,
@@ -3197,7 +3231,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "UserProperties{adId=$adId, adsetId=$adsetId, alart=$alart, aleid=$aleid, basisCid=$basisCid, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
+            "UserProperties{adId=$adId, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
     }
 
     /** These properties are used throughout the Ours app to pass known values onto destinations */
@@ -3209,6 +3243,7 @@ private constructor(
         private val adsetId: JsonField<String>,
         private val alart: JsonField<String>,
         private val aleid: JsonField<String>,
+        private val axwrt: JsonField<String>,
         private val basisCid: JsonField<String>,
         private val browserLanguage: JsonField<String>,
         private val browserName: JsonField<String>,
@@ -3286,6 +3321,7 @@ private constructor(
             @JsonProperty("adset_id") @ExcludeMissing adsetId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("alart") @ExcludeMissing alart: JsonField<String> = JsonMissing.of(),
             @JsonProperty("aleid") @ExcludeMissing aleid: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("axwrt") @ExcludeMissing axwrt: JsonField<String> = JsonMissing.of(),
             @JsonProperty("basis_cid")
             @ExcludeMissing
             basisCid: JsonField<String> = JsonMissing.of(),
@@ -3419,6 +3455,7 @@ private constructor(
             adsetId,
             alart,
             aleid,
+            axwrt,
             basisCid,
             browserLanguage,
             browserName,
@@ -3526,6 +3563,14 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun aleid(): String? = aleid.getNullable("aleid")
+
+        /**
+         * The AppLovin Axon pixel cookie value (_axwrt). Web-only.
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun axwrt(): String? = axwrt.getNullable("axwrt")
 
         /**
          * The Basis DSP Click ID. Ex: basis_cid123
@@ -4089,6 +4134,13 @@ private constructor(
         @JsonProperty("aleid") @ExcludeMissing fun _aleid(): JsonField<String> = aleid
 
         /**
+         * Returns the raw JSON value of [axwrt].
+         *
+         * Unlike [axwrt], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("axwrt") @ExcludeMissing fun _axwrt(): JsonField<String> = axwrt
+
+        /**
          * Returns the raw JSON value of [basisCid].
          *
          * Unlike [basisCid], this method doesn't throw if the JSON field has an unexpected type.
@@ -4613,6 +4665,7 @@ private constructor(
             private var adsetId: JsonField<String> = JsonMissing.of()
             private var alart: JsonField<String> = JsonMissing.of()
             private var aleid: JsonField<String> = JsonMissing.of()
+            private var axwrt: JsonField<String> = JsonMissing.of()
             private var basisCid: JsonField<String> = JsonMissing.of()
             private var browserLanguage: JsonField<String> = JsonMissing.of()
             private var browserName: JsonField<String> = JsonMissing.of()
@@ -4686,6 +4739,7 @@ private constructor(
                 adsetId = defaultProperties.adsetId
                 alart = defaultProperties.alart
                 aleid = defaultProperties.aleid
+                axwrt = defaultProperties.axwrt
                 basisCid = defaultProperties.basisCid
                 browserLanguage = defaultProperties.browserLanguage
                 browserName = defaultProperties.browserName
@@ -4825,6 +4879,18 @@ private constructor(
              * supported value.
              */
             fun aleid(aleid: JsonField<String>) = apply { this.aleid = aleid }
+
+            /** The AppLovin Axon pixel cookie value (_axwrt). Web-only. */
+            fun axwrt(axwrt: String?) = axwrt(JsonField.ofNullable(axwrt))
+
+            /**
+             * Sets [Builder.axwrt] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.axwrt] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun axwrt(axwrt: JsonField<String>) = apply { this.axwrt = axwrt }
 
             /** The Basis DSP Click ID. Ex: basis_cid123 */
             fun basisCid(basisCid: String?) = basisCid(JsonField.ofNullable(basisCid))
@@ -5751,6 +5817,7 @@ private constructor(
                     adsetId,
                     alart,
                     aleid,
+                    axwrt,
                     basisCid,
                     browserLanguage,
                     browserName,
@@ -5832,6 +5899,7 @@ private constructor(
             adsetId()
             alart()
             aleid()
+            axwrt()
             basisCid()
             browserLanguage()
             browserName()
@@ -5920,6 +5988,7 @@ private constructor(
                 (if (adsetId.asKnown() == null) 0 else 1) +
                 (if (alart.asKnown() == null) 0 else 1) +
                 (if (aleid.asKnown() == null) 0 else 1) +
+                (if (axwrt.asKnown() == null) 0 else 1) +
                 (if (basisCid.asKnown() == null) 0 else 1) +
                 (if (browserLanguage.asKnown() == null) 0 else 1) +
                 (if (browserName.asKnown() == null) 0 else 1) +
@@ -5997,6 +6066,7 @@ private constructor(
                 adsetId == other.adsetId &&
                 alart == other.alart &&
                 aleid == other.aleid &&
+                axwrt == other.axwrt &&
                 basisCid == other.basisCid &&
                 browserLanguage == other.browserLanguage &&
                 browserName == other.browserName &&
@@ -6072,6 +6142,7 @@ private constructor(
                 adsetId,
                 alart,
                 aleid,
+                axwrt,
                 basisCid,
                 browserLanguage,
                 browserName,
@@ -6144,7 +6215,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "DefaultProperties{activeDuration=$activeDuration, adId=$adId, adsetId=$adsetId, alart=$alart, aleid=$aleid, basisCid=$basisCid, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
+            "DefaultProperties{activeDuration=$activeDuration, adId=$adId, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
     }
 
     /**
