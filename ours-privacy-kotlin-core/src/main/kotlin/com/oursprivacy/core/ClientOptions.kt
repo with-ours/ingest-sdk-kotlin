@@ -358,6 +358,14 @@ private constructor(
         fun fromEnv() = apply {
             (System.getProperty("oursprivacy.baseUrl") ?: System.getenv("OURS_PRIVACY_BASE_URL"))
                 ?.let { baseUrl(it) }
+            System.getenv("OURS_PRIVACY_CUSTOM_HEADERS")?.let { customHeadersEnv ->
+                for (line in customHeadersEnv.split("\n")) {
+                    val colon = line.indexOf(':')
+                    if (colon >= 0) {
+                        putHeader(line.substring(0, colon).trim(), line.substring(colon + 1).trim())
+                    }
+                }
+            }
         }
 
         /**
