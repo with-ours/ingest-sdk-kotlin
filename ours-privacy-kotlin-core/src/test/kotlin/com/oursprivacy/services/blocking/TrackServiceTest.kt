@@ -25,6 +25,7 @@ internal class TrackServiceTest {
                         TrackEventParams.DefaultProperties.builder()
                             .activeDuration(0.0)
                             .adId("ad_id")
+                            .admitadUid("admitad_uid")
                             .adsetId("adset_id")
                             .alart("alart")
                             .aleid("aleid")
@@ -115,6 +116,7 @@ internal class TrackServiceTest {
                     .userProperties(
                         TrackEventParams.UserProperties.builder()
                             .adId("ad_id")
+                            .admitadUid("admitad_uid")
                             .adsetId("adset_id")
                             .alart("alart")
                             .aleid("aleid")
