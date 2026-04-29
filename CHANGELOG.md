@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.3.0 (2026-04-29)
+
+Full Changelog: [v1.2.0...v1.3.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.2.0...v1.3.0)
+
+### Features
+
+* **api:** api update ([1a7a9d8](https://github.com/with-ours/ingest-sdk-kotlin/commit/1a7a9d8118b604cbf60ceaf991bab75065d05c19))
+* **api:** api update ([1907768](https://github.com/with-ours/ingest-sdk-kotlin/commit/19077684ceb63f1060ec7d66e5b0f9de0e4a61aa))
+* support setting headers via env ([af13954](https://github.com/with-ours/ingest-sdk-kotlin/commit/af13954b02cf5eb61a5e7b32addde2d18b9f5d41))
+
 ## 1.2.0 (2026-03-27)
 
 Full Changelog: [v1.1.4...v1.2.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.1.4...v1.2.0)
