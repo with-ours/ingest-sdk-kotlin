@@ -21,7 +21,11 @@ import java.util.Objects
 
 /**
  * Define visitor properties on an existing visitor or create a new visitor. This fires a $identify
- * event, making the call visible in the event stream.
+ * event, making the call visible in the event stream. For top-level visitor properties: null clears
+ * the existing value, while undefined, omitted fields, and empty strings are ignored. For entries
+ * inside custom_properties: null, undefined, and empty strings are all ignored (custom_properties
+ * use merge semantics). See https://docs.oursprivacy.com/docs/data-types for details and common
+ * pitfalls.
  */
 class VisitorUpsertParams
 private constructor(
@@ -897,6 +901,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val adId: JsonField<String>,
+        private val admitadUid: JsonField<String>,
         private val adsetId: JsonField<String>,
         private val alart: JsonField<String>,
         private val aleid: JsonField<String>,
@@ -959,6 +964,9 @@ private constructor(
         @JsonCreator
         private constructor(
             @JsonProperty("ad_id") @ExcludeMissing adId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("admitad_uid")
+            @ExcludeMissing
+            admitadUid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("adset_id") @ExcludeMissing adsetId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("alart") @ExcludeMissing alart: JsonField<String> = JsonMissing.of(),
             @JsonProperty("aleid") @ExcludeMissing aleid: JsonField<String> = JsonMissing.of(),
@@ -1059,6 +1067,7 @@ private constructor(
             @JsonProperty("zip") @ExcludeMissing zip: JsonField<String> = JsonMissing.of(),
         ) : this(
             adId,
+            admitadUid,
             adsetId,
             alart,
             aleid,
@@ -1123,6 +1132,12 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun adId(): String? = adId.getNullable("ad_id")
+
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun admitadUid(): String? = admitadUid.getNullable("admitad_uid")
 
         /**
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -1469,6 +1484,15 @@ private constructor(
          * Unlike [adId], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("ad_id") @ExcludeMissing fun _adId(): JsonField<String> = adId
+
+        /**
+         * Returns the raw JSON value of [admitadUid].
+         *
+         * Unlike [admitadUid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("admitad_uid")
+        @ExcludeMissing
+        fun _admitadUid(): JsonField<String> = admitadUid
 
         /**
          * Returns the raw JSON value of [adsetId].
@@ -1907,6 +1931,7 @@ private constructor(
         class Builder internal constructor() {
 
             private var adId: JsonField<String> = JsonMissing.of()
+            private var admitadUid: JsonField<String> = JsonMissing.of()
             private var adsetId: JsonField<String> = JsonMissing.of()
             private var alart: JsonField<String> = JsonMissing.of()
             private var aleid: JsonField<String> = JsonMissing.of()
@@ -1967,6 +1992,7 @@ private constructor(
 
             internal fun from(userProperties: UserProperties) = apply {
                 adId = userProperties.adId
+                admitadUid = userProperties.admitadUid
                 adsetId = userProperties.adsetId
                 alart = userProperties.alart
                 aleid = userProperties.aleid
@@ -2036,6 +2062,17 @@ private constructor(
              * value.
              */
             fun adId(adId: JsonField<String>) = apply { this.adId = adId }
+
+            fun admitadUid(admitadUid: String?) = admitadUid(JsonField.ofNullable(admitadUid))
+
+            /**
+             * Sets [Builder.admitadUid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.admitadUid] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun admitadUid(admitadUid: JsonField<String>) = apply { this.admitadUid = admitadUid }
 
             fun adsetId(adsetId: String?) = adsetId(JsonField.ofNullable(adsetId))
 
@@ -2698,6 +2735,7 @@ private constructor(
             fun build(): UserProperties =
                 UserProperties(
                     adId,
+                    admitadUid,
                     adsetId,
                     alart,
                     aleid,
@@ -2766,6 +2804,7 @@ private constructor(
             }
 
             adId()
+            admitadUid()
             adsetId()
             alart()
             aleid()
@@ -2841,6 +2880,7 @@ private constructor(
          */
         internal fun validity(): Int =
             (if (adId.asKnown() == null) 0 else 1) +
+                (if (admitadUid.asKnown() == null) 0 else 1) +
                 (if (adsetId.asKnown() == null) 0 else 1) +
                 (if (alart.asKnown() == null) 0 else 1) +
                 (if (aleid.asKnown() == null) 0 else 1) +
@@ -3106,6 +3146,7 @@ private constructor(
 
             return other is UserProperties &&
                 adId == other.adId &&
+                admitadUid == other.admitadUid &&
                 adsetId == other.adsetId &&
                 alart == other.alart &&
                 aleid == other.aleid &&
@@ -3168,6 +3209,7 @@ private constructor(
         private val hashCode: Int by lazy {
             Objects.hash(
                 adId,
+                admitadUid,
                 adsetId,
                 alart,
                 aleid,
@@ -3231,7 +3273,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "UserProperties{adId=$adId, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
+            "UserProperties{adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
     }
 
     /** These properties are used throughout the Ours app to pass known values onto destinations */
@@ -3240,6 +3282,7 @@ private constructor(
     private constructor(
         private val activeDuration: JsonField<Double>,
         private val adId: JsonField<String>,
+        private val admitadUid: JsonField<String>,
         private val adsetId: JsonField<String>,
         private val alart: JsonField<String>,
         private val aleid: JsonField<String>,
@@ -3318,6 +3361,9 @@ private constructor(
             @ExcludeMissing
             activeDuration: JsonField<Double> = JsonMissing.of(),
             @JsonProperty("ad_id") @ExcludeMissing adId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("admitad_uid")
+            @ExcludeMissing
+            admitadUid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("adset_id") @ExcludeMissing adsetId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("alart") @ExcludeMissing alart: JsonField<String> = JsonMissing.of(),
             @JsonProperty("aleid") @ExcludeMissing aleid: JsonField<String> = JsonMissing.of(),
@@ -3452,6 +3498,7 @@ private constructor(
         ) : this(
             activeDuration,
             adId,
+            admitadUid,
             adsetId,
             alart,
             aleid,
@@ -3539,6 +3586,14 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun adId(): String? = adId.getNullable("ad_id")
+
+        /**
+         * The Admitad (Mitgo) affiliate Click ID. Ex: admitad_uid_abc123
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun admitadUid(): String? = admitadUid.getNullable("admitad_uid")
 
         /**
          * The adset id for detected in the session. This is set by the web sdk automatically.
@@ -4113,6 +4168,15 @@ private constructor(
         @JsonProperty("ad_id") @ExcludeMissing fun _adId(): JsonField<String> = adId
 
         /**
+         * Returns the raw JSON value of [admitadUid].
+         *
+         * Unlike [admitadUid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("admitad_uid")
+        @ExcludeMissing
+        fun _admitadUid(): JsonField<String> = admitadUid
+
+        /**
          * Returns the raw JSON value of [adsetId].
          *
          * Unlike [adsetId], this method doesn't throw if the JSON field has an unexpected type.
@@ -4662,6 +4726,7 @@ private constructor(
 
             private var activeDuration: JsonField<Double> = JsonMissing.of()
             private var adId: JsonField<String> = JsonMissing.of()
+            private var admitadUid: JsonField<String> = JsonMissing.of()
             private var adsetId: JsonField<String> = JsonMissing.of()
             private var alart: JsonField<String> = JsonMissing.of()
             private var aleid: JsonField<String> = JsonMissing.of()
@@ -4736,6 +4801,7 @@ private constructor(
             internal fun from(defaultProperties: DefaultProperties) = apply {
                 activeDuration = defaultProperties.activeDuration
                 adId = defaultProperties.adId
+                admitadUid = defaultProperties.admitadUid
                 adsetId = defaultProperties.adsetId
                 alart = defaultProperties.alart
                 aleid = defaultProperties.aleid
@@ -4841,6 +4907,18 @@ private constructor(
              * value.
              */
             fun adId(adId: JsonField<String>) = apply { this.adId = adId }
+
+            /** The Admitad (Mitgo) affiliate Click ID. Ex: admitad_uid_abc123 */
+            fun admitadUid(admitadUid: String?) = admitadUid(JsonField.ofNullable(admitadUid))
+
+            /**
+             * Sets [Builder.admitadUid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.admitadUid] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun admitadUid(admitadUid: JsonField<String>) = apply { this.admitadUid = admitadUid }
 
             /**
              * The adset id for detected in the session. This is set by the web sdk automatically.
@@ -5814,6 +5892,7 @@ private constructor(
                 DefaultProperties(
                     activeDuration,
                     adId,
+                    admitadUid,
                     adsetId,
                     alart,
                     aleid,
@@ -5896,6 +5975,7 @@ private constructor(
 
             activeDuration()
             adId()
+            admitadUid()
             adsetId()
             alart()
             aleid()
@@ -5985,6 +6065,7 @@ private constructor(
         internal fun validity(): Int =
             (if (activeDuration.asKnown() == null) 0 else 1) +
                 (if (adId.asKnown() == null) 0 else 1) +
+                (if (admitadUid.asKnown() == null) 0 else 1) +
                 (if (adsetId.asKnown() == null) 0 else 1) +
                 (if (alart.asKnown() == null) 0 else 1) +
                 (if (aleid.asKnown() == null) 0 else 1) +
@@ -6063,6 +6144,7 @@ private constructor(
             return other is DefaultProperties &&
                 activeDuration == other.activeDuration &&
                 adId == other.adId &&
+                admitadUid == other.admitadUid &&
                 adsetId == other.adsetId &&
                 alart == other.alart &&
                 aleid == other.aleid &&
@@ -6139,6 +6221,7 @@ private constructor(
             Objects.hash(
                 activeDuration,
                 adId,
+                admitadUid,
                 adsetId,
                 alart,
                 aleid,
@@ -6215,7 +6298,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "DefaultProperties{activeDuration=$activeDuration, adId=$adId, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
+            "DefaultProperties{activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
     }
 
     /**

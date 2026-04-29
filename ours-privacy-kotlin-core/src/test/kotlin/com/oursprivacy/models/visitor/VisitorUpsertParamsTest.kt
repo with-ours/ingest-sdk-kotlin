@@ -15,6 +15,7 @@ internal class VisitorUpsertParamsTest {
             .userProperties(
                 VisitorUpsertParams.UserProperties.builder()
                     .adId("ad_id")
+                    .admitadUid("admitad_uid")
                     .adsetId("adset_id")
                     .alart("alart")
                     .aleid("aleid")
@@ -85,6 +86,7 @@ internal class VisitorUpsertParamsTest {
                 VisitorUpsertParams.DefaultProperties.builder()
                     .activeDuration(0.0)
                     .adId("ad_id")
+                    .admitadUid("admitad_uid")
                     .adsetId("adset_id")
                     .alart("alart")
                     .aleid("aleid")
@@ -176,6 +178,7 @@ internal class VisitorUpsertParamsTest {
                 .userProperties(
                     VisitorUpsertParams.UserProperties.builder()
                         .adId("ad_id")
+                        .admitadUid("admitad_uid")
                         .adsetId("adset_id")
                         .alart("alart")
                         .aleid("aleid")
@@ -246,6 +249,7 @@ internal class VisitorUpsertParamsTest {
                     VisitorUpsertParams.DefaultProperties.builder()
                         .activeDuration(0.0)
                         .adId("ad_id")
+                        .admitadUid("admitad_uid")
                         .adsetId("adset_id")
                         .alart("alart")
                         .aleid("aleid")
@@ -335,6 +339,7 @@ internal class VisitorUpsertParamsTest {
             .isEqualTo(
                 VisitorUpsertParams.UserProperties.builder()
                     .adId("ad_id")
+                    .admitadUid("admitad_uid")
                     .adsetId("adset_id")
                     .alart("alart")
                     .aleid("aleid")
@@ -406,6 +411,7 @@ internal class VisitorUpsertParamsTest {
                 VisitorUpsertParams.DefaultProperties.builder()
                     .activeDuration(0.0)
                     .adId("ad_id")
+                    .admitadUid("admitad_uid")
                     .adsetId("adset_id")
                     .alart("alart")
                     .aleid("aleid")
