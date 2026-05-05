@@ -5,10 +5,14 @@ package com.oursprivacy.errors
 import com.oursprivacy.core.JsonValue
 import com.oursprivacy.core.checkRequired
 import com.oursprivacy.core.http.Headers
+import com.oursprivacy.core.jsonMapper
 
 class NotFoundException
 private constructor(private val headers: Headers, private val body: JsonValue, cause: Throwable?) :
-    OursPrivacyServiceException("404: $body", cause) {
+    OursPrivacyServiceException(
+        "404: ${if (body.isMissing()) "Unknown" else jsonMapper().writeValueAsString(body)}",
+        cause,
+    ) {
 
     override fun statusCode(): Int = 404
 
