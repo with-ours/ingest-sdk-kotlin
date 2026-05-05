@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.oursprivacy/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.oursprivacy/ours-privacy-kotlin/1.3.0)
-[![javadoc](https://javadoc.io/badge2/com.oursprivacy/ours-privacy-kotlin/1.3.0/javadoc.svg)](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.3.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.oursprivacy/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.oursprivacy/ours-privacy-kotlin/1.4.0)
+[![javadoc](https://javadoc.io/badge2/com.oursprivacy/ours-privacy-kotlin/1.4.0/javadoc.svg)](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.4.0)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.3.0).
+The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.4.0).
 
 <!-- x-release-please-end -->
 
@@ -24,7 +24,7 @@ The REST API documentation can be found on [docs.oursprivacy.com](https://docs.o
 ### Gradle
 
 ```kotlin
-implementation("com.oursprivacy:ours-privacy-kotlin:1.3.0")
+implementation("com.oursprivacy:ours-privacy-kotlin:1.4.0")
 ```
 
 ### Maven
@@ -33,7 +33,7 @@ implementation("com.oursprivacy:ours-privacy-kotlin:1.3.0")
 <dependency>
   <groupId>com.oursprivacy</groupId>
   <artifactId>ours-privacy-kotlin</artifactId>
-  <version>1.3.0</version>
+  <version>1.4.0</version>
 </dependency>
 ```
 
@@ -565,7 +565,9 @@ In rare cases, the API may return a response that doesn't match the expected typ
 
 By default, the SDK will not throw an exception in this case. It will throw [`OursPrivacyInvalidDataException`](ours-privacy-kotlin-core/src/main/kotlin/com/oursprivacy/errors/OursPrivacyInvalidDataException.kt) only if you directly access the property.
 
-If you would prefer to check that the response is completely well-typed upfront, then either call `validate()`:
+Validating the response is _not_ forwards compatible with new types from the API for existing fields.
+
+If you would still prefer to check that the response is completely well-typed upfront, then either call `validate()`:
 
 ```kotlin
 import com.oursprivacy.models.track.TrackEventResponse

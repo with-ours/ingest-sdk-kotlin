@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.4.0 (2026-05-05)
+
+Full Changelog: [v1.3.0...v1.4.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.3.0...v1.4.0)
+
+### Features
+
+* **client:** more robust error parsing ([7d69d1c](https://github.com/with-ours/ingest-sdk-kotlin/commit/7d69d1c594e531e01807939cbaeb85e1bfcb8f1d))
+
+
+### Performance Improvements
+
+* **client:** create one json mapper ([0580135](https://github.com/with-ours/ingest-sdk-kotlin/commit/05801355896a2a83a49202d4cbad0fdcf7a3e876))
+
+
+### Chores
+
+* remove duplicated dokka setup ([d7828ca](https://github.com/with-ours/ingest-sdk-kotlin/commit/d7828cab3064d618649413b0015589226ee3a9cc))
+
+
+### Documentation
+
+* clarify forwards compat behavior ([c8bd20e](https://github.com/with-ours/ingest-sdk-kotlin/commit/c8bd20e695c69df558afaddc525838558bc5d268))
+
 ## 1.3.0 (2026-04-29)
 
 Full Changelog: [v1.2.0...v1.3.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.2.0...v1.3.0)
