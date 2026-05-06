@@ -43,11 +43,11 @@ interface OursPrivacyClientAsync {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): OursPrivacyClientAsync
 
+    fun batch(): BatchServiceAsync
+
     fun track(): TrackServiceAsync
 
     fun visitor(): VisitorServiceAsync
-
-    fun batch(): BatchServiceAsync
 
     /**
      * Closes this client, relinquishing any underlying resources.
@@ -77,10 +77,10 @@ interface OursPrivacyClientAsync {
             modifier: (ClientOptions.Builder) -> Unit
         ): OursPrivacyClientAsync.WithRawResponse
 
+        fun batch(): BatchServiceAsync.WithRawResponse
+
         fun track(): TrackServiceAsync.WithRawResponse
 
         fun visitor(): VisitorServiceAsync.WithRawResponse
-
-        fun batch(): BatchServiceAsync.WithRawResponse
     }
 }
