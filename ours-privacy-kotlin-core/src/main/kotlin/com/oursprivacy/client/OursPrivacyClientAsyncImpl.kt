@@ -4,6 +4,8 @@ package com.oursprivacy.client
 
 import com.oursprivacy.core.ClientOptions
 import com.oursprivacy.core.getPackageVersion
+import com.oursprivacy.services.async.BatchServiceAsync
+import com.oursprivacy.services.async.BatchServiceAsyncImpl
 import com.oursprivacy.services.async.TrackServiceAsync
 import com.oursprivacy.services.async.TrackServiceAsyncImpl
 import com.oursprivacy.services.async.VisitorServiceAsync
@@ -27,6 +29,10 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
         WithRawResponseImpl(clientOptions)
     }
 
+    private val batch: BatchServiceAsync by lazy {
+        BatchServiceAsyncImpl(clientOptionsWithUserAgent)
+    }
+
     private val track: TrackServiceAsync by lazy {
         TrackServiceAsyncImpl(clientOptionsWithUserAgent)
     }
@@ -42,6 +48,8 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): OursPrivacyClientAsync =
         OursPrivacyClientAsyncImpl(clientOptions.toBuilder().apply(modifier).build())
 
+    override fun batch(): BatchServiceAsync = batch
+
     override fun track(): TrackServiceAsync = track
 
     override fun visitor(): VisitorServiceAsync = visitor
@@ -50,6 +58,10 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         OursPrivacyClientAsync.WithRawResponse {
+
+        private val batch: BatchServiceAsync.WithRawResponse by lazy {
+            BatchServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
 
         private val track: TrackServiceAsync.WithRawResponse by lazy {
             TrackServiceAsyncImpl.WithRawResponseImpl(clientOptions)
@@ -65,6 +77,8 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
             OursPrivacyClientAsyncImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier).build()
             )
+
+        override fun batch(): BatchServiceAsync.WithRawResponse = batch
 
         override fun track(): TrackServiceAsync.WithRawResponse = track
 

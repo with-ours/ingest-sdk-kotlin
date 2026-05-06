@@ -4,6 +4,8 @@ package com.oursprivacy.client
 
 import com.oursprivacy.core.ClientOptions
 import com.oursprivacy.core.getPackageVersion
+import com.oursprivacy.services.blocking.BatchService
+import com.oursprivacy.services.blocking.BatchServiceImpl
 import com.oursprivacy.services.blocking.TrackService
 import com.oursprivacy.services.blocking.TrackServiceImpl
 import com.oursprivacy.services.blocking.VisitorService
@@ -26,6 +28,8 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
         WithRawResponseImpl(clientOptions)
     }
 
+    private val batch: BatchService by lazy { BatchServiceImpl(clientOptionsWithUserAgent) }
+
     private val track: TrackService by lazy { TrackServiceImpl(clientOptionsWithUserAgent) }
 
     private val visitor: VisitorService by lazy { VisitorServiceImpl(clientOptionsWithUserAgent) }
@@ -37,6 +41,8 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): OursPrivacyClient =
         OursPrivacyClientImpl(clientOptions.toBuilder().apply(modifier).build())
 
+    override fun batch(): BatchService = batch
+
     override fun track(): TrackService = track
 
     override fun visitor(): VisitorService = visitor
@@ -45,6 +51,10 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         OursPrivacyClient.WithRawResponse {
+
+        private val batch: BatchService.WithRawResponse by lazy {
+            BatchServiceImpl.WithRawResponseImpl(clientOptions)
+        }
 
         private val track: TrackService.WithRawResponse by lazy {
             TrackServiceImpl.WithRawResponseImpl(clientOptions)
@@ -60,6 +70,8 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
             OursPrivacyClientImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier).build()
             )
+
+        override fun batch(): BatchService.WithRawResponse = batch
 
         override fun track(): TrackService.WithRawResponse = track
 

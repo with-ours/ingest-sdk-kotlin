@@ -3,6 +3,7 @@
 package com.oursprivacy.client
 
 import com.oursprivacy.core.ClientOptions
+import com.oursprivacy.services.blocking.BatchService
 import com.oursprivacy.services.blocking.TrackService
 import com.oursprivacy.services.blocking.VisitorService
 
@@ -42,6 +43,8 @@ interface OursPrivacyClient {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): OursPrivacyClient
 
+    fun batch(): BatchService
+
     fun track(): TrackService
 
     fun visitor(): VisitorService
@@ -70,6 +73,8 @@ interface OursPrivacyClient {
         fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
         ): OursPrivacyClient.WithRawResponse
+
+        fun batch(): BatchService.WithRawResponse
 
         fun track(): TrackService.WithRawResponse
 

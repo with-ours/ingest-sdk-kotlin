@@ -49,6 +49,7 @@ internal class ProGuardCompatibilityTest {
         val client = OursPrivacyOkHttpClient.fromEnv()
 
         assertThat(client).isNotNull()
+        assertThat(client.batch()).isNotNull()
         assertThat(client.track()).isNotNull()
         assertThat(client.visitor()).isNotNull()
     }
