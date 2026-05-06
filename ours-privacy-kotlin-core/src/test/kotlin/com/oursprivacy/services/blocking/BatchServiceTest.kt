@@ -22,8 +22,8 @@ internal class BatchServiceTest {
                     .token("x")
                     .addEvent(
                         BatchCreateParams.Event.builder()
+                            .distinctId("x")
                             .event("x")
-                            .token("x")
                             .defaultProperties(
                                 BatchCreateParams.Event.DefaultProperties.builder()
                                     .activeDuration(0.0)
@@ -100,7 +100,6 @@ internal class BatchServiceTest {
                                     .webview(true)
                                     .build()
                             )
-                            .distinctId("x")
                             .email("x")
                             .eventProperties(
                                 BatchCreateParams.Event.EventProperties.builder()
