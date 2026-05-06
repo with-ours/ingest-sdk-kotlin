@@ -4,6 +4,8 @@ package com.oursprivacy.client
 
 import com.oursprivacy.core.ClientOptions
 import com.oursprivacy.core.getPackageVersion
+import com.oursprivacy.services.async.BatchServiceAsync
+import com.oursprivacy.services.async.BatchServiceAsyncImpl
 import com.oursprivacy.services.async.TrackServiceAsync
 import com.oursprivacy.services.async.TrackServiceAsyncImpl
 import com.oursprivacy.services.async.VisitorServiceAsync
@@ -35,6 +37,10 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
         VisitorServiceAsyncImpl(clientOptionsWithUserAgent)
     }
 
+    private val batch: BatchServiceAsync by lazy {
+        BatchServiceAsyncImpl(clientOptionsWithUserAgent)
+    }
+
     override fun sync(): OursPrivacyClient = sync
 
     override fun withRawResponse(): OursPrivacyClientAsync.WithRawResponse = withRawResponse
@@ -45,6 +51,8 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
     override fun track(): TrackServiceAsync = track
 
     override fun visitor(): VisitorServiceAsync = visitor
+
+    override fun batch(): BatchServiceAsync = batch
 
     override fun close() = clientOptions.close()
 
@@ -59,6 +67,10 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
             VisitorServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val batch: BatchServiceAsync.WithRawResponse by lazy {
+            BatchServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
         ): OursPrivacyClientAsync.WithRawResponse =
@@ -69,5 +81,7 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
         override fun track(): TrackServiceAsync.WithRawResponse = track
 
         override fun visitor(): VisitorServiceAsync.WithRawResponse = visitor
+
+        override fun batch(): BatchServiceAsync.WithRawResponse = batch
     }
 }
