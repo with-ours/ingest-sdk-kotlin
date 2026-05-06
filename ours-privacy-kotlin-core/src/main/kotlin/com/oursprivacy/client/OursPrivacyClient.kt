@@ -3,6 +3,7 @@
 package com.oursprivacy.client
 
 import com.oursprivacy.core.ClientOptions
+import com.oursprivacy.services.blocking.BatchService
 import com.oursprivacy.services.blocking.TrackService
 import com.oursprivacy.services.blocking.VisitorService
 
@@ -46,6 +47,8 @@ interface OursPrivacyClient {
 
     fun visitor(): VisitorService
 
+    fun batch(): BatchService
+
     /**
      * Closes this client, relinquishing any underlying resources.
      *
@@ -74,5 +77,7 @@ interface OursPrivacyClient {
         fun track(): TrackService.WithRawResponse
 
         fun visitor(): VisitorService.WithRawResponse
+
+        fun batch(): BatchService.WithRawResponse
     }
 }
