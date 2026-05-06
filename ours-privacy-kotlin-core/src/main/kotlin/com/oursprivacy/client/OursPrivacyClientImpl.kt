@@ -28,11 +28,11 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
         WithRawResponseImpl(clientOptions)
     }
 
+    private val batch: BatchService by lazy { BatchServiceImpl(clientOptionsWithUserAgent) }
+
     private val track: TrackService by lazy { TrackServiceImpl(clientOptionsWithUserAgent) }
 
     private val visitor: VisitorService by lazy { VisitorServiceImpl(clientOptionsWithUserAgent) }
-
-    private val batch: BatchService by lazy { BatchServiceImpl(clientOptionsWithUserAgent) }
 
     override fun async(): OursPrivacyClientAsync = async
 
@@ -41,16 +41,20 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): OursPrivacyClient =
         OursPrivacyClientImpl(clientOptions.toBuilder().apply(modifier).build())
 
+    override fun batch(): BatchService = batch
+
     override fun track(): TrackService = track
 
     override fun visitor(): VisitorService = visitor
-
-    override fun batch(): BatchService = batch
 
     override fun close() = clientOptions.close()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         OursPrivacyClient.WithRawResponse {
+
+        private val batch: BatchService.WithRawResponse by lazy {
+            BatchServiceImpl.WithRawResponseImpl(clientOptions)
+        }
 
         private val track: TrackService.WithRawResponse by lazy {
             TrackServiceImpl.WithRawResponseImpl(clientOptions)
@@ -60,10 +64,6 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
             VisitorServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val batch: BatchService.WithRawResponse by lazy {
-            BatchServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
         ): OursPrivacyClient.WithRawResponse =
@@ -71,10 +71,10 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
+        override fun batch(): BatchService.WithRawResponse = batch
+
         override fun track(): TrackService.WithRawResponse = track
 
         override fun visitor(): VisitorService.WithRawResponse = visitor
-
-        override fun batch(): BatchService.WithRawResponse = batch
     }
 }

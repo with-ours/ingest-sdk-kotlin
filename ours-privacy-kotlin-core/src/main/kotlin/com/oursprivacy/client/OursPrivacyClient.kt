@@ -43,11 +43,11 @@ interface OursPrivacyClient {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): OursPrivacyClient
 
+    fun batch(): BatchService
+
     fun track(): TrackService
 
     fun visitor(): VisitorService
-
-    fun batch(): BatchService
 
     /**
      * Closes this client, relinquishing any underlying resources.
@@ -74,10 +74,10 @@ interface OursPrivacyClient {
             modifier: (ClientOptions.Builder) -> Unit
         ): OursPrivacyClient.WithRawResponse
 
+        fun batch(): BatchService.WithRawResponse
+
         fun track(): TrackService.WithRawResponse
 
         fun visitor(): VisitorService.WithRawResponse
-
-        fun batch(): BatchService.WithRawResponse
     }
 }
