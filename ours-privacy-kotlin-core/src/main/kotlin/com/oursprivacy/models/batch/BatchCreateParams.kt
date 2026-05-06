@@ -507,10 +507,9 @@ private constructor(
     class Event
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val event: JsonField<String>,
-        private val token: JsonField<String>,
-        private val defaultProperties: JsonField<DefaultProperties>,
         private val distinctId: JsonField<String>,
+        private val event: JsonField<String>,
+        private val defaultProperties: JsonField<DefaultProperties>,
         private val email: JsonField<String>,
         private val eventProperties: JsonField<EventProperties>,
         private val externalId: JsonField<String>,
@@ -523,14 +522,13 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("event") @ExcludeMissing event: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("token") @ExcludeMissing token: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("defaultProperties")
-            @ExcludeMissing
-            defaultProperties: JsonField<DefaultProperties> = JsonMissing.of(),
             @JsonProperty("distinctId")
             @ExcludeMissing
             distinctId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("event") @ExcludeMissing event: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("defaultProperties")
+            @ExcludeMissing
+            defaultProperties: JsonField<DefaultProperties> = JsonMissing.of(),
             @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
             @JsonProperty("eventProperties")
             @ExcludeMissing
@@ -547,10 +545,9 @@ private constructor(
             @ExcludeMissing
             userProperties: JsonField<UserProperties> = JsonMissing.of(),
         ) : this(
-            event,
-            token,
-            defaultProperties,
             distinctId,
+            event,
+            defaultProperties,
             email,
             eventProperties,
             externalId,
@@ -562,20 +559,20 @@ private constructor(
         )
 
         /**
+         * A unique identifier for the event. This helps prevent duplicate events.
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun distinctId(): String = distinctId.getRequired("distinctId")
+
+        /**
          * The name of the event you're tracking. This must be whitelisted in the Ours dashboard.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun event(): String = event.getRequired("event")
-
-        /**
-         * The token for your Source. You can find this in the dashboard.
-         *
-         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
-         */
-        fun token(): String? = token.getNullable("token")
 
         /**
          * These properties are used throughout the Ours app to pass known values onto destinations
@@ -585,14 +582,6 @@ private constructor(
          */
         fun defaultProperties(): DefaultProperties? =
             defaultProperties.getNullable("defaultProperties")
-
-        /**
-         * A unique identifier for the event. This helps prevent duplicate events.
-         *
-         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
-         */
-        fun distinctId(): String? = distinctId.getNullable("distinctId")
 
         /**
          * The email address of a user. We will associate this event with the user or create a user.
@@ -657,18 +646,20 @@ private constructor(
         fun userProperties(): UserProperties? = userProperties.getNullable("userProperties")
 
         /**
+         * Returns the raw JSON value of [distinctId].
+         *
+         * Unlike [distinctId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("distinctId")
+        @ExcludeMissing
+        fun _distinctId(): JsonField<String> = distinctId
+
+        /**
          * Returns the raw JSON value of [event].
          *
          * Unlike [event], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("event") @ExcludeMissing fun _event(): JsonField<String> = event
-
-        /**
-         * Returns the raw JSON value of [token].
-         *
-         * Unlike [token], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("token") @ExcludeMissing fun _token(): JsonField<String> = token
 
         /**
          * Returns the raw JSON value of [defaultProperties].
@@ -679,15 +670,6 @@ private constructor(
         @JsonProperty("defaultProperties")
         @ExcludeMissing
         fun _defaultProperties(): JsonField<DefaultProperties> = defaultProperties
-
-        /**
-         * Returns the raw JSON value of [distinctId].
-         *
-         * Unlike [distinctId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("distinctId")
-        @ExcludeMissing
-        fun _distinctId(): JsonField<String> = distinctId
 
         /**
          * Returns the raw JSON value of [email].
@@ -768,6 +750,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .distinctId()
              * .event()
              * ```
              */
@@ -777,10 +760,9 @@ private constructor(
         /** A builder for [Event]. */
         class Builder internal constructor() {
 
+            private var distinctId: JsonField<String>? = null
             private var event: JsonField<String>? = null
-            private var token: JsonField<String> = JsonMissing.of()
             private var defaultProperties: JsonField<DefaultProperties> = JsonMissing.of()
-            private var distinctId: JsonField<String> = JsonMissing.of()
             private var email: JsonField<String> = JsonMissing.of()
             private var eventProperties: JsonField<EventProperties> = JsonMissing.of()
             private var externalId: JsonField<String> = JsonMissing.of()
@@ -791,10 +773,9 @@ private constructor(
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(event: Event) = apply {
-                this.event = event.event
-                token = event.token
-                defaultProperties = event.defaultProperties
                 distinctId = event.distinctId
+                this.event = event.event
+                defaultProperties = event.defaultProperties
                 email = event.email
                 eventProperties = event.eventProperties
                 externalId = event.externalId
@@ -804,6 +785,18 @@ private constructor(
                 userProperties = event.userProperties
                 additionalProperties = event.additionalProperties.toMutableMap()
             }
+
+            /** A unique identifier for the event. This helps prevent duplicate events. */
+            fun distinctId(distinctId: String) = distinctId(JsonField.of(distinctId))
+
+            /**
+             * Sets [Builder.distinctId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.distinctId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun distinctId(distinctId: JsonField<String>) = apply { this.distinctId = distinctId }
 
             /**
              * The name of the event you're tracking. This must be whitelisted in the Ours
@@ -819,18 +812,6 @@ private constructor(
              * supported value.
              */
             fun event(event: JsonField<String>) = apply { this.event = event }
-
-            /** The token for your Source. You can find this in the dashboard. */
-            fun token(token: String) = token(JsonField.of(token))
-
-            /**
-             * Sets [Builder.token] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.token] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun token(token: JsonField<String>) = apply { this.token = token }
 
             /**
              * These properties are used throughout the Ours app to pass known values onto
@@ -849,18 +830,6 @@ private constructor(
             fun defaultProperties(defaultProperties: JsonField<DefaultProperties>) = apply {
                 this.defaultProperties = defaultProperties
             }
-
-            /** A unique identifier for the event. This helps prevent duplicate events. */
-            fun distinctId(distinctId: String?) = distinctId(JsonField.ofNullable(distinctId))
-
-            /**
-             * Sets [Builder.distinctId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.distinctId] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun distinctId(distinctId: JsonField<String>) = apply { this.distinctId = distinctId }
 
             /**
              * The email address of a user. We will associate this event with the user or create a
@@ -1006,6 +975,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .distinctId()
              * .event()
              * ```
              *
@@ -1013,10 +983,9 @@ private constructor(
              */
             fun build(): Event =
                 Event(
+                    checkRequired("distinctId", distinctId),
                     checkRequired("event", event),
-                    token,
                     defaultProperties,
-                    distinctId,
                     email,
                     eventProperties,
                     externalId,
@@ -1044,10 +1013,9 @@ private constructor(
                 return@apply
             }
 
-            event()
-            token()
-            defaultProperties()?.validate()
             distinctId()
+            event()
+            defaultProperties()?.validate()
             email()
             eventProperties()?.validate()
             externalId()
@@ -1073,10 +1041,9 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (if (event.asKnown() == null) 0 else 1) +
-                (if (token.asKnown() == null) 0 else 1) +
+            (if (distinctId.asKnown() == null) 0 else 1) +
+                (if (event.asKnown() == null) 0 else 1) +
                 (defaultProperties.asKnown()?.validity() ?: 0) +
-                (if (distinctId.asKnown() == null) 0 else 1) +
                 (if (email.asKnown() == null) 0 else 1) +
                 (eventProperties.asKnown()?.validity() ?: 0) +
                 (if (externalId.asKnown() == null) 0 else 1) +
@@ -7059,10 +7026,9 @@ private constructor(
             }
 
             return other is Event &&
-                event == other.event &&
-                token == other.token &&
-                defaultProperties == other.defaultProperties &&
                 distinctId == other.distinctId &&
+                event == other.event &&
+                defaultProperties == other.defaultProperties &&
                 email == other.email &&
                 eventProperties == other.eventProperties &&
                 externalId == other.externalId &&
@@ -7075,10 +7041,9 @@ private constructor(
 
         private val hashCode: Int by lazy {
             Objects.hash(
-                event,
-                token,
-                defaultProperties,
                 distinctId,
+                event,
+                defaultProperties,
                 email,
                 eventProperties,
                 externalId,
@@ -7093,7 +7058,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Event{event=$event, token=$token, defaultProperties=$defaultProperties, distinctId=$distinctId, email=$email, eventProperties=$eventProperties, externalId=$externalId, identityContext=$identityContext, time=$time, userId=$userId, userProperties=$userProperties, additionalProperties=$additionalProperties}"
+            "Event{distinctId=$distinctId, event=$event, defaultProperties=$defaultProperties, email=$email, eventProperties=$eventProperties, externalId=$externalId, identityContext=$identityContext, time=$time, userId=$userId, userProperties=$userProperties, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
