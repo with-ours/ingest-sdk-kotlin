@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper
 import com.oursprivacy.client.OursPrivacyClient
 import com.oursprivacy.client.OursPrivacyClientImpl
 import com.oursprivacy.core.ClientOptions
+import com.oursprivacy.core.LogLevel
 import com.oursprivacy.core.Sleeper
 import com.oursprivacy.core.Timeout
 import com.oursprivacy.core.http.Headers
@@ -233,6 +234,15 @@ class OursPrivacyOkHttpClient private constructor() {
          * Defaults to 2.
          */
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
+
+        /**
+         * The level at which to log request and response information.
+         *
+         * [fromEnv] will set the level from environment variables. See [LogLevel.fromEnv].
+         *
+         * Defaults to [LogLevel.fromEnv].
+         */
+        fun logLevel(logLevel: LogLevel) = apply { clientOptions.logLevel(logLevel) }
 
         fun headers(headers: Headers) = apply { clientOptions.headers(headers) }
 
