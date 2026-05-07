@@ -20,12 +20,13 @@ import java.util.Collections
 import java.util.Objects
 
 /**
- * Track events from your server. Please include at least one of: userId, externalId, or email.
- * These properties help us associate events with existing users. For top-level visitor properties:
- * null clears the existing value, while undefined, omitted fields, and empty strings are ignored.
- * For entries inside custom_properties: null, undefined, and empty strings are all ignored
- * (custom_properties use merge semantics). See https://docs.oursprivacy.com/docs/data-types for
- * details and common pitfalls.
+ * Track events from your server. Include at least one of userId, externalId, or email so the event
+ * can be associated with a visitor. Identity resolution runs in priority order: userId (direct, no
+ * lookup) → externalId (lookup by your ID) → email (fallback lookup). If you know both userId and
+ * externalId, send both. For top-level visitor properties: null clears the existing value, while
+ * undefined, omitted fields, and empty strings are ignored. For entries inside custom_properties:
+ * null, undefined, and empty strings are all ignored (custom_properties use merge semantics). See
+ * https://docs.oursprivacy.com/docs/data-types for details and common pitfalls.
  */
 class TrackEventParams
 private constructor(
@@ -59,7 +60,9 @@ private constructor(
     fun defaultProperties(): DefaultProperties? = body.defaultProperties()
 
     /**
-     * A unique identifier for the event. This helps prevent duplicate events.
+     * A unique identifier for this event used for deduplication. Highly recommended — if omitted,
+     * Ours will generate one for you, but supplying your own gives you stronger idempotency
+     * guarantees (e.g. a Stripe payment intent ID or your internal order ID).
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -67,8 +70,9 @@ private constructor(
     fun distinctId(): String? = body.distinctId()
 
     /**
-     * The email address of a user. We will associate this event with the user or create a user.
-     * Used for lookup if externalId and userId are not included in the request.
+     * The email address of a user. Used as a fallback lookup when neither userId nor externalId is
+     * provided. We search your account for a visitor with this email and attach the event to them.
+     * If no match is found, a new visitor is created.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -84,8 +88,10 @@ private constructor(
     fun eventProperties(): EventProperties? = body.eventProperties()
 
     /**
-     * The externalId (the ID in your system) of a user. We will associate this event with the user
-     * or create a user. If included in the request, email lookup is ignored.
+     * Your system's unique identifier for this user. We search your account for an existing visitor
+     * with this externalId and attach the event to them (resolving to their Ours Visitor ID). If no
+     * match is found, a new visitor is created. When present, email lookup is skipped. If you also
+     * have the userId from cookies or local storage, send both — it removes the lookup round-trip.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -111,8 +117,10 @@ private constructor(
     fun time(): Double? = body.time()
 
     /**
-     * The Ours user id stored in local storage and cookies on your web properties. If userId is
-     * included in the request, we do not lookup the user by email or externalId.
+     * The Ours Visitor ID stored in local storage and cookies on your web properties. When present,
+     * this is used directly — no lookup by externalId or email is performed. If you have both a
+     * userId and an externalId, send both so the event is attached to the right visitor without any
+     * lookup overhead.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -299,7 +307,11 @@ private constructor(
             body.defaultProperties(defaultProperties)
         }
 
-        /** A unique identifier for the event. This helps prevent duplicate events. */
+        /**
+         * A unique identifier for this event used for deduplication. Highly recommended — if
+         * omitted, Ours will generate one for you, but supplying your own gives you stronger
+         * idempotency guarantees (e.g. a Stripe payment intent ID or your internal order ID).
+         */
         fun distinctId(distinctId: String?) = apply { body.distinctId(distinctId) }
 
         /**
@@ -312,8 +324,9 @@ private constructor(
         fun distinctId(distinctId: JsonField<String>) = apply { body.distinctId(distinctId) }
 
         /**
-         * The email address of a user. We will associate this event with the user or create a user.
-         * Used for lookup if externalId and userId are not included in the request.
+         * The email address of a user. Used as a fallback lookup when neither userId nor externalId
+         * is provided. We search your account for a visitor with this email and attach the event to
+         * them. If no match is found, a new visitor is created.
          */
         fun email(email: String?) = apply { body.email(email) }
 
@@ -342,8 +355,11 @@ private constructor(
         }
 
         /**
-         * The externalId (the ID in your system) of a user. We will associate this event with the
-         * user or create a user. If included in the request, email lookup is ignored.
+         * Your system's unique identifier for this user. We search your account for an existing
+         * visitor with this externalId and attach the event to them (resolving to their Ours
+         * Visitor ID). If no match is found, a new visitor is created. When present, email lookup
+         * is skipped. If you also have the userId from cookies or local storage, send both — it
+         * removes the lookup round-trip.
          */
         fun externalId(externalId: String?) = apply { body.externalId(externalId) }
 
@@ -397,8 +413,10 @@ private constructor(
         fun time(time: JsonField<Double>) = apply { body.time(time) }
 
         /**
-         * The Ours user id stored in local storage and cookies on your web properties. If userId is
-         * included in the request, we do not lookup the user by email or externalId.
+         * The Ours Visitor ID stored in local storage and cookies on your web properties. When
+         * present, this is used directly — no lookup by externalId or email is performed. If you
+         * have both a userId and an externalId, send both so the event is attached to the right
+         * visitor without any lookup overhead.
          */
         fun userId(userId: String?) = apply { body.userId(userId) }
 
@@ -652,7 +670,9 @@ private constructor(
             defaultProperties.getNullable("defaultProperties")
 
         /**
-         * A unique identifier for the event. This helps prevent duplicate events.
+         * A unique identifier for this event used for deduplication. Highly recommended — if
+         * omitted, Ours will generate one for you, but supplying your own gives you stronger
+         * idempotency guarantees (e.g. a Stripe payment intent ID or your internal order ID).
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -660,8 +680,9 @@ private constructor(
         fun distinctId(): String? = distinctId.getNullable("distinctId")
 
         /**
-         * The email address of a user. We will associate this event with the user or create a user.
-         * Used for lookup if externalId and userId are not included in the request.
+         * The email address of a user. Used as a fallback lookup when neither userId nor externalId
+         * is provided. We search your account for a visitor with this email and attach the event to
+         * them. If no match is found, a new visitor is created.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -677,8 +698,11 @@ private constructor(
         fun eventProperties(): EventProperties? = eventProperties.getNullable("eventProperties")
 
         /**
-         * The externalId (the ID in your system) of a user. We will associate this event with the
-         * user or create a user. If included in the request, email lookup is ignored.
+         * Your system's unique identifier for this user. We search your account for an existing
+         * visitor with this externalId and attach the event to them (resolving to their Ours
+         * Visitor ID). If no match is found, a new visitor is created. When present, email lookup
+         * is skipped. If you also have the userId from cookies or local storage, send both — it
+         * removes the lookup round-trip.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -704,8 +728,10 @@ private constructor(
         fun time(): Double? = time.getNullable("time")
 
         /**
-         * The Ours user id stored in local storage and cookies on your web properties. If userId is
-         * included in the request, we do not lookup the user by email or externalId.
+         * The Ours Visitor ID stored in local storage and cookies on your web properties. When
+         * present, this is used directly — no lookup by externalId or email is performed. If you
+         * have both a userId and an externalId, send both so the event is attached to the right
+         * visitor without any lookup overhead.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -916,7 +942,11 @@ private constructor(
                 this.defaultProperties = defaultProperties
             }
 
-            /** A unique identifier for the event. This helps prevent duplicate events. */
+            /**
+             * A unique identifier for this event used for deduplication. Highly recommended — if
+             * omitted, Ours will generate one for you, but supplying your own gives you stronger
+             * idempotency guarantees (e.g. a Stripe payment intent ID or your internal order ID).
+             */
             fun distinctId(distinctId: String?) = distinctId(JsonField.ofNullable(distinctId))
 
             /**
@@ -929,8 +959,9 @@ private constructor(
             fun distinctId(distinctId: JsonField<String>) = apply { this.distinctId = distinctId }
 
             /**
-             * The email address of a user. We will associate this event with the user or create a
-             * user. Used for lookup if externalId and userId are not included in the request.
+             * The email address of a user. Used as a fallback lookup when neither userId nor
+             * externalId is provided. We search your account for a visitor with this email and
+             * attach the event to them. If no match is found, a new visitor is created.
              */
             fun email(email: String?) = email(JsonField.ofNullable(email))
 
@@ -959,8 +990,11 @@ private constructor(
             }
 
             /**
-             * The externalId (the ID in your system) of a user. We will associate this event with
-             * the user or create a user. If included in the request, email lookup is ignored.
+             * Your system's unique identifier for this user. We search your account for an existing
+             * visitor with this externalId and attach the event to them (resolving to their Ours
+             * Visitor ID). If no match is found, a new visitor is created. When present, email
+             * lookup is skipped. If you also have the userId from cookies or local storage, send
+             * both — it removes the lookup round-trip.
              */
             fun externalId(externalId: String?) = externalId(JsonField.ofNullable(externalId))
 
@@ -1014,8 +1048,10 @@ private constructor(
             fun time(time: JsonField<Double>) = apply { this.time = time }
 
             /**
-             * The Ours user id stored in local storage and cookies on your web properties. If
-             * userId is included in the request, we do not lookup the user by email or externalId.
+             * The Ours Visitor ID stored in local storage and cookies on your web properties. When
+             * present, this is used directly — no lookup by externalId or email is performed. If
+             * you have both a userId and an externalId, send both so the event is attached to the
+             * right visitor without any lookup overhead.
              */
             fun userId(userId: String?) = userId(JsonField.ofNullable(userId))
 
