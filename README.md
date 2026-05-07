@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.oursprivacy/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.oursprivacy/ours-privacy-kotlin/1.6.0)
-[![javadoc](https://javadoc.io/badge2/com.oursprivacy/ours-privacy-kotlin/1.6.0/javadoc.svg)](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.6.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.oursprivacy/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.oursprivacy/ours-privacy-kotlin/1.7.0)
+[![javadoc](https://javadoc.io/badge2/com.oursprivacy/ours-privacy-kotlin/1.7.0/javadoc.svg)](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.7.0)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.6.0).
+The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.7.0).
 
 <!-- x-release-please-end -->
 
@@ -24,7 +24,7 @@ The REST API documentation can be found on [docs.oursprivacy.com](https://docs.o
 ### Gradle
 
 ```kotlin
-implementation("com.oursprivacy:ours-privacy-kotlin:1.6.0")
+implementation("com.oursprivacy:ours-privacy-kotlin:1.7.0")
 ```
 
 ### Maven
@@ -33,7 +33,7 @@ implementation("com.oursprivacy:ours-privacy-kotlin:1.6.0")
 <dependency>
   <groupId>com.oursprivacy</groupId>
   <artifactId>ours-privacy-kotlin</artifactId>
-  <version>1.6.0</version>
+  <version>1.7.0</version>
 </dependency>
 ```
 
@@ -235,8 +235,6 @@ The SDK throws custom unchecked exception types:
 
 ## Logging
 
-The SDK uses the standard [OkHttp logging interceptor](https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor).
-
 Enable logging by setting the `OURS_PRIVACY_LOG` environment variable to `info`:
 
 ```sh
@@ -247,6 +245,19 @@ Or to `debug` for more verbose logging:
 
 ```sh
 export OURS_PRIVACY_LOG=debug
+```
+
+Or configure the client manually using the `logLevel` method:
+
+```kotlin
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.core.LogLevel
+
+val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
+    .fromEnv()
+    .logLevel(LogLevel.INFO)
+    .build()
 ```
 
 ## ProGuard and R8

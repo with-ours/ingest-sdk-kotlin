@@ -14,26 +14,28 @@ internal class BatchCreateResponseTest {
         val batchCreateResponse =
             BatchCreateResponse.builder()
                 .accepted(0L)
-                .failed(BatchCreateResponse.Failed._0)
+                .failed(0L)
                 .addResult(
-                    BatchCreateResponse.Result.builder()
+                    BatchCreateResponse.Result.UnionMember0.builder()
                         .index(0L)
-                        .success(BatchCreateResponse.Result.Success.TRUE)
+                        .success(BatchCreateResponse.Result.UnionMember0.Success.TRUE)
                         .build()
                 )
-                .success(BatchCreateResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         assertThat(batchCreateResponse.accepted()).isEqualTo(0L)
-        assertThat(batchCreateResponse.failed()).isEqualTo(BatchCreateResponse.Failed._0)
+        assertThat(batchCreateResponse.failed()).isEqualTo(0L)
         assertThat(batchCreateResponse.results())
             .containsExactly(
-                BatchCreateResponse.Result.builder()
-                    .index(0L)
-                    .success(BatchCreateResponse.Result.Success.TRUE)
-                    .build()
+                BatchCreateResponse.Result.ofUnionMember0(
+                    BatchCreateResponse.Result.UnionMember0.builder()
+                        .index(0L)
+                        .success(BatchCreateResponse.Result.UnionMember0.Success.TRUE)
+                        .build()
+                )
             )
-        assertThat(batchCreateResponse.success()).isEqualTo(BatchCreateResponse.Success.TRUE)
+        assertThat(batchCreateResponse.success()).isEqualTo(true)
     }
 
     @Test
@@ -42,14 +44,14 @@ internal class BatchCreateResponseTest {
         val batchCreateResponse =
             BatchCreateResponse.builder()
                 .accepted(0L)
-                .failed(BatchCreateResponse.Failed._0)
+                .failed(0L)
                 .addResult(
-                    BatchCreateResponse.Result.builder()
+                    BatchCreateResponse.Result.UnionMember0.builder()
                         .index(0L)
-                        .success(BatchCreateResponse.Result.Success.TRUE)
+                        .success(BatchCreateResponse.Result.UnionMember0.Success.TRUE)
                         .build()
                 )
-                .success(BatchCreateResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         val roundtrippedBatchCreateResponse =
