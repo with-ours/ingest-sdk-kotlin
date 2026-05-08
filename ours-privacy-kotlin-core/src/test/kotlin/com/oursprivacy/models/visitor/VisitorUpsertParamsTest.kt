@@ -14,6 +14,7 @@ internal class VisitorUpsertParamsTest {
             .token("x")
             .userProperties(
                 VisitorUpsertParams.UserProperties.builder()
+                    ._efTransactionId("_ef_transaction_id")
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
                     .adsetId("adset_id")
@@ -84,6 +85,7 @@ internal class VisitorUpsertParamsTest {
             )
             .defaultProperties(
                 VisitorUpsertParams.DefaultProperties.builder()
+                    ._efTransactionId("_ef_transaction_id")
                     .activeDuration(0.0)
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
@@ -177,6 +179,7 @@ internal class VisitorUpsertParamsTest {
                 .token("x")
                 .userProperties(
                     VisitorUpsertParams.UserProperties.builder()
+                        ._efTransactionId("_ef_transaction_id")
                         .adId("ad_id")
                         .admitadUid("admitad_uid")
                         .adsetId("adset_id")
@@ -247,6 +250,7 @@ internal class VisitorUpsertParamsTest {
                 )
                 .defaultProperties(
                     VisitorUpsertParams.DefaultProperties.builder()
+                        ._efTransactionId("_ef_transaction_id")
                         .activeDuration(0.0)
                         .adId("ad_id")
                         .admitadUid("admitad_uid")
@@ -338,6 +342,7 @@ internal class VisitorUpsertParamsTest {
         assertThat(body.userProperties())
             .isEqualTo(
                 VisitorUpsertParams.UserProperties.builder()
+                    ._efTransactionId("_ef_transaction_id")
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
                     .adsetId("adset_id")
@@ -409,6 +414,7 @@ internal class VisitorUpsertParamsTest {
         assertThat(body.defaultProperties())
             .isEqualTo(
                 VisitorUpsertParams.DefaultProperties.builder()
+                    ._efTransactionId("_ef_transaction_id")
                     .activeDuration(0.0)
                     .adId("ad_id")
                     .admitadUid("admitad_uid")

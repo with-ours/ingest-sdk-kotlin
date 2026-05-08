@@ -15,6 +15,7 @@ internal class TrackEventParamsTest {
             .event("x")
             .defaultProperties(
                 TrackEventParams.DefaultProperties.builder()
+                    ._efTransactionId("_ef_transaction_id")
                     .activeDuration(0.0)
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
@@ -104,6 +105,7 @@ internal class TrackEventParamsTest {
             .userId("x")
             .userProperties(
                 TrackEventParams.UserProperties.builder()
+                    ._efTransactionId("_ef_transaction_id")
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
                     .adsetId("adset_id")
@@ -183,6 +185,7 @@ internal class TrackEventParamsTest {
                 .event("x")
                 .defaultProperties(
                     TrackEventParams.DefaultProperties.builder()
+                        ._efTransactionId("_ef_transaction_id")
                         .activeDuration(0.0)
                         .adId("ad_id")
                         .admitadUid("admitad_uid")
@@ -275,6 +278,7 @@ internal class TrackEventParamsTest {
                 .userId("x")
                 .userProperties(
                     TrackEventParams.UserProperties.builder()
+                        ._efTransactionId("_ef_transaction_id")
                         .adId("ad_id")
                         .admitadUid("admitad_uid")
                         .adsetId("adset_id")
@@ -352,6 +356,7 @@ internal class TrackEventParamsTest {
         assertThat(body.defaultProperties())
             .isEqualTo(
                 TrackEventParams.DefaultProperties.builder()
+                    ._efTransactionId("_ef_transaction_id")
                     .activeDuration(0.0)
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
@@ -444,6 +449,7 @@ internal class TrackEventParamsTest {
         assertThat(body.userProperties())
             .isEqualTo(
                 TrackEventParams.UserProperties.builder()
+                    ._efTransactionId("_ef_transaction_id")
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
                     .adsetId("adset_id")

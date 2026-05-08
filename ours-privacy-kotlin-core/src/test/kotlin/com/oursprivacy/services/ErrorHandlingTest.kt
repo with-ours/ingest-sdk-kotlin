@@ -72,6 +72,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -164,6 +165,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -259,6 +261,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -351,6 +354,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -446,6 +450,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -538,6 +543,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -633,6 +639,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -725,6 +732,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -820,6 +828,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -912,6 +921,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -1007,6 +1017,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -1099,6 +1110,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -1194,6 +1206,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -1286,6 +1299,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -1381,6 +1395,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -1473,6 +1488,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -1568,6 +1584,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -1660,6 +1677,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -1755,6 +1773,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -1847,6 +1866,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -1942,6 +1962,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -2034,6 +2055,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -2129,6 +2151,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -2221,6 +2244,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -2316,6 +2340,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -2408,6 +2433,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -2503,6 +2529,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -2595,6 +2622,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -2690,6 +2718,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -2782,6 +2811,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -2877,6 +2907,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -2969,6 +3000,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
@@ -3062,6 +3094,7 @@ internal class ErrorHandlingTest {
                         .event("x")
                         .defaultProperties(
                             TrackEventParams.DefaultProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .activeDuration(0.0)
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
@@ -3154,6 +3187,7 @@ internal class ErrorHandlingTest {
                         .userId("x")
                         .userProperties(
                             TrackEventParams.UserProperties.builder()
+                                ._efTransactionId("_ef_transaction_id")
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")

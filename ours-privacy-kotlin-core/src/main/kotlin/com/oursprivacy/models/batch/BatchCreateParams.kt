@@ -1076,6 +1076,7 @@ private constructor(
         class DefaultProperties
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
+            private val _efTransactionId: JsonField<String>,
             private val activeDuration: JsonField<Double>,
             private val adId: JsonField<String>,
             private val admitadUid: JsonField<String>,
@@ -1153,6 +1154,9 @@ private constructor(
 
             @JsonCreator
             private constructor(
+                @JsonProperty("_ef_transaction_id")
+                @ExcludeMissing
+                _efTransactionId: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("activeDuration")
                 @ExcludeMissing
                 activeDuration: JsonField<Double> = JsonMissing.of(),
@@ -1324,6 +1328,7 @@ private constructor(
                 @ExcludeMissing
                 webview: JsonField<Boolean> = JsonMissing.of(),
             ) : this(
+                _efTransactionId,
                 activeDuration,
                 adId,
                 admitadUid,
@@ -1398,6 +1403,15 @@ private constructor(
                 webview,
                 mutableMapOf(),
             )
+
+            /**
+             * The Everflow affiliate Click (Transaction) ID, captured from the `_ef_transaction_id`
+             * URL parameter. Ex: ef_click_abc123
+             *
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun _efTransactionId(): String? = _efTransactionId.getNullable("_ef_transaction_id")
 
             /**
              * The active time in milliseconds that the user had this tab active
@@ -1978,6 +1992,16 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun webview(): Boolean? = webview.getNullable("webview")
+
+            /**
+             * Returns the raw JSON value of [_efTransactionId].
+             *
+             * Unlike [_efTransactionId], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("_ef_transaction_id")
+            @ExcludeMissing
+            fun __efTransactionId(): JsonField<String> = _efTransactionId
 
             /**
              * Returns the raw JSON value of [activeDuration].
@@ -2590,6 +2614,7 @@ private constructor(
             /** A builder for [DefaultProperties]. */
             class Builder internal constructor() {
 
+                private var _efTransactionId: JsonField<String> = JsonMissing.of()
                 private var activeDuration: JsonField<Double> = JsonMissing.of()
                 private var adId: JsonField<String> = JsonMissing.of()
                 private var admitadUid: JsonField<String> = JsonMissing.of()
@@ -2665,6 +2690,7 @@ private constructor(
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 internal fun from(defaultProperties: DefaultProperties) = apply {
+                    _efTransactionId = defaultProperties._efTransactionId
                     activeDuration = defaultProperties.activeDuration
                     adId = defaultProperties.adId
                     admitadUid = defaultProperties.admitadUid
@@ -2738,6 +2764,24 @@ private constructor(
                     wbraid = defaultProperties.wbraid
                     webview = defaultProperties.webview
                     additionalProperties = defaultProperties.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * The Everflow affiliate Click (Transaction) ID, captured from the
+                 * `_ef_transaction_id` URL parameter. Ex: ef_click_abc123
+                 */
+                fun _efTransactionId(_efTransactionId: String?) =
+                    _efTransactionId(JsonField.ofNullable(_efTransactionId))
+
+                /**
+                 * Sets [Builder._efTransactionId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder._efTransactionId] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun _efTransactionId(_efTransactionId: JsonField<String>) = apply {
+                    this._efTransactionId = _efTransactionId
                 }
 
                 /** The active time in milliseconds that the user had this tab active */
@@ -3790,6 +3834,7 @@ private constructor(
                  */
                 fun build(): DefaultProperties =
                     DefaultProperties(
+                        _efTransactionId,
                         activeDuration,
                         adId,
                         admitadUid,
@@ -3883,6 +3928,7 @@ private constructor(
                     return@apply
                 }
 
+                _efTransactionId()
                 activeDuration()
                 adId()
                 admitadUid()
@@ -3973,7 +4019,8 @@ private constructor(
              * Used for best match union deserialization.
              */
             internal fun validity(): Int =
-                (if (activeDuration.asKnown() == null) 0 else 1) +
+                (if (_efTransactionId.asKnown() == null) 0 else 1) +
+                    (if (activeDuration.asKnown() == null) 0 else 1) +
                     (if (adId.asKnown() == null) 0 else 1) +
                     (if (admitadUid.asKnown() == null) 0 else 1) +
                     (if (adsetId.asKnown() == null) 0 else 1) +
@@ -4052,6 +4099,7 @@ private constructor(
                 }
 
                 return other is DefaultProperties &&
+                    _efTransactionId == other._efTransactionId &&
                     activeDuration == other.activeDuration &&
                     adId == other.adId &&
                     admitadUid == other.admitadUid &&
@@ -4129,6 +4177,7 @@ private constructor(
 
             private val hashCode: Int by lazy {
                 Objects.hash(
+                    _efTransactionId,
                     activeDuration,
                     adId,
                     admitadUid,
@@ -4208,7 +4257,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "DefaultProperties{activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
+                "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
         }
 
         /** Any additional event properties you want to pass along. */
@@ -4549,6 +4598,7 @@ private constructor(
         class UserProperties
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
+            private val _efTransactionId: JsonField<String>,
             private val adId: JsonField<String>,
             private val admitadUid: JsonField<String>,
             private val adsetId: JsonField<String>,
@@ -4612,6 +4662,9 @@ private constructor(
 
             @JsonCreator
             private constructor(
+                @JsonProperty("_ef_transaction_id")
+                @ExcludeMissing
+                _efTransactionId: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("ad_id") @ExcludeMissing adId: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("admitad_uid")
                 @ExcludeMissing
@@ -4745,6 +4798,7 @@ private constructor(
                 wbraid: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("zip") @ExcludeMissing zip: JsonField<String> = JsonMissing.of(),
             ) : this(
+                _efTransactionId,
                 adId,
                 admitadUid,
                 adsetId,
@@ -4805,6 +4859,12 @@ private constructor(
                 zip,
                 mutableMapOf(),
             )
+
+            /**
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun _efTransactionId(): String? = _efTransactionId.getNullable("_ef_transaction_id")
 
             /**
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
@@ -5156,6 +5216,16 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun zip(): String? = zip.getNullable("zip")
+
+            /**
+             * Returns the raw JSON value of [_efTransactionId].
+             *
+             * Unlike [_efTransactionId], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("_ef_transaction_id")
+            @ExcludeMissing
+            fun __efTransactionId(): JsonField<String> = _efTransactionId
 
             /**
              * Returns the raw JSON value of [adId].
@@ -5639,6 +5709,7 @@ private constructor(
             /** A builder for [UserProperties]. */
             class Builder internal constructor() {
 
+                private var _efTransactionId: JsonField<String> = JsonMissing.of()
                 private var adId: JsonField<String> = JsonMissing.of()
                 private var admitadUid: JsonField<String> = JsonMissing.of()
                 private var adsetId: JsonField<String> = JsonMissing.of()
@@ -5700,6 +5771,7 @@ private constructor(
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 internal fun from(userProperties: UserProperties) = apply {
+                    _efTransactionId = userProperties._efTransactionId
                     adId = userProperties.adId
                     admitadUid = userProperties.admitadUid
                     adsetId = userProperties.adsetId
@@ -5759,6 +5831,20 @@ private constructor(
                     wbraid = userProperties.wbraid
                     zip = userProperties.zip
                     additionalProperties = userProperties.additionalProperties.toMutableMap()
+                }
+
+                fun _efTransactionId(_efTransactionId: String?) =
+                    _efTransactionId(JsonField.ofNullable(_efTransactionId))
+
+                /**
+                 * Sets [Builder._efTransactionId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder._efTransactionId] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun _efTransactionId(_efTransactionId: JsonField<String>) = apply {
+                    this._efTransactionId = _efTransactionId
                 }
 
                 fun adId(adId: String?) = adId(JsonField.ofNullable(adId))
@@ -6458,6 +6544,7 @@ private constructor(
                  */
                 fun build(): UserProperties =
                     UserProperties(
+                        _efTransactionId,
                         adId,
                         admitadUid,
                         adsetId,
@@ -6537,6 +6624,7 @@ private constructor(
                     return@apply
                 }
 
+                _efTransactionId()
                 adId()
                 admitadUid()
                 adsetId()
@@ -6613,7 +6701,8 @@ private constructor(
              * Used for best match union deserialization.
              */
             internal fun validity(): Int =
-                (if (adId.asKnown() == null) 0 else 1) +
+                (if (_efTransactionId.asKnown() == null) 0 else 1) +
+                    (if (adId.asKnown() == null) 0 else 1) +
                     (if (admitadUid.asKnown() == null) 0 else 1) +
                     (if (adsetId.asKnown() == null) 0 else 1) +
                     (if (alart.asKnown() == null) 0 else 1) +
@@ -6907,6 +6996,7 @@ private constructor(
                 }
 
                 return other is UserProperties &&
+                    _efTransactionId == other._efTransactionId &&
                     adId == other.adId &&
                     admitadUid == other.admitadUid &&
                     adsetId == other.adsetId &&
@@ -6970,6 +7060,7 @@ private constructor(
 
             private val hashCode: Int by lazy {
                 Objects.hash(
+                    _efTransactionId,
                     adId,
                     admitadUid,
                     adsetId,
@@ -7035,7 +7126,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "UserProperties{adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
+                "UserProperties{_efTransactionId=$_efTransactionId, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
         }
 
         override fun equals(other: Any?): Boolean {
