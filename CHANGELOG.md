@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.8.1 (2026-05-08)
+
+Full Changelog: [v1.8.0...v1.8.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.8.0...v1.8.1)
+
+### Chores
+
+* redact api-key headers in debug logs ([c9c7892](https://github.com/with-ours/ingest-sdk-kotlin/commit/c9c7892d5b2d1c94e33e375f3daba19b99eef868))
+
 ## 1.8.0 (2026-05-07)
 
 Full Changelog: [v1.7.0...v1.8.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.7.0...v1.8.0)
