@@ -26,6 +26,7 @@ internal class BatchServiceAsyncTest {
                             .event("x")
                             .defaultProperties(
                                 BatchCreateParams.Event.DefaultProperties.builder()
+                                    ._efTransactionId("_ef_transaction_id")
                                     .activeDuration(0.0)
                                     .adId("ad_id")
                                     .admitadUid("admitad_uid")
@@ -117,6 +118,7 @@ internal class BatchServiceAsyncTest {
                             .userId("x")
                             .userProperties(
                                 BatchCreateParams.Event.UserProperties.builder()
+                                    ._efTransactionId("_ef_transaction_id")
                                     .adId("ad_id")
                                     .admitadUid("admitad_uid")
                                     .adsetId("adset_id")
