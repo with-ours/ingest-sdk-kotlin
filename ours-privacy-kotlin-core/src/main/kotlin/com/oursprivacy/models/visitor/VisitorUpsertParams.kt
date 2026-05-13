@@ -943,6 +943,7 @@ private constructor(
         private val aleid: JsonField<String>,
         private val axwrt: JsonField<String>,
         private val basisCid: JsonField<String>,
+        private val beeswaxAuctionId: JsonField<String>,
         private val campaignId: JsonField<String>,
         private val city: JsonField<String>,
         private val clickid: JsonField<String>,
@@ -1013,6 +1014,9 @@ private constructor(
             @JsonProperty("basis_cid")
             @ExcludeMissing
             basisCid: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("beeswax_auction_id")
+            @ExcludeMissing
+            beeswaxAuctionId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("campaign_id")
             @ExcludeMissing
             campaignId: JsonField<String> = JsonMissing.of(),
@@ -1113,6 +1117,7 @@ private constructor(
             aleid,
             axwrt,
             basisCid,
+            beeswaxAuctionId,
             campaignId,
             city,
             clickid,
@@ -1214,6 +1219,12 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun basisCid(): String? = basisCid.getNullable("basis_cid")
+
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun beeswaxAuctionId(): String? = beeswaxAuctionId.getNullable("beeswax_auction_id")
 
         /**
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -1584,6 +1595,16 @@ private constructor(
          * Unlike [basisCid], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("basis_cid") @ExcludeMissing fun _basisCid(): JsonField<String> = basisCid
+
+        /**
+         * Returns the raw JSON value of [beeswaxAuctionId].
+         *
+         * Unlike [beeswaxAuctionId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("beeswax_auction_id")
+        @ExcludeMissing
+        fun _beeswaxAuctionId(): JsonField<String> = beeswaxAuctionId
 
         /**
          * Returns the raw JSON value of [campaignId].
@@ -1994,6 +2015,7 @@ private constructor(
             private var aleid: JsonField<String> = JsonMissing.of()
             private var axwrt: JsonField<String> = JsonMissing.of()
             private var basisCid: JsonField<String> = JsonMissing.of()
+            private var beeswaxAuctionId: JsonField<String> = JsonMissing.of()
             private var campaignId: JsonField<String> = JsonMissing.of()
             private var city: JsonField<String> = JsonMissing.of()
             private var clickid: JsonField<String> = JsonMissing.of()
@@ -2056,6 +2078,7 @@ private constructor(
                 aleid = userProperties.aleid
                 axwrt = userProperties.axwrt
                 basisCid = userProperties.basisCid
+                beeswaxAuctionId = userProperties.beeswaxAuctionId
                 campaignId = userProperties.campaignId
                 city = userProperties.city
                 clickid = userProperties.clickid
@@ -2200,6 +2223,20 @@ private constructor(
              * supported value.
              */
             fun basisCid(basisCid: JsonField<String>) = apply { this.basisCid = basisCid }
+
+            fun beeswaxAuctionId(beeswaxAuctionId: String?) =
+                beeswaxAuctionId(JsonField.ofNullable(beeswaxAuctionId))
+
+            /**
+             * Sets [Builder.beeswaxAuctionId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.beeswaxAuctionId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun beeswaxAuctionId(beeswaxAuctionId: JsonField<String>) = apply {
+                this.beeswaxAuctionId = beeswaxAuctionId
+            }
 
             fun campaignId(campaignId: String?) = campaignId(JsonField.ofNullable(campaignId))
 
@@ -2814,6 +2851,7 @@ private constructor(
                     aleid,
                     axwrt,
                     basisCid,
+                    beeswaxAuctionId,
                     campaignId,
                     city,
                     clickid,
@@ -2893,6 +2931,7 @@ private constructor(
             aleid()
             axwrt()
             basisCid()
+            beeswaxAuctionId()
             campaignId()
             city()
             clickid()
@@ -2970,6 +3009,7 @@ private constructor(
                 (if (aleid.asKnown() == null) 0 else 1) +
                 (if (axwrt.asKnown() == null) 0 else 1) +
                 (if (basisCid.asKnown() == null) 0 else 1) +
+                (if (beeswaxAuctionId.asKnown() == null) 0 else 1) +
                 (if (campaignId.asKnown() == null) 0 else 1) +
                 (if (city.asKnown() == null) 0 else 1) +
                 (if (clickid.asKnown() == null) 0 else 1) +
@@ -3257,6 +3297,7 @@ private constructor(
                 aleid == other.aleid &&
                 axwrt == other.axwrt &&
                 basisCid == other.basisCid &&
+                beeswaxAuctionId == other.beeswaxAuctionId &&
                 campaignId == other.campaignId &&
                 city == other.city &&
                 clickid == other.clickid &&
@@ -3321,6 +3362,7 @@ private constructor(
                 aleid,
                 axwrt,
                 basisCid,
+                beeswaxAuctionId,
                 campaignId,
                 city,
                 clickid,
@@ -3379,7 +3421,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "UserProperties{_efTransactionId=$_efTransactionId, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
+            "UserProperties{_efTransactionId=$_efTransactionId, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
     }
 
     /** These properties are used throughout the Ours app to pass known values onto destinations */
@@ -3395,6 +3437,7 @@ private constructor(
         private val aleid: JsonField<String>,
         private val axwrt: JsonField<String>,
         private val basisCid: JsonField<String>,
+        private val beeswaxAuctionId: JsonField<String>,
         private val browserLanguage: JsonField<String>,
         private val browserName: JsonField<String>,
         private val browserVersion: JsonField<String>,
@@ -3481,6 +3524,9 @@ private constructor(
             @JsonProperty("basis_cid")
             @ExcludeMissing
             basisCid: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("beeswax_auction_id")
+            @ExcludeMissing
+            beeswaxAuctionId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("browser_language")
             @ExcludeMissing
             browserLanguage: JsonField<String> = JsonMissing.of(),
@@ -3615,6 +3661,7 @@ private constructor(
             aleid,
             axwrt,
             basisCid,
+            beeswaxAuctionId,
             browserLanguage,
             browserName,
             browserVersion,
@@ -3754,6 +3801,15 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun basisCid(): String? = basisCid.getNullable("basis_cid")
+
+        /**
+         * The Beeswax (FreeWheel Buyer Cloud) auction ID, captured from the `{{AUCTION_ID}}` macro
+         * on creative click URLs. Ex: bx-auc-abc123
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun beeswaxAuctionId(): String? = beeswaxAuctionId.getNullable("beeswax_auction_id")
 
         /**
          * The language of the browser. Ex: en-US
@@ -4342,6 +4398,16 @@ private constructor(
         @JsonProperty("basis_cid") @ExcludeMissing fun _basisCid(): JsonField<String> = basisCid
 
         /**
+         * Returns the raw JSON value of [beeswaxAuctionId].
+         *
+         * Unlike [beeswaxAuctionId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("beeswax_auction_id")
+        @ExcludeMissing
+        fun _beeswaxAuctionId(): JsonField<String> = beeswaxAuctionId
+
+        /**
          * Returns the raw JSON value of [browserLanguage].
          *
          * Unlike [browserLanguage], this method doesn't throw if the JSON field has an unexpected
@@ -4863,6 +4929,7 @@ private constructor(
             private var aleid: JsonField<String> = JsonMissing.of()
             private var axwrt: JsonField<String> = JsonMissing.of()
             private var basisCid: JsonField<String> = JsonMissing.of()
+            private var beeswaxAuctionId: JsonField<String> = JsonMissing.of()
             private var browserLanguage: JsonField<String> = JsonMissing.of()
             private var browserName: JsonField<String> = JsonMissing.of()
             private var browserVersion: JsonField<String> = JsonMissing.of()
@@ -4939,6 +5006,7 @@ private constructor(
                 aleid = defaultProperties.aleid
                 axwrt = defaultProperties.axwrt
                 basisCid = defaultProperties.basisCid
+                beeswaxAuctionId = defaultProperties.beeswaxAuctionId
                 browserLanguage = defaultProperties.browserLanguage
                 browserName = defaultProperties.browserName
                 browserVersion = defaultProperties.browserVersion
@@ -5131,6 +5199,24 @@ private constructor(
              * supported value.
              */
             fun basisCid(basisCid: JsonField<String>) = apply { this.basisCid = basisCid }
+
+            /**
+             * The Beeswax (FreeWheel Buyer Cloud) auction ID, captured from the `{{AUCTION_ID}}`
+             * macro on creative click URLs. Ex: bx-auc-abc123
+             */
+            fun beeswaxAuctionId(beeswaxAuctionId: String?) =
+                beeswaxAuctionId(JsonField.ofNullable(beeswaxAuctionId))
+
+            /**
+             * Sets [Builder.beeswaxAuctionId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.beeswaxAuctionId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun beeswaxAuctionId(beeswaxAuctionId: JsonField<String>) = apply {
+                this.beeswaxAuctionId = beeswaxAuctionId
+            }
 
             /** The language of the browser. Ex: en-US */
             fun browserLanguage(browserLanguage: String?) =
@@ -6049,6 +6135,7 @@ private constructor(
                     aleid,
                     axwrt,
                     basisCid,
+                    beeswaxAuctionId,
                     browserLanguage,
                     browserName,
                     browserVersion,
@@ -6142,6 +6229,7 @@ private constructor(
             aleid()
             axwrt()
             basisCid()
+            beeswaxAuctionId()
             browserLanguage()
             browserName()
             browserVersion()
@@ -6233,6 +6321,7 @@ private constructor(
                 (if (aleid.asKnown() == null) 0 else 1) +
                 (if (axwrt.asKnown() == null) 0 else 1) +
                 (if (basisCid.asKnown() == null) 0 else 1) +
+                (if (beeswaxAuctionId.asKnown() == null) 0 else 1) +
                 (if (browserLanguage.asKnown() == null) 0 else 1) +
                 (if (browserName.asKnown() == null) 0 else 1) +
                 (if (browserVersion.asKnown() == null) 0 else 1) +
@@ -6313,6 +6402,7 @@ private constructor(
                 aleid == other.aleid &&
                 axwrt == other.axwrt &&
                 basisCid == other.basisCid &&
+                beeswaxAuctionId == other.beeswaxAuctionId &&
                 browserLanguage == other.browserLanguage &&
                 browserName == other.browserName &&
                 browserVersion == other.browserVersion &&
@@ -6391,6 +6481,7 @@ private constructor(
                 aleid,
                 axwrt,
                 basisCid,
+                beeswaxAuctionId,
                 browserLanguage,
                 browserName,
                 browserVersion,
@@ -6462,7 +6553,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
+            "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
     }
 
     /**
