@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.10.0 (2026-05-13)
+
+Full Changelog: [v1.9.0...v1.10.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.9.0...v1.10.0)
+
+### Features
+
+* **api:** api update ([b9fa924](https://github.com/with-ours/ingest-sdk-kotlin/commit/b9fa924716617fd16cda783d53ccbb9ff41ea5b1))
+
 ## 1.9.0 (2026-05-08)
 
 Full Changelog: [v1.8.1...v1.9.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.8.1...v1.9.0)
