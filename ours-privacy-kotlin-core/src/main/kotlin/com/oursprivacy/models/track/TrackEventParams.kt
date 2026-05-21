@@ -1307,6 +1307,8 @@ private constructor(
         private val utmSource: JsonField<String>,
         private val utmTerm: JsonField<String>,
         private val version: JsonField<String>,
+        private val viantClickId: JsonField<String>,
+        private val viantImpressionId: JsonField<String>,
         private val wbraid: JsonField<String>,
         private val webview: JsonField<Boolean>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -1456,6 +1458,12 @@ private constructor(
             utmSource: JsonField<String> = JsonMissing.of(),
             @JsonProperty("utm_term") @ExcludeMissing utmTerm: JsonField<String> = JsonMissing.of(),
             @JsonProperty("version") @ExcludeMissing version: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("viant_click_id")
+            @ExcludeMissing
+            viantClickId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("viant_impression_id")
+            @ExcludeMissing
+            viantImpressionId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("wbraid") @ExcludeMissing wbraid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("webview") @ExcludeMissing webview: JsonField<Boolean> = JsonMissing.of(),
         ) : this(
@@ -1531,6 +1539,8 @@ private constructor(
             utmSource,
             utmTerm,
             version,
+            viantClickId,
+            viantImpressionId,
             wbraid,
             webview,
             mutableMapOf(),
@@ -2118,6 +2128,25 @@ private constructor(
         fun version(): String? = version.getNullable("version")
 
         /**
+         * The Viant (Adelphic) Click ID, captured from the `viant_click_id` URL parameter (Viant
+         * `${ADELPHIC_CLICKID}` macro). Sent as `xid` on Viant postbacks. Ex: viant_click_abc123
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun viantClickId(): String? = viantClickId.getNullable("viant_click_id")
+
+        /**
+         * The Viant (Adelphic) Impression ID, captured from the `viant_impression_id` URL parameter
+         * (Viant `${ADELPHIC_IMPRESSIONID}` macro). Sent as `imp_id` on Viant postbacks for
+         * post-view attribution. Ex: viant_imp_abc123
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun viantImpressionId(): String? = viantImpressionId.getNullable("viant_impression_id")
+
+        /**
          * The WBRAID Identifier. The web SDK automatically captures this from the query params.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -2693,6 +2722,26 @@ private constructor(
         @JsonProperty("version") @ExcludeMissing fun _version(): JsonField<String> = version
 
         /**
+         * Returns the raw JSON value of [viantClickId].
+         *
+         * Unlike [viantClickId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("viant_click_id")
+        @ExcludeMissing
+        fun _viantClickId(): JsonField<String> = viantClickId
+
+        /**
+         * Returns the raw JSON value of [viantImpressionId].
+         *
+         * Unlike [viantImpressionId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("viant_impression_id")
+        @ExcludeMissing
+        fun _viantImpressionId(): JsonField<String> = viantImpressionId
+
+        /**
          * Returns the raw JSON value of [wbraid].
          *
          * Unlike [wbraid], this method doesn't throw if the JSON field has an unexpected type.
@@ -2799,6 +2848,8 @@ private constructor(
             private var utmSource: JsonField<String> = JsonMissing.of()
             private var utmTerm: JsonField<String> = JsonMissing.of()
             private var version: JsonField<String> = JsonMissing.of()
+            private var viantClickId: JsonField<String> = JsonMissing.of()
+            private var viantImpressionId: JsonField<String> = JsonMissing.of()
             private var wbraid: JsonField<String> = JsonMissing.of()
             private var webview: JsonField<Boolean> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -2876,6 +2927,8 @@ private constructor(
                 utmSource = defaultProperties.utmSource
                 utmTerm = defaultProperties.utmTerm
                 version = defaultProperties.version
+                viantClickId = defaultProperties.viantClickId
+                viantImpressionId = defaultProperties.viantImpressionId
                 wbraid = defaultProperties.wbraid
                 webview = defaultProperties.webview
                 additionalProperties = defaultProperties.additionalProperties.toMutableMap()
@@ -3875,6 +3928,44 @@ private constructor(
             fun version(version: JsonField<String>) = apply { this.version = version }
 
             /**
+             * The Viant (Adelphic) Click ID, captured from the `viant_click_id` URL parameter
+             * (Viant `${ADELPHIC_CLICKID}` macro). Sent as `xid` on Viant postbacks. Ex:
+             * viant_click_abc123
+             */
+            fun viantClickId(viantClickId: String?) =
+                viantClickId(JsonField.ofNullable(viantClickId))
+
+            /**
+             * Sets [Builder.viantClickId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.viantClickId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun viantClickId(viantClickId: JsonField<String>) = apply {
+                this.viantClickId = viantClickId
+            }
+
+            /**
+             * The Viant (Adelphic) Impression ID, captured from the `viant_impression_id` URL
+             * parameter (Viant `${ADELPHIC_IMPRESSIONID}` macro). Sent as `imp_id` on Viant
+             * postbacks for post-view attribution. Ex: viant_imp_abc123
+             */
+            fun viantImpressionId(viantImpressionId: String?) =
+                viantImpressionId(JsonField.ofNullable(viantImpressionId))
+
+            /**
+             * Sets [Builder.viantImpressionId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.viantImpressionId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun viantImpressionId(viantImpressionId: JsonField<String>) = apply {
+                this.viantImpressionId = viantImpressionId
+            }
+
+            /**
              * The WBRAID Identifier. The web SDK automatically captures this from the query params.
              */
             fun wbraid(wbraid: String?) = wbraid(JsonField.ofNullable(wbraid))
@@ -4005,6 +4096,8 @@ private constructor(
                     utmSource,
                     utmTerm,
                     version,
+                    viantClickId,
+                    viantImpressionId,
                     wbraid,
                     webview,
                     additionalProperties.toMutableMap(),
@@ -4099,6 +4192,8 @@ private constructor(
             utmSource()
             utmTerm()
             version()
+            viantClickId()
+            viantImpressionId()
             wbraid()
             webview()
             validated = true
@@ -4191,6 +4286,8 @@ private constructor(
                 (if (utmSource.asKnown() == null) 0 else 1) +
                 (if (utmTerm.asKnown() == null) 0 else 1) +
                 (if (version.asKnown() == null) 0 else 1) +
+                (if (viantClickId.asKnown() == null) 0 else 1) +
+                (if (viantImpressionId.asKnown() == null) 0 else 1) +
                 (if (wbraid.asKnown() == null) 0 else 1) +
                 (if (webview.asKnown() == null) 0 else 1)
 
@@ -4272,6 +4369,8 @@ private constructor(
                 utmSource == other.utmSource &&
                 utmTerm == other.utmTerm &&
                 version == other.version &&
+                viantClickId == other.viantClickId &&
+                viantImpressionId == other.viantImpressionId &&
                 wbraid == other.wbraid &&
                 webview == other.webview &&
                 additionalProperties == other.additionalProperties
@@ -4351,6 +4450,8 @@ private constructor(
                 utmSource,
                 utmTerm,
                 version,
+                viantClickId,
+                viantImpressionId,
                 wbraid,
                 webview,
                 additionalProperties,
@@ -4360,7 +4461,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
+            "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
     }
 
     /** Any additional event properties you want to pass along. */
@@ -4745,6 +4846,8 @@ private constructor(
         private val utmName: JsonField<String>,
         private val utmSource: JsonField<String>,
         private val utmTerm: JsonField<String>,
+        private val viantClickId: JsonField<String>,
+        private val viantImpressionId: JsonField<String>,
         private val wbraid: JsonField<String>,
         private val zip: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -4858,6 +4961,12 @@ private constructor(
             @ExcludeMissing
             utmSource: JsonField<String> = JsonMissing.of(),
             @JsonProperty("utm_term") @ExcludeMissing utmTerm: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("viant_click_id")
+            @ExcludeMissing
+            viantClickId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("viant_impression_id")
+            @ExcludeMissing
+            viantImpressionId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("wbraid") @ExcludeMissing wbraid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("zip") @ExcludeMissing zip: JsonField<String> = JsonMissing.of(),
         ) : this(
@@ -4919,6 +5028,8 @@ private constructor(
             utmName,
             utmSource,
             utmTerm,
+            viantClickId,
+            viantImpressionId,
             wbraid,
             zip,
             mutableMapOf(),
@@ -5274,6 +5385,18 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun utmTerm(): String? = utmTerm.getNullable("utm_term")
+
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun viantClickId(): String? = viantClickId.getNullable("viant_click_id")
+
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun viantImpressionId(): String? = viantImpressionId.getNullable("viant_impression_id")
 
         /**
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -5725,6 +5848,26 @@ private constructor(
         @JsonProperty("utm_term") @ExcludeMissing fun _utmTerm(): JsonField<String> = utmTerm
 
         /**
+         * Returns the raw JSON value of [viantClickId].
+         *
+         * Unlike [viantClickId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("viant_click_id")
+        @ExcludeMissing
+        fun _viantClickId(): JsonField<String> = viantClickId
+
+        /**
+         * Returns the raw JSON value of [viantImpressionId].
+         *
+         * Unlike [viantImpressionId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("viant_impression_id")
+        @ExcludeMissing
+        fun _viantImpressionId(): JsonField<String> = viantImpressionId
+
+        /**
          * Returns the raw JSON value of [wbraid].
          *
          * Unlike [wbraid], this method doesn't throw if the JSON field has an unexpected type.
@@ -5817,6 +5960,8 @@ private constructor(
             private var utmName: JsonField<String> = JsonMissing.of()
             private var utmSource: JsonField<String> = JsonMissing.of()
             private var utmTerm: JsonField<String> = JsonMissing.of()
+            private var viantClickId: JsonField<String> = JsonMissing.of()
+            private var viantImpressionId: JsonField<String> = JsonMissing.of()
             private var wbraid: JsonField<String> = JsonMissing.of()
             private var zip: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -5880,6 +6025,8 @@ private constructor(
                 utmName = userProperties.utmName
                 utmSource = userProperties.utmSource
                 utmTerm = userProperties.utmTerm
+                viantClickId = userProperties.viantClickId
+                viantImpressionId = userProperties.viantImpressionId
                 wbraid = userProperties.wbraid
                 zip = userProperties.zip
                 additionalProperties = userProperties.additionalProperties.toMutableMap()
@@ -6547,6 +6694,34 @@ private constructor(
              */
             fun utmTerm(utmTerm: JsonField<String>) = apply { this.utmTerm = utmTerm }
 
+            fun viantClickId(viantClickId: String?) =
+                viantClickId(JsonField.ofNullable(viantClickId))
+
+            /**
+             * Sets [Builder.viantClickId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.viantClickId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun viantClickId(viantClickId: JsonField<String>) = apply {
+                this.viantClickId = viantClickId
+            }
+
+            fun viantImpressionId(viantImpressionId: String?) =
+                viantImpressionId(JsonField.ofNullable(viantImpressionId))
+
+            /**
+             * Sets [Builder.viantImpressionId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.viantImpressionId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun viantImpressionId(viantImpressionId: JsonField<String>) = apply {
+                this.viantImpressionId = viantImpressionId
+            }
+
             fun wbraid(wbraid: String?) = wbraid(JsonField.ofNullable(wbraid))
 
             /**
@@ -6653,6 +6828,8 @@ private constructor(
                     utmName,
                     utmSource,
                     utmTerm,
+                    viantClickId,
+                    viantImpressionId,
                     wbraid,
                     zip,
                     additionalProperties.toMutableMap(),
@@ -6733,6 +6910,8 @@ private constructor(
             utmName()
             utmSource()
             utmTerm()
+            viantClickId()
+            viantImpressionId()
             wbraid()
             zip()
             validated = true
@@ -6811,6 +6990,8 @@ private constructor(
                 (if (utmName.asKnown() == null) 0 else 1) +
                 (if (utmSource.asKnown() == null) 0 else 1) +
                 (if (utmTerm.asKnown() == null) 0 else 1) +
+                (if (viantClickId.asKnown() == null) 0 else 1) +
+                (if (viantImpressionId.asKnown() == null) 0 else 1) +
                 (if (wbraid.asKnown() == null) 0 else 1) +
                 (if (zip.asKnown() == null) 0 else 1)
 
@@ -7099,6 +7280,8 @@ private constructor(
                 utmName == other.utmName &&
                 utmSource == other.utmSource &&
                 utmTerm == other.utmTerm &&
+                viantClickId == other.viantClickId &&
+                viantImpressionId == other.viantImpressionId &&
                 wbraid == other.wbraid &&
                 zip == other.zip &&
                 additionalProperties == other.additionalProperties
@@ -7164,6 +7347,8 @@ private constructor(
                 utmName,
                 utmSource,
                 utmTerm,
+                viantClickId,
+                viantImpressionId,
                 wbraid,
                 zip,
                 additionalProperties,
@@ -7173,7 +7358,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "UserProperties{_efTransactionId=$_efTransactionId, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
+            "UserProperties{_efTransactionId=$_efTransactionId, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
