@@ -5,6 +5,7 @@ package com.oursprivacy.proguard
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
 import com.oursprivacy.core.jsonMapper
+import com.oursprivacy.models.experiments.ExperimentAssignmentResponse
 import com.oursprivacy.models.track.TrackEventResponse
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
@@ -52,6 +53,7 @@ internal class ProGuardCompatibilityTest {
         assertThat(client.batch()).isNotNull()
         assertThat(client.track()).isNotNull()
         assertThat(client.visitor()).isNotNull()
+        assertThat(client.experiments()).isNotNull()
     }
 
     @Test
@@ -67,5 +69,32 @@ internal class ProGuardCompatibilityTest {
             )
 
         assertThat(roundtrippedTrackEventResponse).isEqualTo(trackEventResponse)
+    }
+
+    @Test
+    fun experimentAssignmentResponseRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val experimentAssignmentResponse =
+            ExperimentAssignmentResponse.ofUnionMember0(
+                ExperimentAssignmentResponse.UnionMember0.builder()
+                    .experimentId("experiment_id")
+                    .inExperiment(ExperimentAssignmentResponse.UnionMember0.InExperiment.TRUE)
+                    .success(ExperimentAssignmentResponse.UnionMember0.Success.TRUE)
+                    .variantId("variant_id")
+                    .experimentKey("experiment_key")
+                    .experimentName("experiment_name")
+                    .isControl(true)
+                    .type("type")
+                    .variantName("variant_name")
+                    .build()
+            )
+
+        val roundtrippedExperimentAssignmentResponse =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(experimentAssignmentResponse),
+                jacksonTypeRef<ExperimentAssignmentResponse>(),
+            )
+
+        assertThat(roundtrippedExperimentAssignmentResponse).isEqualTo(experimentAssignmentResponse)
     }
 }
