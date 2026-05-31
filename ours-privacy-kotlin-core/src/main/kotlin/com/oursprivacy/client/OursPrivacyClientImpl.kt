@@ -6,6 +6,8 @@ import com.oursprivacy.core.ClientOptions
 import com.oursprivacy.core.getPackageVersion
 import com.oursprivacy.services.blocking.BatchService
 import com.oursprivacy.services.blocking.BatchServiceImpl
+import com.oursprivacy.services.blocking.ExperimentService
+import com.oursprivacy.services.blocking.ExperimentServiceImpl
 import com.oursprivacy.services.blocking.TrackService
 import com.oursprivacy.services.blocking.TrackServiceImpl
 import com.oursprivacy.services.blocking.VisitorService
@@ -34,6 +36,10 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
 
     private val visitor: VisitorService by lazy { VisitorServiceImpl(clientOptionsWithUserAgent) }
 
+    private val experiments: ExperimentService by lazy {
+        ExperimentServiceImpl(clientOptionsWithUserAgent)
+    }
+
     override fun async(): OursPrivacyClientAsync = async
 
     override fun withRawResponse(): OursPrivacyClient.WithRawResponse = withRawResponse
@@ -46,6 +52,8 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
     override fun track(): TrackService = track
 
     override fun visitor(): VisitorService = visitor
+
+    override fun experiments(): ExperimentService = experiments
 
     override fun close() = clientOptions.close()
 
@@ -64,6 +72,10 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
             VisitorServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val experiments: ExperimentService.WithRawResponse by lazy {
+            ExperimentServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
         ): OursPrivacyClient.WithRawResponse =
@@ -76,5 +88,7 @@ class OursPrivacyClientImpl(private val clientOptions: ClientOptions) : OursPriv
         override fun track(): TrackService.WithRawResponse = track
 
         override fun visitor(): VisitorService.WithRawResponse = visitor
+
+        override fun experiments(): ExperimentService.WithRawResponse = experiments
     }
 }

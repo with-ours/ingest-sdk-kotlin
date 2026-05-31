@@ -6,6 +6,8 @@ import com.oursprivacy.core.ClientOptions
 import com.oursprivacy.core.getPackageVersion
 import com.oursprivacy.services.async.BatchServiceAsync
 import com.oursprivacy.services.async.BatchServiceAsyncImpl
+import com.oursprivacy.services.async.ExperimentServiceAsync
+import com.oursprivacy.services.async.ExperimentServiceAsyncImpl
 import com.oursprivacy.services.async.TrackServiceAsync
 import com.oursprivacy.services.async.TrackServiceAsyncImpl
 import com.oursprivacy.services.async.VisitorServiceAsync
@@ -41,6 +43,10 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
         VisitorServiceAsyncImpl(clientOptionsWithUserAgent)
     }
 
+    private val experiments: ExperimentServiceAsync by lazy {
+        ExperimentServiceAsyncImpl(clientOptionsWithUserAgent)
+    }
+
     override fun sync(): OursPrivacyClient = sync
 
     override fun withRawResponse(): OursPrivacyClientAsync.WithRawResponse = withRawResponse
@@ -53,6 +59,8 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
     override fun track(): TrackServiceAsync = track
 
     override fun visitor(): VisitorServiceAsync = visitor
+
+    override fun experiments(): ExperimentServiceAsync = experiments
 
     override fun close() = clientOptions.close()
 
@@ -71,6 +79,10 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
             VisitorServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val experiments: ExperimentServiceAsync.WithRawResponse by lazy {
+            ExperimentServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
         ): OursPrivacyClientAsync.WithRawResponse =
@@ -83,5 +95,7 @@ class OursPrivacyClientAsyncImpl(private val clientOptions: ClientOptions) :
         override fun track(): TrackServiceAsync.WithRawResponse = track
 
         override fun visitor(): VisitorServiceAsync.WithRawResponse = visitor
+
+        override fun experiments(): ExperimentServiceAsync.WithRawResponse = experiments
     }
 }
