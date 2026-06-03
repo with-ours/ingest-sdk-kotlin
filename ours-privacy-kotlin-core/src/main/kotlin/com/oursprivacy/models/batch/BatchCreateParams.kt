@@ -1120,6 +1120,7 @@ private constructor(
             private val msclkid: JsonField<String>,
             private val ndclid: JsonField<String>,
             private val newS: JsonField<Boolean>,
+            private val obClickId: JsonField<String>,
             private val oppref: JsonField<String>,
             private val osName: JsonField<String>,
             private val osVersion: JsonField<String>,
@@ -1258,6 +1259,9 @@ private constructor(
                 @ExcludeMissing
                 ndclid: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("new_s") @ExcludeMissing newS: JsonField<Boolean> = JsonMissing.of(),
+                @JsonProperty("ob_click_id")
+                @ExcludeMissing
+                obClickId: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("oppref")
                 @ExcludeMissing
                 oppref: JsonField<String> = JsonMissing.of(),
@@ -1388,6 +1392,7 @@ private constructor(
                 msclkid,
                 ndclid,
                 newS,
+                obClickId,
                 oppref,
                 osName,
                 osVersion,
@@ -1782,6 +1787,15 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun newS(): Boolean? = newS.getNullable("new_s")
+
+            /**
+             * The Outbrain click ID, captured from the `ob_click_id` URL parameter (Outbrain
+             * `{{ob_click_id}}` macro) on the landing page. Ex: ob_click_abc123
+             *
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun obClickId(): String? = obClickId.getNullable("ob_click_id")
 
             /**
              * The OpenAI Ads privacy-preserving reference, captured from the `oppref` URL parameter
@@ -2415,6 +2429,16 @@ private constructor(
             @JsonProperty("new_s") @ExcludeMissing fun _newS(): JsonField<Boolean> = newS
 
             /**
+             * Returns the raw JSON value of [obClickId].
+             *
+             * Unlike [obClickId], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("ob_click_id")
+            @ExcludeMissing
+            fun _obClickId(): JsonField<String> = obClickId
+
+            /**
              * Returns the raw JSON value of [oppref].
              *
              * Unlike [oppref], this method doesn't throw if the JSON field has an unexpected type.
@@ -2754,6 +2778,7 @@ private constructor(
                 private var msclkid: JsonField<String> = JsonMissing.of()
                 private var ndclid: JsonField<String> = JsonMissing.of()
                 private var newS: JsonField<Boolean> = JsonMissing.of()
+                private var obClickId: JsonField<String> = JsonMissing.of()
                 private var oppref: JsonField<String> = JsonMissing.of()
                 private var osName: JsonField<String> = JsonMissing.of()
                 private var osVersion: JsonField<String> = JsonMissing.of()
@@ -2834,6 +2859,7 @@ private constructor(
                     msclkid = defaultProperties.msclkid
                     ndclid = defaultProperties.ndclid
                     newS = defaultProperties.newS
+                    obClickId = defaultProperties.obClickId
                     oppref = defaultProperties.oppref
                     osName = defaultProperties.osName
                     osVersion = defaultProperties.osVersion
@@ -3501,6 +3527,21 @@ private constructor(
                 fun newS(newS: JsonField<Boolean>) = apply { this.newS = newS }
 
                 /**
+                 * The Outbrain click ID, captured from the `ob_click_id` URL parameter (Outbrain
+                 * `{{ob_click_id}}` macro) on the landing page. Ex: ob_click_abc123
+                 */
+                fun obClickId(obClickId: String?) = obClickId(JsonField.ofNullable(obClickId))
+
+                /**
+                 * Sets [Builder.obClickId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.obClickId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun obClickId(obClickId: JsonField<String>) = apply { this.obClickId = obClickId }
+
+                /**
                  * The OpenAI Ads privacy-preserving reference, captured from the `oppref` URL
                  * parameter on landing pages (the OpenAI Pixel also stores it in a `__oppref`
                  * cookie). Sent to OpenAI Ads on Conversions API events for attribution. Ex:
@@ -4055,6 +4096,7 @@ private constructor(
                         msclkid,
                         ndclid,
                         newS,
+                        obClickId,
                         oppref,
                         osName,
                         osVersion,
@@ -4153,6 +4195,7 @@ private constructor(
                 msclkid()
                 ndclid()
                 newS()
+                obClickId()
                 oppref()
                 osName()
                 osVersion()
@@ -4248,6 +4291,7 @@ private constructor(
                     (if (msclkid.asKnown() == null) 0 else 1) +
                     (if (ndclid.asKnown() == null) 0 else 1) +
                     (if (newS.asKnown() == null) 0 else 1) +
+                    (if (obClickId.asKnown() == null) 0 else 1) +
                     (if (oppref.asKnown() == null) 0 else 1) +
                     (if (osName.asKnown() == null) 0 else 1) +
                     (if (osVersion.asKnown() == null) 0 else 1) +
@@ -4332,6 +4376,7 @@ private constructor(
                     msclkid == other.msclkid &&
                     ndclid == other.ndclid &&
                     newS == other.newS &&
+                    obClickId == other.obClickId &&
                     oppref == other.oppref &&
                     osName == other.osName &&
                     osVersion == other.osVersion &&
@@ -4414,6 +4459,7 @@ private constructor(
                     msclkid,
                     ndclid,
                     newS,
+                    obClickId,
                     oppref,
                     osName,
                     osVersion,
@@ -4454,7 +4500,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, oppref=$oppref, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
+                "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, obClickId=$obClickId, oppref=$oppref, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
         }
 
         /** Any additional event properties you want to pass along. */
@@ -4834,6 +4880,7 @@ private constructor(
             private val liFatId: JsonField<String>,
             private val msclkid: JsonField<String>,
             private val ndclid: JsonField<String>,
+            private val obClickId: JsonField<String>,
             private val oppref: JsonField<String>,
             private val phoneNumber: JsonField<String>,
             private val qclid: JsonField<String>,
@@ -4950,6 +4997,9 @@ private constructor(
                 @JsonProperty("ndclid")
                 @ExcludeMissing
                 ndclid: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("ob_click_id")
+                @ExcludeMissing
+                obClickId: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("oppref")
                 @ExcludeMissing
                 oppref: JsonField<String> = JsonMissing.of(),
@@ -5050,6 +5100,7 @@ private constructor(
                 liFatId,
                 msclkid,
                 ndclid,
+                obClickId,
                 oppref,
                 phoneNumber,
                 qclid,
@@ -5313,6 +5364,12 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun ndclid(): String? = ndclid.getNullable("ndclid")
+
+            /**
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun obClickId(): String? = obClickId.getNullable("ob_click_id")
 
             /**
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
@@ -5768,6 +5825,16 @@ private constructor(
             @JsonProperty("ndclid") @ExcludeMissing fun _ndclid(): JsonField<String> = ndclid
 
             /**
+             * Returns the raw JSON value of [obClickId].
+             *
+             * Unlike [obClickId], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("ob_click_id")
+            @ExcludeMissing
+            fun _obClickId(): JsonField<String> = obClickId
+
+            /**
              * Returns the raw JSON value of [oppref].
              *
              * Unlike [oppref], this method doesn't throw if the JSON field has an unexpected type.
@@ -6026,6 +6093,7 @@ private constructor(
                 private var liFatId: JsonField<String> = JsonMissing.of()
                 private var msclkid: JsonField<String> = JsonMissing.of()
                 private var ndclid: JsonField<String> = JsonMissing.of()
+                private var obClickId: JsonField<String> = JsonMissing.of()
                 private var oppref: JsonField<String> = JsonMissing.of()
                 private var phoneNumber: JsonField<String> = JsonMissing.of()
                 private var qclid: JsonField<String> = JsonMissing.of()
@@ -6092,6 +6160,7 @@ private constructor(
                     liFatId = userProperties.liFatId
                     msclkid = userProperties.msclkid
                     ndclid = userProperties.ndclid
+                    obClickId = userProperties.obClickId
                     oppref = userProperties.oppref
                     phoneNumber = userProperties.phoneNumber
                     qclid = userProperties.qclid
@@ -6570,6 +6639,17 @@ private constructor(
                  */
                 fun ndclid(ndclid: JsonField<String>) = apply { this.ndclid = ndclid }
 
+                fun obClickId(obClickId: String?) = obClickId(JsonField.ofNullable(obClickId))
+
+                /**
+                 * Sets [Builder.obClickId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.obClickId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun obClickId(obClickId: JsonField<String>) = apply { this.obClickId = obClickId }
+
                 fun oppref(oppref: String?) = oppref(JsonField.ofNullable(oppref))
 
                 /**
@@ -6922,6 +7002,7 @@ private constructor(
                         liFatId,
                         msclkid,
                         ndclid,
+                        obClickId,
                         oppref,
                         phoneNumber,
                         qclid,
@@ -7006,6 +7087,7 @@ private constructor(
                 liFatId()
                 msclkid()
                 ndclid()
+                obClickId()
                 oppref()
                 phoneNumber()
                 qclid()
@@ -7087,6 +7169,7 @@ private constructor(
                     (if (liFatId.asKnown() == null) 0 else 1) +
                     (if (msclkid.asKnown() == null) 0 else 1) +
                     (if (ndclid.asKnown() == null) 0 else 1) +
+                    (if (obClickId.asKnown() == null) 0 else 1) +
                     (if (oppref.asKnown() == null) 0 else 1) +
                     (if (phoneNumber.asKnown() == null) 0 else 1) +
                     (if (qclid.asKnown() == null) 0 else 1) +
@@ -7386,6 +7469,7 @@ private constructor(
                     liFatId == other.liFatId &&
                     msclkid == other.msclkid &&
                     ndclid == other.ndclid &&
+                    obClickId == other.obClickId &&
                     oppref == other.oppref &&
                     phoneNumber == other.phoneNumber &&
                     qclid == other.qclid &&
@@ -7454,6 +7538,7 @@ private constructor(
                     liFatId,
                     msclkid,
                     ndclid,
+                    obClickId,
                     oppref,
                     phoneNumber,
                     qclid,
@@ -7485,7 +7570,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "UserProperties{_efTransactionId=$_efTransactionId, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, oppref=$oppref, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
+                "UserProperties{_efTransactionId=$_efTransactionId, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, obClickId=$obClickId, oppref=$oppref, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
         }
 
         override fun equals(other: Any?): Boolean {
