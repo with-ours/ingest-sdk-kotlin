@@ -1612,7 +1612,7 @@ private constructor(
         fun aleid(): String? = aleid.getNullable("aleid")
 
         /**
-         * The AppLovin Axon pixel cookie value (_axwrt). Web-only.
+         * The AppLovin pixel cookie value (_axwrt). Web-only.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -3081,7 +3081,7 @@ private constructor(
              */
             fun aleid(aleid: JsonField<String>) = apply { this.aleid = aleid }
 
-            /** The AppLovin Axon pixel cookie value (_axwrt). Web-only. */
+            /** The AppLovin pixel cookie value (_axwrt). Web-only. */
             fun axwrt(axwrt: String?) = axwrt(JsonField.ofNullable(axwrt))
 
             /**
