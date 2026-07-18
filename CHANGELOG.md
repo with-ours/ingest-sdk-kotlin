@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.17.0 (2026-07-18)
+
+Full Changelog: [v1.16.0...v1.17.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.16.0...v1.17.0)
+
+### Features
+
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([35608b4](https://github.com/with-ours/ingest-sdk-kotlin/commit/35608b4e8f66562cba4a7738245284cc91a11f91))
+
 ## 1.16.0 (2026-06-12)
 
 Full Changelog: [v1.15.0...v1.16.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.15.0...v1.16.0)
