@@ -245,6 +245,7 @@ private constructor(
         private val experimentKey: JsonField<String>,
         private val experimentName: JsonField<String>,
         private val isControl: JsonField<Boolean>,
+        private val redirect: JsonField<String>,
         private val type: JsonField<String>,
         private val variantName: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -271,6 +272,9 @@ private constructor(
             @JsonProperty("is_control")
             @ExcludeMissing
             isControl: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("redirect")
+            @ExcludeMissing
+            redirect: JsonField<String> = JsonMissing.of(),
             @JsonProperty("type") @ExcludeMissing type: JsonField<String> = JsonMissing.of(),
             @JsonProperty("variant_name")
             @ExcludeMissing
@@ -283,6 +287,7 @@ private constructor(
             experimentKey,
             experimentName,
             isControl,
+            redirect,
             type,
             variantName,
             mutableMapOf(),
@@ -329,6 +334,17 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun isControl(): Boolean? = isControl.getNullable("is_control")
+
+        /**
+         * Redirect destination for redirect (split-URL) variants — a same-domain relative path or
+         * an absolute https:// URL. Present only when the assigned variant is a redirect; absent
+         * for on-page (DOM-modification) variants. Read it straight off the payload and issue the
+         * redirect server-side.
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun redirect(): String? = redirect.getNullable("redirect")
 
         /**
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -404,6 +420,13 @@ private constructor(
         @JsonProperty("is_control") @ExcludeMissing fun _isControl(): JsonField<Boolean> = isControl
 
         /**
+         * Returns the raw JSON value of [redirect].
+         *
+         * Unlike [redirect], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("redirect") @ExcludeMissing fun _redirect(): JsonField<String> = redirect
+
+        /**
          * Returns the raw JSON value of [type].
          *
          * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
@@ -457,6 +480,7 @@ private constructor(
             private var experimentKey: JsonField<String> = JsonMissing.of()
             private var experimentName: JsonField<String> = JsonMissing.of()
             private var isControl: JsonField<Boolean> = JsonMissing.of()
+            private var redirect: JsonField<String> = JsonMissing.of()
             private var type: JsonField<String> = JsonMissing.of()
             private var variantName: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -469,6 +493,7 @@ private constructor(
                 experimentKey = unionMember0.experimentKey
                 experimentName = unionMember0.experimentName
                 isControl = unionMember0.isControl
+                redirect = unionMember0.redirect
                 type = unionMember0.type
                 variantName = unionMember0.variantName
                 additionalProperties = unionMember0.additionalProperties.toMutableMap()
@@ -568,6 +593,23 @@ private constructor(
              */
             fun isControl(isControl: JsonField<Boolean>) = apply { this.isControl = isControl }
 
+            /**
+             * Redirect destination for redirect (split-URL) variants — a same-domain relative path
+             * or an absolute https:// URL. Present only when the assigned variant is a redirect;
+             * absent for on-page (DOM-modification) variants. Read it straight off the payload and
+             * issue the redirect server-side.
+             */
+            fun redirect(redirect: String?) = redirect(JsonField.ofNullable(redirect))
+
+            /**
+             * Sets [Builder.redirect] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.redirect] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun redirect(redirect: JsonField<String>) = apply { this.redirect = redirect }
+
             fun type(type: String?) = type(JsonField.ofNullable(type))
 
             /**
@@ -635,6 +677,7 @@ private constructor(
                     experimentKey,
                     experimentName,
                     isControl,
+                    redirect,
                     type,
                     variantName,
                     additionalProperties.toMutableMap(),
@@ -664,6 +707,7 @@ private constructor(
             experimentKey()
             experimentName()
             isControl()
+            redirect()
             type()
             variantName()
             validated = true
@@ -691,6 +735,7 @@ private constructor(
                 (if (experimentKey.asKnown() == null) 0 else 1) +
                 (if (experimentName.asKnown() == null) 0 else 1) +
                 (if (isControl.asKnown() == null) 0 else 1) +
+                (if (redirect.asKnown() == null) 0 else 1) +
                 (if (type.asKnown() == null) 0 else 1) +
                 (if (variantName.asKnown() == null) 0 else 1)
 
@@ -968,6 +1013,7 @@ private constructor(
                 experimentKey == other.experimentKey &&
                 experimentName == other.experimentName &&
                 isControl == other.isControl &&
+                redirect == other.redirect &&
                 type == other.type &&
                 variantName == other.variantName &&
                 additionalProperties == other.additionalProperties
@@ -982,6 +1028,7 @@ private constructor(
                 experimentKey,
                 experimentName,
                 isControl,
+                redirect,
                 type,
                 variantName,
                 additionalProperties,
@@ -991,7 +1038,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "UnionMember0{experimentId=$experimentId, inExperiment=$inExperiment, success=$success, variantId=$variantId, experimentKey=$experimentKey, experimentName=$experimentName, isControl=$isControl, type=$type, variantName=$variantName, additionalProperties=$additionalProperties}"
+            "UnionMember0{experimentId=$experimentId, inExperiment=$inExperiment, success=$success, variantId=$variantId, experimentKey=$experimentKey, experimentName=$experimentName, isControl=$isControl, redirect=$redirect, type=$type, variantName=$variantName, additionalProperties=$additionalProperties}"
     }
 
     class UnionMember1
