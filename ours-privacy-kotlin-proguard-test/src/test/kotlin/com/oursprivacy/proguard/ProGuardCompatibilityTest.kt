@@ -84,6 +84,7 @@ internal class ProGuardCompatibilityTest {
                     .experimentKey("experiment_key")
                     .experimentName("experiment_name")
                     .isControl(true)
+                    .redirect("redirect")
                     .type("type")
                     .variantName("variant_name")
                     .build()
