@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.18.1 (2026-08-03)
+
+Full Changelog: [v1.18.0...v1.18.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.18.0...v1.18.1)
+
+### Chores
+
+* add CODEOWNERS ([#41](https://github.com/with-ours/ingest-sdk-kotlin/issues/41)) ([1ef3a40](https://github.com/with-ours/ingest-sdk-kotlin/commit/1ef3a401287f3ce9587ea659c3e9c237eacb38e6))
+
 ## 1.18.0 (2026-07-21)
 
 Full Changelog: [v1.17.0...v1.18.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.17.0...v1.18.0)
