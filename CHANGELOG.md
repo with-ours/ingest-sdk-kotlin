@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.18.2 (2026-08-18)
+
+Full Changelog: [v1.18.1...v1.18.2](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.18.1...v1.18.2)
+
+### Bug Fixes
+
+* **docs:** link the javadoc badge so the version stays current after release ([5e9695a](https://github.com/with-ours/ingest-sdk-kotlin/commit/5e9695ae156f8870e204f9ebd2477882fcbe1c64))
+
+
+### Chores
+
+* **internal:** codegen related update ([1a7539b](https://github.com/with-ours/ingest-sdk-kotlin/commit/1a7539b2f3fb246aa88edf552661941908ef3bb6))
+
 ## 1.18.1 (2026-08-03)
 
 Full Changelog: [v1.18.0...v1.18.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.18.0...v1.18.1)
