@@ -625,7 +625,7 @@ val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
 
 ### Why don't you use plain `enum` classes?
 
-Kotlin `enum` classes are not trivially [forwards compatible](https://www.stainless.com/blog/making-java-enums-forwards-compatible). Using them in the SDK could cause runtime exceptions if the API is updated to respond with a new enum value.
+Kotlin `enum` classes are not trivially forwards compatible. Using them in the SDK could cause runtime exceptions if the API is updated to respond with a new enum value.
 
 ### Why do you represent fields using `JsonField<T>` instead of just plain `T`?
 
