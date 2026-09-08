@@ -9,8 +9,6 @@
 
 The Ours Privacy Kotlin SDK provides convenient access to the [Ours Privacy REST API](https://docs.oursprivacy.com) from applications written in Kotlin.
 
-It is generated with [Stainless](https://www.stainless.com/).
-
 <!-- x-release-please-start-version -->
 
 The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.19.0).
