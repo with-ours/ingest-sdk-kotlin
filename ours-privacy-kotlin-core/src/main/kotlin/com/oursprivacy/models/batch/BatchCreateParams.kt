@@ -2024,7 +2024,7 @@ private constructor(
             fun utmTerm(): String? = utmTerm.getNullable("utm_term")
 
             /**
-             * The SDK version (e.g., web SDK or ingest-sdk-* via Stainless headers)
+             * The SDK version (e.g., web SDK or ingest-sdk-* via generated SDK headers)
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -3940,7 +3940,7 @@ private constructor(
                  */
                 fun utmTerm(utmTerm: JsonField<String>) = apply { this.utmTerm = utmTerm }
 
-                /** The SDK version (e.g., web SDK or ingest-sdk-* via Stainless headers) */
+                /** The SDK version (e.g., web SDK or ingest-sdk-* via generated SDK headers) */
                 fun version(version: String?) = version(JsonField.ofNullable(version))
 
                 /**

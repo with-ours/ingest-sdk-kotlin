@@ -9,6 +9,8 @@
 
 The Ours Privacy Kotlin SDK provides convenient access to the [Ours Privacy REST API](https://docs.oursprivacy.com) from applications written in Kotlin.
 
+It is generated with [Stainless](https://www.stainless.com/).
+
 <!-- x-release-please-start-version -->
 
 The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.19.0).
@@ -625,7 +627,7 @@ val client: OursPrivacyClient = OursPrivacyOkHttpClient.builder()
 
 ### Why don't you use plain `enum` classes?
 
-Kotlin `enum` classes are not trivially forwards compatible. Using them in the SDK could cause runtime exceptions if the API is updated to respond with a new enum value.
+Kotlin `enum` classes are not trivially [forwards compatible](https://www.stainless.com/blog/making-java-enums-forwards-compatible). Using them in the SDK could cause runtime exceptions if the API is updated to respond with a new enum value.
 
 ### Why do you represent fields using `JsonField<T>` instead of just plain `T`?
 
