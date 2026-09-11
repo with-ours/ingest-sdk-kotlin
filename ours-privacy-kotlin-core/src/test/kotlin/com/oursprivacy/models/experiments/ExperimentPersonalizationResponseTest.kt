@@ -3,6 +3,7 @@
 package com.oursprivacy.models.experiments
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.oursprivacy.core.JsonValue
 import com.oursprivacy.core.jsonMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -23,6 +24,11 @@ internal class ExperimentPersonalizationResponseTest {
                         .variantName("variant_name")
                         .build()
                 )
+                .properties(
+                    ExperimentPersonalizationResponse.Properties.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
                 .success(ExperimentPersonalizationResponse.Success.TRUE)
                 .build()
 
@@ -35,6 +41,12 @@ internal class ExperimentPersonalizationResponseTest {
                     .experimentKey("experiment_key")
                     .experimentName("experiment_name")
                     .variantName("variant_name")
+                    .build()
+            )
+        assertThat(experimentPersonalizationResponse.properties())
+            .isEqualTo(
+                ExperimentPersonalizationResponse.Properties.builder()
+                    .putAdditionalProperty("foo", JsonValue.from("string"))
                     .build()
             )
         assertThat(experimentPersonalizationResponse.success())
@@ -54,6 +66,11 @@ internal class ExperimentPersonalizationResponseTest {
                         .experimentKey("experiment_key")
                         .experimentName("experiment_name")
                         .variantName("variant_name")
+                        .build()
+                )
+                .properties(
+                    ExperimentPersonalizationResponse.Properties.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
                 .success(ExperimentPersonalizationResponse.Success.TRUE)
