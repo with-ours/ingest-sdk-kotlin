@@ -14,16 +14,6 @@ internal class ExperimentPersonalizationResponseTest {
     fun create() {
         val experimentPersonalizationResponse =
             ExperimentPersonalizationResponse.builder()
-                .addPersonalization(
-                    ExperimentPersonalizationResponse.Personalization.builder()
-                        .assignedAt(0.0)
-                        .experimentId("experiment_id")
-                        .variantId("variant_id")
-                        .experimentKey("experiment_key")
-                        .experimentName("experiment_name")
-                        .variantName("variant_name")
-                        .build()
-                )
                 .properties(
                     ExperimentPersonalizationResponse.Properties.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
@@ -32,17 +22,6 @@ internal class ExperimentPersonalizationResponseTest {
                 .success(ExperimentPersonalizationResponse.Success.TRUE)
                 .build()
 
-        assertThat(experimentPersonalizationResponse.personalizations())
-            .containsExactly(
-                ExperimentPersonalizationResponse.Personalization.builder()
-                    .assignedAt(0.0)
-                    .experimentId("experiment_id")
-                    .variantId("variant_id")
-                    .experimentKey("experiment_key")
-                    .experimentName("experiment_name")
-                    .variantName("variant_name")
-                    .build()
-            )
         assertThat(experimentPersonalizationResponse.properties())
             .isEqualTo(
                 ExperimentPersonalizationResponse.Properties.builder()
@@ -58,16 +37,6 @@ internal class ExperimentPersonalizationResponseTest {
         val jsonMapper = jsonMapper()
         val experimentPersonalizationResponse =
             ExperimentPersonalizationResponse.builder()
-                .addPersonalization(
-                    ExperimentPersonalizationResponse.Personalization.builder()
-                        .assignedAt(0.0)
-                        .experimentId("experiment_id")
-                        .variantId("variant_id")
-                        .experimentKey("experiment_key")
-                        .experimentName("experiment_name")
-                        .variantName("variant_name")
-                        .build()
-                )
                 .properties(
                     ExperimentPersonalizationResponse.Properties.builder()
                         .putAdditionalProperty("foo", JsonValue.from("string"))
