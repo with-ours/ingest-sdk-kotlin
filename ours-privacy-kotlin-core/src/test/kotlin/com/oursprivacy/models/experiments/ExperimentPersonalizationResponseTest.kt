@@ -14,6 +14,12 @@ internal class ExperimentPersonalizationResponseTest {
     fun create() {
         val experimentPersonalizationResponse =
             ExperimentPersonalizationResponse.builder()
+                .properties(
+                    ExperimentPersonalizationResponse.Properties.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .success(ExperimentPersonalizationResponse.Success.TRUE)
                 .addPersonalization(
                     ExperimentPersonalizationResponse.Personalization.builder()
                         .assignedAt(0.0)
@@ -24,14 +30,16 @@ internal class ExperimentPersonalizationResponseTest {
                         .variantName("variant_name")
                         .build()
                 )
-                .properties(
-                    ExperimentPersonalizationResponse.Properties.builder()
-                        .putAdditionalProperty("foo", JsonValue.from("string"))
-                        .build()
-                )
-                .success(ExperimentPersonalizationResponse.Success.TRUE)
                 .build()
 
+        assertThat(experimentPersonalizationResponse.properties())
+            .isEqualTo(
+                ExperimentPersonalizationResponse.Properties.builder()
+                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                    .build()
+            )
+        assertThat(experimentPersonalizationResponse.success())
+            .isEqualTo(ExperimentPersonalizationResponse.Success.TRUE)
         assertThat(experimentPersonalizationResponse.personalizations())
             .containsExactly(
                 ExperimentPersonalizationResponse.Personalization.builder()
@@ -43,14 +51,6 @@ internal class ExperimentPersonalizationResponseTest {
                     .variantName("variant_name")
                     .build()
             )
-        assertThat(experimentPersonalizationResponse.properties())
-            .isEqualTo(
-                ExperimentPersonalizationResponse.Properties.builder()
-                    .putAdditionalProperty("foo", JsonValue.from("string"))
-                    .build()
-            )
-        assertThat(experimentPersonalizationResponse.success())
-            .isEqualTo(ExperimentPersonalizationResponse.Success.TRUE)
     }
 
     @Test
@@ -58,6 +58,12 @@ internal class ExperimentPersonalizationResponseTest {
         val jsonMapper = jsonMapper()
         val experimentPersonalizationResponse =
             ExperimentPersonalizationResponse.builder()
+                .properties(
+                    ExperimentPersonalizationResponse.Properties.builder()
+                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                        .build()
+                )
+                .success(ExperimentPersonalizationResponse.Success.TRUE)
                 .addPersonalization(
                     ExperimentPersonalizationResponse.Personalization.builder()
                         .assignedAt(0.0)
@@ -68,12 +74,6 @@ internal class ExperimentPersonalizationResponseTest {
                         .variantName("variant_name")
                         .build()
                 )
-                .properties(
-                    ExperimentPersonalizationResponse.Properties.builder()
-                        .putAdditionalProperty("foo", JsonValue.from("string"))
-                        .build()
-                )
-                .success(ExperimentPersonalizationResponse.Success.TRUE)
                 .build()
 
         val roundtrippedExperimentPersonalizationResponse =
