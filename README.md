@@ -22,7 +22,7 @@ The REST API documentation can be found on [docs.oursprivacy.com](https://docs.o
 ### Gradle
 
 ```kotlin
-implementation("com.oursprivacy:ours-privacy-kotlin:1.20.0")
+implementation("com.oursprivacy:ours-privacy-kotlin:1.21.0")
 ```
 
 ### Maven
@@ -31,7 +31,7 @@ implementation("com.oursprivacy:ours-privacy-kotlin:1.20.0")
 <dependency>
   <groupId>com.oursprivacy</groupId>
   <artifactId>ours-privacy-kotlin</artifactId>
-  <version>1.20.0</version>
+  <version>1.21.0</version>
 </dependency>
 ```
 
