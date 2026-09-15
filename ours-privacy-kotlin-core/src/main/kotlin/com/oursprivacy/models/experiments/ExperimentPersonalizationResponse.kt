@@ -21,28 +21,22 @@ import java.util.Objects
 class ExperimentPersonalizationResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val personalizations: JsonField<List<Personalization>>,
     private val properties: JsonField<Properties>,
     private val success: JsonField<Success>,
+    private val personalizations: JsonField<List<Personalization>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("personalizations")
-        @ExcludeMissing
-        personalizations: JsonField<List<Personalization>> = JsonMissing.of(),
         @JsonProperty("properties")
         @ExcludeMissing
         properties: JsonField<Properties> = JsonMissing.of(),
         @JsonProperty("success") @ExcludeMissing success: JsonField<Success> = JsonMissing.of(),
-    ) : this(personalizations, properties, success, mutableMapOf())
-
-    /**
-     * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun personalizations(): List<Personalization> = personalizations.getRequired("personalizations")
+        @JsonProperty("personalizations")
+        @ExcludeMissing
+        personalizations: JsonField<List<Personalization>> = JsonMissing.of(),
+    ) : this(properties, success, personalizations, mutableMapOf())
 
     /**
      * The visitor traits accumulated by your personalization property rules, keyed by property key.
@@ -63,14 +57,16 @@ private constructor(
     fun success(): Success = success.getRequired("success")
 
     /**
-     * Returns the raw JSON value of [personalizations].
+     * Deprecated legacy personalization assignments. Current API responses omit this field; use
+     * properties for accumulated personalization traits. Retained in the SDK for callers using
+     * older responses.
      *
-     * Unlike [personalizations], this method doesn't throw if the JSON field has an unexpected
-     * type.
+     * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
      */
-    @JsonProperty("personalizations")
-    @ExcludeMissing
-    fun _personalizations(): JsonField<List<Personalization>> = personalizations
+    @Deprecated("deprecated")
+    fun personalizations(): List<Personalization>? =
+        personalizations.getNullable("personalizations")
 
     /**
      * Returns the raw JSON value of [properties].
@@ -87,6 +83,17 @@ private constructor(
      * Unlike [success], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("success") @ExcludeMissing fun _success(): JsonField<Success> = success
+
+    /**
+     * Returns the raw JSON value of [personalizations].
+     *
+     * Unlike [personalizations], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @Deprecated("deprecated")
+    @JsonProperty("personalizations")
+    @ExcludeMissing
+    fun _personalizations(): JsonField<List<Personalization>> = personalizations
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -108,7 +115,6 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .personalizations()
          * .properties()
          * .success()
          * ```
@@ -119,46 +125,20 @@ private constructor(
     /** A builder for [ExperimentPersonalizationResponse]. */
     class Builder internal constructor() {
 
-        private var personalizations: JsonField<MutableList<Personalization>>? = null
         private var properties: JsonField<Properties>? = null
         private var success: JsonField<Success>? = null
+        private var personalizations: JsonField<MutableList<Personalization>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(experimentPersonalizationResponse: ExperimentPersonalizationResponse) =
             apply {
-                personalizations =
-                    experimentPersonalizationResponse.personalizations.map { it.toMutableList() }
                 properties = experimentPersonalizationResponse.properties
                 success = experimentPersonalizationResponse.success
+                personalizations =
+                    experimentPersonalizationResponse.personalizations.map { it.toMutableList() }
                 additionalProperties =
                     experimentPersonalizationResponse.additionalProperties.toMutableMap()
             }
-
-        fun personalizations(personalizations: List<Personalization>) =
-            personalizations(JsonField.of(personalizations))
-
-        /**
-         * Sets [Builder.personalizations] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.personalizations] with a well-typed
-         * `List<Personalization>` value instead. This method is primarily for setting the field to
-         * an undocumented or not yet supported value.
-         */
-        fun personalizations(personalizations: JsonField<List<Personalization>>) = apply {
-            this.personalizations = personalizations.map { it.toMutableList() }
-        }
-
-        /**
-         * Adds a single [Personalization] to [personalizations].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        fun addPersonalization(personalization: Personalization) = apply {
-            personalizations =
-                (personalizations ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("personalizations", it).add(personalization)
-                }
-        }
 
         /**
          * The visitor traits accumulated by your personalization property rules, keyed by property
@@ -189,6 +169,40 @@ private constructor(
          */
         fun success(success: JsonField<Success>) = apply { this.success = success }
 
+        /**
+         * Deprecated legacy personalization assignments. Current API responses omit this field; use
+         * properties for accumulated personalization traits. Retained in the SDK for callers using
+         * older responses.
+         */
+        @Deprecated("deprecated")
+        fun personalizations(personalizations: List<Personalization>) =
+            personalizations(JsonField.of(personalizations))
+
+        /**
+         * Sets [Builder.personalizations] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.personalizations] with a well-typed
+         * `List<Personalization>` value instead. This method is primarily for setting the field to
+         * an undocumented or not yet supported value.
+         */
+        @Deprecated("deprecated")
+        fun personalizations(personalizations: JsonField<List<Personalization>>) = apply {
+            this.personalizations = personalizations.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [Personalization] to [personalizations].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        @Deprecated("deprecated")
+        fun addPersonalization(personalization: Personalization) = apply {
+            personalizations =
+                (personalizations ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("personalizations", it).add(personalization)
+                }
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -215,7 +229,6 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .personalizations()
          * .properties()
          * .success()
          * ```
@@ -224,9 +237,9 @@ private constructor(
          */
         fun build(): ExperimentPersonalizationResponse =
             ExperimentPersonalizationResponse(
-                checkRequired("personalizations", personalizations).map { it.toImmutable() },
                 checkRequired("properties", properties),
                 checkRequired("success", success),
+                (personalizations ?: JsonMissing.of()).map { it.toImmutable() },
                 additionalProperties.toMutableMap(),
             )
     }
@@ -246,9 +259,9 @@ private constructor(
             return@apply
         }
 
-        personalizations().forEach { it.validate() }
         properties().validate()
         success().validate()
+        personalizations()?.forEach { it.validate() }
         validated = true
     }
 
@@ -266,9 +279,247 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (personalizations.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-            (properties.asKnown()?.validity() ?: 0) +
-            (success.asKnown()?.validity() ?: 0)
+        (properties.asKnown()?.validity() ?: 0) +
+            (success.asKnown()?.validity() ?: 0) +
+            (personalizations.asKnown()?.sumOf { it.validity().toInt() } ?: 0)
+
+    /**
+     * The visitor traits accumulated by your personalization property rules, keyed by property key.
+     * Values are always scalars — a string, number, or boolean, or null when the captured field was
+     * itself empty. Empty for a visitor who has not matched any rule yet. These same values are
+     * delivered to the visitor's browser and are readable by anyone who knows the visitor_id, so
+     * never accumulate secrets, credentials, PHI, or confidential data into a property.
+     */
+    class Properties
+    @JsonCreator
+    private constructor(
+        @com.fasterxml.jackson.annotation.JsonValue
+        private val additionalProperties: Map<String, JsonValue>
+    ) {
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Properties]. */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [Properties]. */
+        class Builder internal constructor() {
+
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(properties: Properties) = apply {
+                additionalProperties = properties.additionalProperties.toMutableMap()
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Properties].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Properties = Properties(additionalProperties.toImmutable())
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws OursPrivacyInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Properties = apply {
+            if (validated) {
+                return@apply
+            }
+
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: OursPrivacyInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Properties && additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() = "Properties{additionalProperties=$additionalProperties}"
+    }
+
+    class Success @JsonCreator private constructor(private val value: JsonField<Boolean>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<Boolean> = value
+
+        companion object {
+
+            val TRUE = of(true)
+
+            fun of(value: Boolean) = Success(JsonField.of(value))
+        }
+
+        /** An enum containing [Success]'s known values. */
+        enum class Known {
+            TRUE
+        }
+
+        /**
+         * An enum containing [Success]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Success] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            TRUE,
+            /** An enum member indicating that [Success] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                TRUE -> Value.TRUE
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws OursPrivacyInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                TRUE -> Known.TRUE
+                else -> throw OursPrivacyInvalidDataException("Unknown Success: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * @throws OursPrivacyInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asBoolean(): Boolean =
+            _value().asBoolean() ?: throw OursPrivacyInvalidDataException("Value is not a Boolean")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws OursPrivacyInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Success = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: OursPrivacyInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Success && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     class Personalization
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -652,262 +903,24 @@ private constructor(
             "Personalization{assignedAt=$assignedAt, experimentId=$experimentId, variantId=$variantId, experimentKey=$experimentKey, experimentName=$experimentName, variantName=$variantName, additionalProperties=$additionalProperties}"
     }
 
-    /**
-     * The visitor traits accumulated by your personalization property rules, keyed by property key.
-     * Values are always scalars — a string, number, or boolean, or null when the captured field was
-     * itself empty. Empty for a visitor who has not matched any rule yet. These same values are
-     * delivered to the visitor's browser and are readable by anyone who knows the visitor_id, so
-     * never accumulate secrets, credentials, PHI, or confidential data into a property.
-     */
-    class Properties
-    @JsonCreator
-    private constructor(
-        @com.fasterxml.jackson.annotation.JsonValue
-        private val additionalProperties: Map<String, JsonValue>
-    ) {
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /** Returns a mutable builder for constructing an instance of [Properties]. */
-            fun builder() = Builder()
-        }
-
-        /** A builder for [Properties]. */
-        class Builder internal constructor() {
-
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            internal fun from(properties: Properties) = apply {
-                additionalProperties = properties.additionalProperties.toMutableMap()
-            }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [Properties].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             */
-            fun build(): Properties = Properties(additionalProperties.toImmutable())
-        }
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws OursPrivacyInvalidDataException if any value type in this object doesn't match
-         *   its expected type.
-         */
-        fun validate(): Properties = apply {
-            if (validated) {
-                return@apply
-            }
-
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: OursPrivacyInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int =
-            additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Properties && additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() = "Properties{additionalProperties=$additionalProperties}"
-    }
-
-    class Success @JsonCreator private constructor(private val value: JsonField<Boolean>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<Boolean> = value
-
-        companion object {
-
-            val TRUE = of(true)
-
-            fun of(value: Boolean) = Success(JsonField.of(value))
-        }
-
-        /** An enum containing [Success]'s known values. */
-        enum class Known {
-            TRUE
-        }
-
-        /**
-         * An enum containing [Success]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [Success] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            TRUE,
-            /** An enum member indicating that [Success] was instantiated with an unknown value. */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                TRUE -> Value.TRUE
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws OursPrivacyInvalidDataException if this class instance's value is a not a known
-         *   member.
-         */
-        fun known(): Known =
-            when (this) {
-                TRUE -> Known.TRUE
-                else -> throw OursPrivacyInvalidDataException("Unknown Success: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * @throws OursPrivacyInvalidDataException if this class instance's value does not have the
-         *   expected primitive type.
-         */
-        fun asBoolean(): Boolean =
-            _value().asBoolean() ?: throw OursPrivacyInvalidDataException("Value is not a Boolean")
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws OursPrivacyInvalidDataException if any value type in this object doesn't match
-         *   its expected type.
-         */
-        fun validate(): Success = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: OursPrivacyInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Success && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
         return other is ExperimentPersonalizationResponse &&
-            personalizations == other.personalizations &&
             properties == other.properties &&
             success == other.success &&
+            personalizations == other.personalizations &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(personalizations, properties, success, additionalProperties)
+        Objects.hash(properties, success, personalizations, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ExperimentPersonalizationResponse{personalizations=$personalizations, properties=$properties, success=$success, additionalProperties=$additionalProperties}"
+        "ExperimentPersonalizationResponse{properties=$properties, success=$success, personalizations=$personalizations, additionalProperties=$additionalProperties}"
 }
