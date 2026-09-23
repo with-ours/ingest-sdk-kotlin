@@ -22,10 +22,12 @@ import java.util.Objects
 /**
  * Set or update properties on an existing visitor, or create a new visitor if no match is found.
  * This fires a $identify event, making the call visible in the event stream. Identity resolution
- * runs in priority order: userId (direct, no lookup) → externalId (lookup by your ID) → email
- * (fallback lookup). When a visitor is found, their Ours Visitor ID is used going forward so all
- * future events are attached to the same profile. For top-level visitor properties: null clears the
- * existing value, while undefined, omitted fields, and empty strings are ignored. For entries
+ * runs in priority order: userId (direct, no lookup) → externalId → email →
+ * userProperties.phone_number. Each lookup runs only if earlier identifiers did not resolve a
+ * visitor. Phone matching ignores common formatting and an international + or 00 prefix, but does
+ * not infer a country code. When a visitor is found, their Ours Visitor ID is used going forward so
+ * all future events are attached to the same profile. For top-level visitor properties: null clears
+ * the existing value, while undefined, omitted fields, and empty strings are ignored. For entries
  * inside custom_properties: null, undefined, and empty strings are all ignored (custom_properties
  * use merge semantics). See https://docs.oursprivacy.com/docs/data-types for details and common
  * pitfalls.
@@ -63,9 +65,9 @@ private constructor(
     fun defaultProperties(): DefaultProperties? = body.defaultProperties()
 
     /**
-     * The email address of a user. Used as a fallback lookup when neither userId nor externalId is
-     * provided. We search your account for a visitor with this email and attach the event to them.
-     * If no match is found, a new visitor is created.
+     * The email address of a user. When userId is absent and externalId does not resolve a visitor,
+     * we search your account for a visitor with this email. If no match is found, we try
+     * userProperties.phone_number before creating a new visitor.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -73,10 +75,10 @@ private constructor(
     fun email(): String? = body.email()
 
     /**
-     * Your system's unique identifier for this user. We search your account for an existing visitor
-     * with this externalId and attach the event to them (resolving to their Ours Visitor ID). If no
-     * match is found, a new visitor is created. When present, email lookup is skipped. If you also
-     * have the userId from cookies or local storage, send both — it removes the lookup round-trip.
+     * Your system's unique identifier for this user. When userId is absent, we search your account
+     * for an existing visitor with this externalId. If no match is found, we try email and then
+     * userProperties.phone_number before creating a new visitor. If you also have the userId from
+     * cookies or local storage, send both — it removes the lookup round-trip.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -94,9 +96,9 @@ private constructor(
 
     /**
      * The Ours Visitor ID stored in local storage and cookies on your web properties. When present,
-     * this is used directly — no lookup by externalId or email is performed. If you have both a
-     * userId and an externalId, send both so the event is attached to the right visitor without any
-     * lookup overhead.
+     * this is used directly — no lookup by externalId, email, or phone is performed. If you have
+     * both a userId and an externalId, send both so the event is attached to the right visitor
+     * without any lookup overhead.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -253,9 +255,9 @@ private constructor(
         }
 
         /**
-         * The email address of a user. Used as a fallback lookup when neither userId nor externalId
-         * is provided. We search your account for a visitor with this email and attach the event to
-         * them. If no match is found, a new visitor is created.
+         * The email address of a user. When userId is absent and externalId does not resolve a
+         * visitor, we search your account for a visitor with this email. If no match is found, we
+         * try userProperties.phone_number before creating a new visitor.
          */
         fun email(email: String?) = apply { body.email(email) }
 
@@ -268,11 +270,10 @@ private constructor(
         fun email(email: JsonField<String>) = apply { body.email(email) }
 
         /**
-         * Your system's unique identifier for this user. We search your account for an existing
-         * visitor with this externalId and attach the event to them (resolving to their Ours
-         * Visitor ID). If no match is found, a new visitor is created. When present, email lookup
-         * is skipped. If you also have the userId from cookies or local storage, send both — it
-         * removes the lookup round-trip.
+         * Your system's unique identifier for this user. When userId is absent, we search your
+         * account for an existing visitor with this externalId. If no match is found, we try email
+         * and then userProperties.phone_number before creating a new visitor. If you also have the
+         * userId from cookies or local storage, send both — it removes the lookup round-trip.
          */
         fun externalId(externalId: String?) = apply { body.externalId(externalId) }
 
@@ -306,9 +307,9 @@ private constructor(
 
         /**
          * The Ours Visitor ID stored in local storage and cookies on your web properties. When
-         * present, this is used directly — no lookup by externalId or email is performed. If you
-         * have both a userId and an externalId, send both so the event is attached to the right
-         * visitor without any lookup overhead.
+         * present, this is used directly — no lookup by externalId, email, or phone is performed.
+         * If you have both a userId and an externalId, send both so the event is attached to the
+         * right visitor without any lookup overhead.
          */
         fun userId(userId: String?) = apply { body.userId(userId) }
 
@@ -532,9 +533,9 @@ private constructor(
             defaultProperties.getNullable("defaultProperties")
 
         /**
-         * The email address of a user. Used as a fallback lookup when neither userId nor externalId
-         * is provided. We search your account for a visitor with this email and attach the event to
-         * them. If no match is found, a new visitor is created.
+         * The email address of a user. When userId is absent and externalId does not resolve a
+         * visitor, we search your account for a visitor with this email. If no match is found, we
+         * try userProperties.phone_number before creating a new visitor.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -542,11 +543,10 @@ private constructor(
         fun email(): String? = email.getNullable("email")
 
         /**
-         * Your system's unique identifier for this user. We search your account for an existing
-         * visitor with this externalId and attach the event to them (resolving to their Ours
-         * Visitor ID). If no match is found, a new visitor is created. When present, email lookup
-         * is skipped. If you also have the userId from cookies or local storage, send both — it
-         * removes the lookup round-trip.
+         * Your system's unique identifier for this user. When userId is absent, we search your
+         * account for an existing visitor with this externalId. If no match is found, we try email
+         * and then userProperties.phone_number before creating a new visitor. If you also have the
+         * userId from cookies or local storage, send both — it removes the lookup round-trip.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -564,9 +564,9 @@ private constructor(
 
         /**
          * The Ours Visitor ID stored in local storage and cookies on your web properties. When
-         * present, this is used directly — no lookup by externalId or email is performed. If you
-         * have both a userId and an externalId, send both so the event is attached to the right
-         * visitor without any lookup overhead.
+         * present, this is used directly — no lookup by externalId, email, or phone is performed.
+         * If you have both a userId and an externalId, send both so the event is attached to the
+         * right visitor without any lookup overhead.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -731,9 +731,9 @@ private constructor(
             }
 
             /**
-             * The email address of a user. Used as a fallback lookup when neither userId nor
-             * externalId is provided. We search your account for a visitor with this email and
-             * attach the event to them. If no match is found, a new visitor is created.
+             * The email address of a user. When userId is absent and externalId does not resolve a
+             * visitor, we search your account for a visitor with this email. If no match is found,
+             * we try userProperties.phone_number before creating a new visitor.
              */
             fun email(email: String?) = email(JsonField.ofNullable(email))
 
@@ -747,11 +747,11 @@ private constructor(
             fun email(email: JsonField<String>) = apply { this.email = email }
 
             /**
-             * Your system's unique identifier for this user. We search your account for an existing
-             * visitor with this externalId and attach the event to them (resolving to their Ours
-             * Visitor ID). If no match is found, a new visitor is created. When present, email
-             * lookup is skipped. If you also have the userId from cookies or local storage, send
-             * both — it removes the lookup round-trip.
+             * Your system's unique identifier for this user. When userId is absent, we search your
+             * account for an existing visitor with this externalId. If no match is found, we try
+             * email and then userProperties.phone_number before creating a new visitor. If you also
+             * have the userId from cookies or local storage, send both — it removes the lookup
+             * round-trip.
              */
             fun externalId(externalId: String?) = externalId(JsonField.ofNullable(externalId))
 
@@ -784,9 +784,9 @@ private constructor(
 
             /**
              * The Ours Visitor ID stored in local storage and cookies on your web properties. When
-             * present, this is used directly — no lookup by externalId or email is performed. If
-             * you have both a userId and an externalId, send both so the event is attached to the
-             * right visitor without any lookup overhead.
+             * present, this is used directly — no lookup by externalId, email, or phone is
+             * performed. If you have both a userId and an externalId, send both so the event is
+             * attached to the right visitor without any lookup overhead.
              */
             fun userId(userId: String?) = userId(JsonField.ofNullable(userId))
 
