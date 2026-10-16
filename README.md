@@ -535,7 +535,7 @@ import com.oursprivacy.core.JsonMissing
 import com.oursprivacy.models.track.TrackEventParams
 
 val params: TrackEventParams = TrackEventParams.builder()
-    .event("x")
+    .event("P")
     .token(JsonMissing.of())
     .build()
 ```

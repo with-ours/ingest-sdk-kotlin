@@ -6,12 +6,23 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.ObjectCodec
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.oursprivacy.core.BaseDeserializer
+import com.oursprivacy.core.BaseSerializer
 import com.oursprivacy.core.ExcludeMissing
 import com.oursprivacy.core.JsonField
 import com.oursprivacy.core.JsonMissing
 import com.oursprivacy.core.JsonValue
 import com.oursprivacy.core.Params
+import com.oursprivacy.core.allMaxBy
 import com.oursprivacy.core.checkRequired
+import com.oursprivacy.core.getOrThrow
 import com.oursprivacy.core.http.Headers
 import com.oursprivacy.core.http.QueryParams
 import com.oursprivacy.core.toImmutable
@@ -39,7 +50,8 @@ private constructor(
 ) : Params {
 
     /**
-     * The token for your Source. You can find this in the dashboard.
+     * The token for your Source. You can find this in the dashboard. Leading and trailing
+     * whitespace is removed before validation.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -48,6 +60,7 @@ private constructor(
 
     /**
      * The name of the event you're tracking. This must be whitelisted in the Ours dashboard.
+     * Leading and trailing whitespace is removed before validation.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -65,7 +78,9 @@ private constructor(
     /**
      * A unique identifier for this event used for deduplication. Highly recommended — if omitted,
      * Ours will generate one for you, but supplying your own gives you stronger idempotency
-     * guarantees (e.g. a Stripe payment intent ID or your internal order ID).
+     * guarantees (e.g. a Stripe payment intent ID or your internal order ID). Non-string input is
+     * converted to text before validation; clients should send a string. Leading and trailing
+     * whitespace is removed before validation.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -75,7 +90,8 @@ private constructor(
     /**
      * The email address of a user. When userId is absent and externalId does not resolve a visitor,
      * we search your account for a visitor with this email. If no match is found, we try
-     * userProperties.phone_number before creating a new visitor.
+     * userProperties.phone_number before creating a new visitor. Leading and trailing whitespace is
+     * removed before validation.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -83,7 +99,11 @@ private constructor(
     fun email(): String? = body.email()
 
     /**
-     * Any additional event properties you want to pass along.
+     * Any additional event properties you want to pass along. Use at most 200 nonempty property
+     * keys and five object levels. Array contents do not count toward the object-depth limit. Empty
+     * keys are removed recursively, arrays are truncated to 250 entries, and top-level numbers
+     * outside the safe integer range become strings. After normalization, the serialized JSON must
+     * be shorter than 1,048,576 UTF-16 code units.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -94,7 +114,9 @@ private constructor(
      * Your system's unique identifier for this user. When userId is absent, we search your account
      * for an existing visitor with this externalId. If no match is found, we try email and then
      * userProperties.phone_number before creating a new visitor. If you also have the userId from
-     * cookies or local storage, send both — it removes the lookup round-trip.
+     * cookies or local storage, send both — it removes the lookup round-trip. Non-string input is
+     * converted to text before validation; clients should send a string. Leading and trailing
+     * whitespace is removed before validation.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -123,7 +145,7 @@ private constructor(
      * The Ours Visitor ID stored in local storage and cookies on your web properties. When present,
      * this is used directly — no lookup by externalId, email, or phone is performed. If you have
      * both a userId and an externalId, send both so the event is attached to the right visitor
-     * without any lookup overhead.
+     * without any lookup overhead. Leading and trailing whitespace is removed before validation.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -268,7 +290,10 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** The token for your Source. You can find this in the dashboard. */
+        /**
+         * The token for your Source. You can find this in the dashboard. Leading and trailing
+         * whitespace is removed before validation.
+         */
         fun token(token: String) = apply { body.token(token) }
 
         /**
@@ -281,6 +306,7 @@ private constructor(
 
         /**
          * The name of the event you're tracking. This must be whitelisted in the Ours dashboard.
+         * Leading and trailing whitespace is removed before validation.
          */
         fun event(event: String) = apply { body.event(event) }
 
@@ -314,6 +340,8 @@ private constructor(
          * A unique identifier for this event used for deduplication. Highly recommended — if
          * omitted, Ours will generate one for you, but supplying your own gives you stronger
          * idempotency guarantees (e.g. a Stripe payment intent ID or your internal order ID).
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
          */
         fun distinctId(distinctId: String?) = apply { body.distinctId(distinctId) }
 
@@ -329,7 +357,8 @@ private constructor(
         /**
          * The email address of a user. When userId is absent and externalId does not resolve a
          * visitor, we search your account for a visitor with this email. If no match is found, we
-         * try userProperties.phone_number before creating a new visitor.
+         * try userProperties.phone_number before creating a new visitor. Leading and trailing
+         * whitespace is removed before validation.
          */
         fun email(email: String?) = apply { body.email(email) }
 
@@ -341,7 +370,13 @@ private constructor(
          */
         fun email(email: JsonField<String>) = apply { body.email(email) }
 
-        /** Any additional event properties you want to pass along. */
+        /**
+         * Any additional event properties you want to pass along. Use at most 200 nonempty property
+         * keys and five object levels. Array contents do not count toward the object-depth limit.
+         * Empty keys are removed recursively, arrays are truncated to 250 entries, and top-level
+         * numbers outside the safe integer range become strings. After normalization, the
+         * serialized JSON must be shorter than 1,048,576 UTF-16 code units.
+         */
         fun eventProperties(eventProperties: EventProperties?) = apply {
             body.eventProperties(eventProperties)
         }
@@ -362,6 +397,8 @@ private constructor(
          * account for an existing visitor with this externalId. If no match is found, we try email
          * and then userProperties.phone_number before creating a new visitor. If you also have the
          * userId from cookies or local storage, send both — it removes the lookup round-trip.
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
          */
         fun externalId(externalId: String?) = apply { body.externalId(externalId) }
 
@@ -418,7 +455,8 @@ private constructor(
          * The Ours Visitor ID stored in local storage and cookies on your web properties. When
          * present, this is used directly — no lookup by externalId, email, or phone is performed.
          * If you have both a userId and an externalId, send both so the event is attached to the
-         * right visitor without any lookup overhead.
+         * right visitor without any lookup overhead. Leading and trailing whitespace is removed
+         * before validation.
          */
         fun userId(userId: String?) = apply { body.userId(userId) }
 
@@ -647,7 +685,8 @@ private constructor(
         )
 
         /**
-         * The token for your Source. You can find this in the dashboard.
+         * The token for your Source. You can find this in the dashboard. Leading and trailing
+         * whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -656,6 +695,7 @@ private constructor(
 
         /**
          * The name of the event you're tracking. This must be whitelisted in the Ours dashboard.
+         * Leading and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -675,6 +715,8 @@ private constructor(
          * A unique identifier for this event used for deduplication. Highly recommended — if
          * omitted, Ours will generate one for you, but supplying your own gives you stronger
          * idempotency guarantees (e.g. a Stripe payment intent ID or your internal order ID).
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -684,7 +726,8 @@ private constructor(
         /**
          * The email address of a user. When userId is absent and externalId does not resolve a
          * visitor, we search your account for a visitor with this email. If no match is found, we
-         * try userProperties.phone_number before creating a new visitor.
+         * try userProperties.phone_number before creating a new visitor. Leading and trailing
+         * whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -692,7 +735,11 @@ private constructor(
         fun email(): String? = email.getNullable("email")
 
         /**
-         * Any additional event properties you want to pass along.
+         * Any additional event properties you want to pass along. Use at most 200 nonempty property
+         * keys and five object levels. Array contents do not count toward the object-depth limit.
+         * Empty keys are removed recursively, arrays are truncated to 250 entries, and top-level
+         * numbers outside the safe integer range become strings. After normalization, the
+         * serialized JSON must be shorter than 1,048,576 UTF-16 code units.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -704,6 +751,8 @@ private constructor(
          * account for an existing visitor with this externalId. If no match is found, we try email
          * and then userProperties.phone_number before creating a new visitor. If you also have the
          * userId from cookies or local storage, send both — it removes the lookup round-trip.
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -732,7 +781,8 @@ private constructor(
          * The Ours Visitor ID stored in local storage and cookies on your web properties. When
          * present, this is used directly — no lookup by externalId, email, or phone is performed.
          * If you have both a userId and an externalId, send both so the event is attached to the
-         * right visitor without any lookup overhead.
+         * right visitor without any lookup overhead. Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -898,7 +948,10 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** The token for your Source. You can find this in the dashboard. */
+            /**
+             * The token for your Source. You can find this in the dashboard. Leading and trailing
+             * whitespace is removed before validation.
+             */
             fun token(token: String) = token(JsonField.of(token))
 
             /**
@@ -912,7 +965,7 @@ private constructor(
 
             /**
              * The name of the event you're tracking. This must be whitelisted in the Ours
-             * dashboard.
+             * dashboard. Leading and trailing whitespace is removed before validation.
              */
             fun event(event: String) = event(JsonField.of(event))
 
@@ -947,6 +1000,8 @@ private constructor(
              * A unique identifier for this event used for deduplication. Highly recommended — if
              * omitted, Ours will generate one for you, but supplying your own gives you stronger
              * idempotency guarantees (e.g. a Stripe payment intent ID or your internal order ID).
+             * Non-string input is converted to text before validation; clients should send a
+             * string. Leading and trailing whitespace is removed before validation.
              */
             fun distinctId(distinctId: String?) = distinctId(JsonField.ofNullable(distinctId))
 
@@ -962,7 +1017,8 @@ private constructor(
             /**
              * The email address of a user. When userId is absent and externalId does not resolve a
              * visitor, we search your account for a visitor with this email. If no match is found,
-             * we try userProperties.phone_number before creating a new visitor.
+             * we try userProperties.phone_number before creating a new visitor. Leading and
+             * trailing whitespace is removed before validation.
              */
             fun email(email: String?) = email(JsonField.ofNullable(email))
 
@@ -975,7 +1031,13 @@ private constructor(
              */
             fun email(email: JsonField<String>) = apply { this.email = email }
 
-            /** Any additional event properties you want to pass along. */
+            /**
+             * Any additional event properties you want to pass along. Use at most 200 nonempty
+             * property keys and five object levels. Array contents do not count toward the
+             * object-depth limit. Empty keys are removed recursively, arrays are truncated to 250
+             * entries, and top-level numbers outside the safe integer range become strings. After
+             * normalization, the serialized JSON must be shorter than 1,048,576 UTF-16 code units.
+             */
             fun eventProperties(eventProperties: EventProperties?) =
                 eventProperties(JsonField.ofNullable(eventProperties))
 
@@ -995,7 +1057,8 @@ private constructor(
              * account for an existing visitor with this externalId. If no match is found, we try
              * email and then userProperties.phone_number before creating a new visitor. If you also
              * have the userId from cookies or local storage, send both — it removes the lookup
-             * round-trip.
+             * round-trip. Non-string input is converted to text before validation; clients should
+             * send a string. Leading and trailing whitespace is removed before validation.
              */
             fun externalId(externalId: String?) = externalId(JsonField.ofNullable(externalId))
 
@@ -1052,7 +1115,8 @@ private constructor(
              * The Ours Visitor ID stored in local storage and cookies on your web properties. When
              * present, this is used directly — no lookup by externalId, email, or phone is
              * performed. If you have both a userId and an externalId, send both so the event is
-             * attached to the right visitor without any lookup overhead.
+             * attached to the right visitor without any lookup overhead. Leading and trailing
+             * whitespace is removed before validation.
              */
             fun userId(userId: String?) = userId(JsonField.ofNullable(userId))
 
@@ -1270,12 +1334,14 @@ private constructor(
         private val gadSource: JsonField<String>,
         private val gbraid: JsonField<String>,
         private val gclid: JsonField<String>,
+        private val graid: JsonField<String>,
+        private val grclid: JsonField<String>,
         private val host: JsonField<String>,
         private val iframe: JsonField<Boolean>,
         private val imRef: JsonField<String>,
         private val ip: JsonField<String>,
         private val irclickid: JsonField<String>,
-        private val isBot: JsonField<String>,
+        private val isBot: JsonField<IsBot>,
         private val liFatId: JsonField<String>,
         private val msclkid: JsonField<String>,
         private val ndclid: JsonField<String>,
@@ -1391,6 +1457,8 @@ private constructor(
             gadSource: JsonField<String> = JsonMissing.of(),
             @JsonProperty("gbraid") @ExcludeMissing gbraid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("gclid") @ExcludeMissing gclid: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("graid") @ExcludeMissing graid: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("grclid") @ExcludeMissing grclid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("host") @ExcludeMissing host: JsonField<String> = JsonMissing.of(),
             @JsonProperty("iframe") @ExcludeMissing iframe: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("im_ref") @ExcludeMissing imRef: JsonField<String> = JsonMissing.of(),
@@ -1398,7 +1466,7 @@ private constructor(
             @JsonProperty("irclickid")
             @ExcludeMissing
             irclickid: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("is_bot") @ExcludeMissing isBot: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("is_bot") @ExcludeMissing isBot: JsonField<IsBot> = JsonMissing.of(),
             @JsonProperty("li_fat_id")
             @ExcludeMissing
             liFatId: JsonField<String> = JsonMissing.of(),
@@ -1508,6 +1576,8 @@ private constructor(
             gadSource,
             gbraid,
             gclid,
+            graid,
+            grclid,
             host,
             iframe,
             imRef,
@@ -1557,7 +1627,8 @@ private constructor(
 
         /**
          * The Everflow affiliate Click (Transaction) ID, captured from the `_ef_transaction_id` URL
-         * parameter. Ex: ef_click_abc123
+         * parameter. Ex: ef_click_abc123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1573,7 +1644,8 @@ private constructor(
         fun activeDuration(): Double? = activeDuration.getNullable("activeDuration")
 
         /**
-         * The ad id for detected in the session. This is set by the web sdk automatically.
+         * The ad id for detected in the session. This is set by the web sdk automatically. Leading
+         * and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1581,7 +1653,8 @@ private constructor(
         fun adId(): String? = adId.getNullable("ad_id")
 
         /**
-         * The Admitad (Mitgo) affiliate Click ID. Ex: admitad_uid_abc123
+         * The Admitad (Mitgo) affiliate Click ID. Ex: admitad_uid_abc123 Leading and trailing
+         * whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1590,6 +1663,7 @@ private constructor(
 
         /**
          * The adset id for detected in the session. This is set by the web sdk automatically.
+         * Leading and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1597,7 +1671,8 @@ private constructor(
         fun adsetId(): String? = adsetId.getNullable("adset_id")
 
         /**
-         * The AppLovin alart query parameter. Ex: alart123
+         * The AppLovin alart query parameter. Ex: alart123 Leading and trailing whitespace is
+         * removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1605,7 +1680,8 @@ private constructor(
         fun alart(): String? = alart.getNullable("alart")
 
         /**
-         * The AppLovin aleid query parameter. Ex: aleid123
+         * The AppLovin aleid query parameter. Ex: aleid123 Leading and trailing whitespace is
+         * removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1613,7 +1689,8 @@ private constructor(
         fun aleid(): String? = aleid.getNullable("aleid")
 
         /**
-         * The AppLovin pixel cookie value (_axwrt). Web-only.
+         * The AppLovin pixel cookie value (_axwrt). Web-only. Leading and trailing whitespace is
+         * removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1621,7 +1698,8 @@ private constructor(
         fun axwrt(): String? = axwrt.getNullable("axwrt")
 
         /**
-         * The Basis DSP Click ID. Ex: basis_cid123
+         * The Basis DSP Click ID. Ex: basis_cid123 Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1630,7 +1708,8 @@ private constructor(
 
         /**
          * The Beeswax (FreeWheel Buyer Cloud) auction ID, captured from the `{{AUCTION_ID}}` macro
-         * on creative click URLs. Ex: bx-auc-abc123
+         * on creative click URLs. Ex: bx-auc-abc123 Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1638,7 +1717,8 @@ private constructor(
         fun beeswaxAuctionId(): String? = beeswaxAuctionId.getNullable("beeswax_auction_id")
 
         /**
-         * The language of the browser. Ex: en-US
+         * The language of the browser. Ex: en-US Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1646,7 +1726,8 @@ private constructor(
         fun browserLanguage(): String? = browserLanguage.getNullable("browser_language")
 
         /**
-         * The name of the browser. Ex: Chrome
+         * The name of the browser. Ex: Chrome Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1654,7 +1735,8 @@ private constructor(
         fun browserName(): String? = browserName.getNullable("browser_name")
 
         /**
-         * The version of the browser. Ex: 114.0
+         * The version of the browser. Ex: 114.0 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1663,6 +1745,7 @@ private constructor(
 
         /**
          * The campaign id for detected in the session. This is set by the web sdk automatically.
+         * Leading and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1670,7 +1753,8 @@ private constructor(
         fun campaignId(): String? = campaignId.getNullable("campaign_id")
 
         /**
-         * The Click ID. Ex: clickid123
+         * The Click ID. Ex: clickid123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1678,7 +1762,8 @@ private constructor(
         fun clickid(): String? = clickid.getNullable("clickid")
 
         /**
-         * The Generic Click ID. Ex: clid123
+         * The Generic Click ID. Ex: clid123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1686,7 +1771,8 @@ private constructor(
         fun clid(): String? = clid.getNullable("clid")
 
         /**
-         * The architecture of the CPU. Ex: x64
+         * The architecture of the CPU. Ex: x64 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1694,7 +1780,8 @@ private constructor(
         fun cpuArchitecture(): String? = cpuArchitecture.getNullable("cpu_architecture")
 
         /**
-         * The full url (including query params) of the current page
+         * The full url (including query params) of the current page Leading and trailing whitespace
+         * is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1702,7 +1789,8 @@ private constructor(
         fun currentUrl(): String? = currentUrl.getNullable("current_url")
 
         /**
-         * The DoubleClick Click ID. Ex: dclid123
+         * The DoubleClick Click ID. Ex: dclid123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1710,7 +1798,8 @@ private constructor(
         fun dclid(): String? = dclid.getNullable("dclid")
 
         /**
-         * The model of the device. Ex: iPhone 13
+         * The model of the device. Ex: iPhone 13 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1718,7 +1807,8 @@ private constructor(
         fun deviceModel(): String? = deviceModel.getNullable("device_model")
 
         /**
-         * The type of device the user is using. Ex: mobile
+         * The type of device the user is using. Ex: mobile Leading and trailing whitespace is
+         * removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1726,7 +1816,8 @@ private constructor(
         fun deviceType(): String? = deviceType.getNullable("device_type")
 
         /**
-         * The vendor of the device. Ex: Apple
+         * The vendor of the device. Ex: Apple Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1742,7 +1833,8 @@ private constructor(
         fun duration(): Double? = duration.getNullable("duration")
 
         /**
-         * The browsers encoding. Ex: UTF-8
+         * The browsers encoding. Ex: UTF-8 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1750,7 +1842,8 @@ private constructor(
         fun encoding(): String? = encoding.getNullable("encoding")
 
         /**
-         * The name of the browser engine. Ex: Blink
+         * The name of the browser engine. Ex: Blink Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1758,7 +1851,8 @@ private constructor(
         fun engineName(): String? = engineName.getNullable("engine_name")
 
         /**
-         * The version of the browser engine. Ex: 114.0
+         * The version of the browser engine. Ex: 114.0 Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1766,7 +1860,8 @@ private constructor(
         fun engineVersion(): String? = engineVersion.getNullable("engine_version")
 
         /**
-         * The Pinterest Click ID. Ex: epik456
+         * The Pinterest Click ID. Ex: epik456 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1775,7 +1870,8 @@ private constructor(
 
         /**
          * Facebook Click ID with prefix format for Conversions API tracking. Ex:
-         * fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890
+         * fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890 Leading and trailing whitespace
+         * is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1784,7 +1880,8 @@ private constructor(
 
         /**
          * Raw Facebook Click ID query parameter without prefix from ad clicks. Ex:
-         * AbCdEfGhIjKlMnOpQrStUvWxYz1234567890
+         * AbCdEfGhIjKlMnOpQrStUvWxYz1234567890 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1793,7 +1890,8 @@ private constructor(
 
         /**
          * Facebook Browser ID parameter for identifying browsers and attributing events. Ex:
-         * fb.1.1554763741205.1098115397
+         * fb.1.1554763741205.1098115397 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1809,7 +1907,8 @@ private constructor(
         fun fv(): Boolean? = fv.getNullable("fv")
 
         /**
-         * The Google Ad Source. Ex: google
+         * The Google Ad Source. Ex: google Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1817,7 +1916,8 @@ private constructor(
         fun gadSource(): String? = gadSource.getNullable("gad_source")
 
         /**
-         * The Google Braid ID. Ex: gbraid123
+         * The Google Braid ID. Ex: gbraid123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1825,7 +1925,8 @@ private constructor(
         fun gbraid(): String? = gbraid.getNullable("gbraid")
 
         /**
-         * The Google Click ID. Ex: gclid123
+         * The Google Click ID. Ex: gclid123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1833,7 +1934,28 @@ private constructor(
         fun gclid(): String? = gclid.getNullable("gclid")
 
         /**
-         * The host of the current page. Ex: example.com
+         * The Gravity attribution ID, captured from the `graid` URL parameter on the landing page.
+         * Gravity resolves it to the campaign, publisher, and ad IDs server-side. Ex: graid-abc123
+         * Leading and trailing whitespace is removed before validation.
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun graid(): String? = graid.getNullable("graid")
+
+        /**
+         * The Gravity click ID, captured from the `grclid` URL parameter that Gravity
+         * (trygravity.com) appends to ad click-through URLs on the landing page. Ex: grclid-abc123
+         * Leading and trailing whitespace is removed before validation.
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun grclid(): String? = grclid.getNullable("grclid")
+
+        /**
+         * The host of the current page. Ex: example.com Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1849,7 +1971,8 @@ private constructor(
         fun iframe(): Boolean? = iframe.getNullable("iframe")
 
         /**
-         * The Impact Click ID reference. Ex: im_ref123
+         * The Impact Click ID reference. Ex: im_ref123 Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1857,7 +1980,8 @@ private constructor(
         fun imRef(): String? = imRef.getNullable("im_ref")
 
         /**
-         * The IP address of the user. Ex: 127.0.0.1
+         * The IP address of the user. Ex: 127.0.0.1 Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1865,7 +1989,8 @@ private constructor(
         fun ip(): String? = ip.getNullable("ip")
 
         /**
-         * The Impact Click ID. Ex: irclickid123
+         * The Impact Click ID. Ex: irclickid123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1873,16 +1998,16 @@ private constructor(
         fun irclickid(): String? = irclickid.getNullable("irclickid")
 
         /**
-         * Whether we have detected that the user is a bot. This is set automatically by the Ours
-         * server primarily for events tracked through the web SDK.
+         * Any JSON value: string, number, boolean, array, object, or null.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun isBot(): String? = isBot.getNullable("is_bot")
+        fun isBot(): IsBot? = isBot.getNullable("is_bot")
 
         /**
-         * The LinkedIn Click ID. Ex: li_fat_id123
+         * The LinkedIn Click ID. Ex: li_fat_id123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1890,7 +2015,8 @@ private constructor(
         fun liFatId(): String? = liFatId.getNullable("li_fat_id")
 
         /**
-         * The Microsoft Click ID. Ex: msclkid123
+         * The Microsoft Click ID. Ex: msclkid123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1898,7 +2024,8 @@ private constructor(
         fun msclkid(): String? = msclkid.getNullable("msclkid")
 
         /**
-         * The NextDoor Click ID. Ex: ndclid123
+         * The NextDoor Click ID. Ex: ndclid123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1915,7 +2042,8 @@ private constructor(
 
         /**
          * The Outbrain click ID, captured from the `ob_click_id` URL parameter (Outbrain
-         * `{{ob_click_id}}` macro) on the landing page. Ex: ob_click_abc123
+         * `{{ob_click_id}}` macro) on the landing page. Ex: ob_click_abc123 Leading and trailing
+         * whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1925,7 +2053,8 @@ private constructor(
         /**
          * The OpenAI Ads privacy-preserving reference, captured from the `oppref` URL parameter on
          * landing pages (the OpenAI Pixel also stores it in a `__oppref` cookie). Sent to OpenAI
-         * Ads on Conversions API events for attribution. Ex: oppref_abc
+         * Ads on Conversions API events for attribution. Ex: oppref_abc Leading and trailing
+         * whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1933,7 +2062,8 @@ private constructor(
         fun oppref(): String? = oppref.getNullable("oppref")
 
         /**
-         * The name of the operating system. Ex: Windows
+         * The name of the operating system. Ex: Windows Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1941,7 +2071,8 @@ private constructor(
         fun osName(): String? = osName.getNullable("os_name")
 
         /**
-         * The version of the operating system. Ex: 10.0
+         * The version of the operating system. Ex: 10.0 Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1957,7 +2088,8 @@ private constructor(
         fun pageHash(): Double? = pageHash.getNullable("page_hash")
 
         /**
-         * The pathname of the current page. Ex: /home
+         * The pathname of the current page. Ex: /home Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1965,7 +2097,8 @@ private constructor(
         fun pathname(): String? = pathname.getNullable("pathname")
 
         /**
-         * The Quora Click ID. Ex: qclid123
+         * The Quora Click ID. Ex: qclid123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1973,7 +2106,8 @@ private constructor(
         fun qclid(): String? = qclid.getNullable("qclid")
 
         /**
-         * The Reddit Click ID. Ex: rdt_cid123
+         * The Reddit Click ID. Ex: rdt_cid123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1989,7 +2123,8 @@ private constructor(
         fun receivedAt(): String? = receivedAt.getNullable("received_at")
 
         /**
-         * The referrer URL of the current page
+         * The referrer URL of the current page Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1997,7 +2132,8 @@ private constructor(
         fun referrer(): String? = referrer.getNullable("referrer")
 
         /**
-         * The referring domain of the current page
+         * The referring domain of the current page Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2005,7 +2141,8 @@ private constructor(
         fun referringDomain(): String? = referringDomain.getNullable("referring_domain")
 
         /**
-         * The StackAdapt Tracking ID. Ex: sacid123
+         * The StackAdapt Tracking ID. Ex: sacid123 Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2013,7 +2150,8 @@ private constructor(
         fun sacid(): String? = sacid.getNullable("sacid")
 
         /**
-         * The SnapChat Click ID. Ex: sccid123
+         * The SnapChat Click ID. Ex: sccid123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2046,7 +2184,7 @@ private constructor(
 
         /**
          * The session ID as assigned automatically by the web SDK. This is required for session
-         * replay
+         * replay Leading and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2054,13 +2192,16 @@ private constructor(
         fun sid(): String? = sid.getNullable("sid")
 
         /**
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun sr(): String? = sr.getNullable("sr")
 
         /**
-         * The title of the current page
+         * The title of the current page Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2068,7 +2209,8 @@ private constructor(
         fun title(): String? = title.getNullable("title")
 
         /**
-         * The TikTok Click ID. Ex: ttclid123
+         * The TikTok Click ID. Ex: ttclid123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2076,7 +2218,8 @@ private constructor(
         fun ttclid(): String? = ttclid.getNullable("ttclid")
 
         /**
-         * The Twitter Click ID. Ex: twclid123
+         * The Twitter Click ID. Ex: twclid123 Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2084,7 +2227,8 @@ private constructor(
         fun twclid(): String? = twclid.getNullable("twclid")
 
         /**
-         * User agent as a full list of strings.
+         * User agent as a full list of strings. Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2092,7 +2236,8 @@ private constructor(
         fun uafvl(): String? = uafvl.getNullable("uafvl")
 
         /**
-         * The user agent of the browser
+         * The user agent of the browser Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2100,7 +2245,8 @@ private constructor(
         fun userAgent(): String? = userAgent.getNullable("user_agent")
 
         /**
-         * The UTM Campaign. The web SDK automatically captures this from the query params.
+         * The UTM Campaign. The web SDK automatically captures this from the query params. Leading
+         * and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2108,7 +2254,8 @@ private constructor(
         fun utmCampaign(): String? = utmCampaign.getNullable("utm_campaign")
 
         /**
-         * The UTM Content. The web SDK automatically captures this from the query params.
+         * The UTM Content. The web SDK automatically captures this from the query params. Leading
+         * and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2116,7 +2263,8 @@ private constructor(
         fun utmContent(): String? = utmContent.getNullable("utm_content")
 
         /**
-         * The UTM Medium. The web SDK automatically captures this from the query params.
+         * The UTM Medium. The web SDK automatically captures this from the query params. Leading
+         * and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2124,7 +2272,8 @@ private constructor(
         fun utmMedium(): String? = utmMedium.getNullable("utm_medium")
 
         /**
-         * The UTM Name. The web SDK automatically captures this from the query params.
+         * The UTM Name. The web SDK automatically captures this from the query params. Leading and
+         * trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2132,7 +2281,8 @@ private constructor(
         fun utmName(): String? = utmName.getNullable("utm_name")
 
         /**
-         * The UTM Source. The web SDK automatically captures this from the query params.
+         * The UTM Source. The web SDK automatically captures this from the query params. Leading
+         * and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2140,7 +2290,8 @@ private constructor(
         fun utmSource(): String? = utmSource.getNullable("utm_source")
 
         /**
-         * The UTM Term. The web SDK automatically captures this from the query params.
+         * The UTM Term. The web SDK automatically captures this from the query params. Leading and
+         * trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2148,7 +2299,8 @@ private constructor(
         fun utmTerm(): String? = utmTerm.getNullable("utm_term")
 
         /**
-         * The SDK version (e.g., web SDK or ingest-sdk-* via generated SDK headers)
+         * The SDK version (e.g., web SDK or ingest-sdk-* via generated SDK headers) Leading and
+         * trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2158,6 +2310,7 @@ private constructor(
         /**
          * The Viant (Adelphic) Click ID, captured from the `viant_click_id` URL parameter (Viant
          * `${ADELPHIC_CLICKID}` macro). Sent as `xid` on Viant postbacks. Ex: viant_click_abc123
+         * Leading and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2167,7 +2320,8 @@ private constructor(
         /**
          * The Viant (Adelphic) Impression ID, captured from the `viant_impression_id` URL parameter
          * (Viant `${ADELPHIC_IMPRESSIONID}` macro). Sent as `imp_id` on Viant postbacks for
-         * post-view attribution. Ex: viant_imp_abc123
+         * post-view attribution. Ex: viant_imp_abc123 Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2176,6 +2330,7 @@ private constructor(
 
         /**
          * The WBRAID Identifier. The web SDK automatically captures this from the query params.
+         * Leading and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2467,6 +2622,20 @@ private constructor(
         @JsonProperty("gclid") @ExcludeMissing fun _gclid(): JsonField<String> = gclid
 
         /**
+         * Returns the raw JSON value of [graid].
+         *
+         * Unlike [graid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("graid") @ExcludeMissing fun _graid(): JsonField<String> = graid
+
+        /**
+         * Returns the raw JSON value of [grclid].
+         *
+         * Unlike [grclid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("grclid") @ExcludeMissing fun _grclid(): JsonField<String> = grclid
+
+        /**
          * Returns the raw JSON value of [host].
          *
          * Unlike [host], this method doesn't throw if the JSON field has an unexpected type.
@@ -2506,7 +2675,7 @@ private constructor(
          *
          * Unlike [isBot], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("is_bot") @ExcludeMissing fun _isBot(): JsonField<String> = isBot
+        @JsonProperty("is_bot") @ExcludeMissing fun _isBot(): JsonField<IsBot> = isBot
 
         /**
          * Returns the raw JSON value of [liFatId].
@@ -2852,12 +3021,14 @@ private constructor(
             private var gadSource: JsonField<String> = JsonMissing.of()
             private var gbraid: JsonField<String> = JsonMissing.of()
             private var gclid: JsonField<String> = JsonMissing.of()
+            private var graid: JsonField<String> = JsonMissing.of()
+            private var grclid: JsonField<String> = JsonMissing.of()
             private var host: JsonField<String> = JsonMissing.of()
             private var iframe: JsonField<Boolean> = JsonMissing.of()
             private var imRef: JsonField<String> = JsonMissing.of()
             private var ip: JsonField<String> = JsonMissing.of()
             private var irclickid: JsonField<String> = JsonMissing.of()
-            private var isBot: JsonField<String> = JsonMissing.of()
+            private var isBot: JsonField<IsBot> = JsonMissing.of()
             private var liFatId: JsonField<String> = JsonMissing.of()
             private var msclkid: JsonField<String> = JsonMissing.of()
             private var ndclid: JsonField<String> = JsonMissing.of()
@@ -2933,6 +3104,8 @@ private constructor(
                 gadSource = defaultProperties.gadSource
                 gbraid = defaultProperties.gbraid
                 gclid = defaultProperties.gclid
+                graid = defaultProperties.graid
+                grclid = defaultProperties.grclid
                 host = defaultProperties.host
                 iframe = defaultProperties.iframe
                 imRef = defaultProperties.imRef
@@ -2982,7 +3155,8 @@ private constructor(
 
             /**
              * The Everflow affiliate Click (Transaction) ID, captured from the `_ef_transaction_id`
-             * URL parameter. Ex: ef_click_abc123
+             * URL parameter. Ex: ef_click_abc123 Leading and trailing whitespace is removed before
+             * validation.
              */
             fun _efTransactionId(_efTransactionId: String?) =
                 _efTransactionId(JsonField.ofNullable(_efTransactionId))
@@ -3020,7 +3194,10 @@ private constructor(
                 this.activeDuration = activeDuration
             }
 
-            /** The ad id for detected in the session. This is set by the web sdk automatically. */
+            /**
+             * The ad id for detected in the session. This is set by the web sdk automatically.
+             * Leading and trailing whitespace is removed before validation.
+             */
             fun adId(adId: String?) = adId(JsonField.ofNullable(adId))
 
             /**
@@ -3032,7 +3209,10 @@ private constructor(
              */
             fun adId(adId: JsonField<String>) = apply { this.adId = adId }
 
-            /** The Admitad (Mitgo) affiliate Click ID. Ex: admitad_uid_abc123 */
+            /**
+             * The Admitad (Mitgo) affiliate Click ID. Ex: admitad_uid_abc123 Leading and trailing
+             * whitespace is removed before validation.
+             */
             fun admitadUid(admitadUid: String?) = admitadUid(JsonField.ofNullable(admitadUid))
 
             /**
@@ -3046,6 +3226,7 @@ private constructor(
 
             /**
              * The adset id for detected in the session. This is set by the web sdk automatically.
+             * Leading and trailing whitespace is removed before validation.
              */
             fun adsetId(adsetId: String?) = adsetId(JsonField.ofNullable(adsetId))
 
@@ -3058,7 +3239,10 @@ private constructor(
              */
             fun adsetId(adsetId: JsonField<String>) = apply { this.adsetId = adsetId }
 
-            /** The AppLovin alart query parameter. Ex: alart123 */
+            /**
+             * The AppLovin alart query parameter. Ex: alart123 Leading and trailing whitespace is
+             * removed before validation.
+             */
             fun alart(alart: String?) = alart(JsonField.ofNullable(alart))
 
             /**
@@ -3070,7 +3254,10 @@ private constructor(
              */
             fun alart(alart: JsonField<String>) = apply { this.alart = alart }
 
-            /** The AppLovin aleid query parameter. Ex: aleid123 */
+            /**
+             * The AppLovin aleid query parameter. Ex: aleid123 Leading and trailing whitespace is
+             * removed before validation.
+             */
             fun aleid(aleid: String?) = aleid(JsonField.ofNullable(aleid))
 
             /**
@@ -3082,7 +3269,10 @@ private constructor(
              */
             fun aleid(aleid: JsonField<String>) = apply { this.aleid = aleid }
 
-            /** The AppLovin pixel cookie value (_axwrt). Web-only. */
+            /**
+             * The AppLovin pixel cookie value (_axwrt). Web-only. Leading and trailing whitespace
+             * is removed before validation.
+             */
             fun axwrt(axwrt: String?) = axwrt(JsonField.ofNullable(axwrt))
 
             /**
@@ -3094,7 +3284,10 @@ private constructor(
              */
             fun axwrt(axwrt: JsonField<String>) = apply { this.axwrt = axwrt }
 
-            /** The Basis DSP Click ID. Ex: basis_cid123 */
+            /**
+             * The Basis DSP Click ID. Ex: basis_cid123 Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun basisCid(basisCid: String?) = basisCid(JsonField.ofNullable(basisCid))
 
             /**
@@ -3108,7 +3301,8 @@ private constructor(
 
             /**
              * The Beeswax (FreeWheel Buyer Cloud) auction ID, captured from the `{{AUCTION_ID}}`
-             * macro on creative click URLs. Ex: bx-auc-abc123
+             * macro on creative click URLs. Ex: bx-auc-abc123 Leading and trailing whitespace is
+             * removed before validation.
              */
             fun beeswaxAuctionId(beeswaxAuctionId: String?) =
                 beeswaxAuctionId(JsonField.ofNullable(beeswaxAuctionId))
@@ -3124,7 +3318,10 @@ private constructor(
                 this.beeswaxAuctionId = beeswaxAuctionId
             }
 
-            /** The language of the browser. Ex: en-US */
+            /**
+             * The language of the browser. Ex: en-US Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun browserLanguage(browserLanguage: String?) =
                 browserLanguage(JsonField.ofNullable(browserLanguage))
 
@@ -3139,7 +3336,10 @@ private constructor(
                 this.browserLanguage = browserLanguage
             }
 
-            /** The name of the browser. Ex: Chrome */
+            /**
+             * The name of the browser. Ex: Chrome Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun browserName(browserName: String?) = browserName(JsonField.ofNullable(browserName))
 
             /**
@@ -3153,7 +3353,10 @@ private constructor(
                 this.browserName = browserName
             }
 
-            /** The version of the browser. Ex: 114.0 */
+            /**
+             * The version of the browser. Ex: 114.0 Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun browserVersion(browserVersion: String?) =
                 browserVersion(JsonField.ofNullable(browserVersion))
 
@@ -3170,7 +3373,7 @@ private constructor(
 
             /**
              * The campaign id for detected in the session. This is set by the web sdk
-             * automatically.
+             * automatically. Leading and trailing whitespace is removed before validation.
              */
             fun campaignId(campaignId: String?) = campaignId(JsonField.ofNullable(campaignId))
 
@@ -3183,7 +3386,10 @@ private constructor(
              */
             fun campaignId(campaignId: JsonField<String>) = apply { this.campaignId = campaignId }
 
-            /** The Click ID. Ex: clickid123 */
+            /**
+             * The Click ID. Ex: clickid123 Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun clickid(clickid: String?) = clickid(JsonField.ofNullable(clickid))
 
             /**
@@ -3195,7 +3401,10 @@ private constructor(
              */
             fun clickid(clickid: JsonField<String>) = apply { this.clickid = clickid }
 
-            /** The Generic Click ID. Ex: clid123 */
+            /**
+             * The Generic Click ID. Ex: clid123 Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun clid(clid: String?) = clid(JsonField.ofNullable(clid))
 
             /**
@@ -3207,7 +3416,10 @@ private constructor(
              */
             fun clid(clid: JsonField<String>) = apply { this.clid = clid }
 
-            /** The architecture of the CPU. Ex: x64 */
+            /**
+             * The architecture of the CPU. Ex: x64 Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun cpuArchitecture(cpuArchitecture: String?) =
                 cpuArchitecture(JsonField.ofNullable(cpuArchitecture))
 
@@ -3222,7 +3434,10 @@ private constructor(
                 this.cpuArchitecture = cpuArchitecture
             }
 
-            /** The full url (including query params) of the current page */
+            /**
+             * The full url (including query params) of the current page Leading and trailing
+             * whitespace is removed before validation.
+             */
             fun currentUrl(currentUrl: String?) = currentUrl(JsonField.ofNullable(currentUrl))
 
             /**
@@ -3234,7 +3449,10 @@ private constructor(
              */
             fun currentUrl(currentUrl: JsonField<String>) = apply { this.currentUrl = currentUrl }
 
-            /** The DoubleClick Click ID. Ex: dclid123 */
+            /**
+             * The DoubleClick Click ID. Ex: dclid123 Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun dclid(dclid: String?) = dclid(JsonField.ofNullable(dclid))
 
             /**
@@ -3246,7 +3464,10 @@ private constructor(
              */
             fun dclid(dclid: JsonField<String>) = apply { this.dclid = dclid }
 
-            /** The model of the device. Ex: iPhone 13 */
+            /**
+             * The model of the device. Ex: iPhone 13 Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun deviceModel(deviceModel: String?) = deviceModel(JsonField.ofNullable(deviceModel))
 
             /**
@@ -3260,7 +3481,10 @@ private constructor(
                 this.deviceModel = deviceModel
             }
 
-            /** The type of device the user is using. Ex: mobile */
+            /**
+             * The type of device the user is using. Ex: mobile Leading and trailing whitespace is
+             * removed before validation.
+             */
             fun deviceType(deviceType: String?) = deviceType(JsonField.ofNullable(deviceType))
 
             /**
@@ -3272,7 +3496,10 @@ private constructor(
              */
             fun deviceType(deviceType: JsonField<String>) = apply { this.deviceType = deviceType }
 
-            /** The vendor of the device. Ex: Apple */
+            /**
+             * The vendor of the device. Ex: Apple Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun deviceVendor(deviceVendor: String?) =
                 deviceVendor(JsonField.ofNullable(deviceVendor))
 
@@ -3306,7 +3533,10 @@ private constructor(
              */
             fun duration(duration: JsonField<Double>) = apply { this.duration = duration }
 
-            /** The browsers encoding. Ex: UTF-8 */
+            /**
+             * The browsers encoding. Ex: UTF-8 Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun encoding(encoding: String?) = encoding(JsonField.ofNullable(encoding))
 
             /**
@@ -3318,7 +3548,10 @@ private constructor(
              */
             fun encoding(encoding: JsonField<String>) = apply { this.encoding = encoding }
 
-            /** The name of the browser engine. Ex: Blink */
+            /**
+             * The name of the browser engine. Ex: Blink Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun engineName(engineName: String?) = engineName(JsonField.ofNullable(engineName))
 
             /**
@@ -3330,7 +3563,10 @@ private constructor(
              */
             fun engineName(engineName: JsonField<String>) = apply { this.engineName = engineName }
 
-            /** The version of the browser engine. Ex: 114.0 */
+            /**
+             * The version of the browser engine. Ex: 114.0 Leading and trailing whitespace is
+             * removed before validation.
+             */
             fun engineVersion(engineVersion: String?) =
                 engineVersion(JsonField.ofNullable(engineVersion))
 
@@ -3345,7 +3581,10 @@ private constructor(
                 this.engineVersion = engineVersion
             }
 
-            /** The Pinterest Click ID. Ex: epik456 */
+            /**
+             * The Pinterest Click ID. Ex: epik456 Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun epik(epik: String?) = epik(JsonField.ofNullable(epik))
 
             /**
@@ -3359,7 +3598,8 @@ private constructor(
 
             /**
              * Facebook Click ID with prefix format for Conversions API tracking. Ex:
-             * fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890
+             * fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890 Leading and trailing
+             * whitespace is removed before validation.
              */
             fun fbc(fbc: String?) = fbc(JsonField.ofNullable(fbc))
 
@@ -3374,7 +3614,8 @@ private constructor(
 
             /**
              * Raw Facebook Click ID query parameter without prefix from ad clicks. Ex:
-             * AbCdEfGhIjKlMnOpQrStUvWxYz1234567890
+             * AbCdEfGhIjKlMnOpQrStUvWxYz1234567890 Leading and trailing whitespace is removed
+             * before validation.
              */
             fun fbclid(fbclid: String?) = fbclid(JsonField.ofNullable(fbclid))
 
@@ -3389,7 +3630,8 @@ private constructor(
 
             /**
              * Facebook Browser ID parameter for identifying browsers and attributing events. Ex:
-             * fb.1.1554763741205.1098115397
+             * fb.1.1554763741205.1098115397 Leading and trailing whitespace is removed before
+             * validation.
              */
             fun fbp(fbp: String?) = fbp(JsonField.ofNullable(fbp))
 
@@ -3421,7 +3663,10 @@ private constructor(
              */
             fun fv(fv: JsonField<Boolean>) = apply { this.fv = fv }
 
-            /** The Google Ad Source. Ex: google */
+            /**
+             * The Google Ad Source. Ex: google Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun gadSource(gadSource: String?) = gadSource(JsonField.ofNullable(gadSource))
 
             /**
@@ -3433,7 +3678,10 @@ private constructor(
              */
             fun gadSource(gadSource: JsonField<String>) = apply { this.gadSource = gadSource }
 
-            /** The Google Braid ID. Ex: gbraid123 */
+            /**
+             * The Google Braid ID. Ex: gbraid123 Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun gbraid(gbraid: String?) = gbraid(JsonField.ofNullable(gbraid))
 
             /**
@@ -3445,7 +3693,10 @@ private constructor(
              */
             fun gbraid(gbraid: JsonField<String>) = apply { this.gbraid = gbraid }
 
-            /** The Google Click ID. Ex: gclid123 */
+            /**
+             * The Google Click ID. Ex: gclid123 Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun gclid(gclid: String?) = gclid(JsonField.ofNullable(gclid))
 
             /**
@@ -3457,7 +3708,42 @@ private constructor(
              */
             fun gclid(gclid: JsonField<String>) = apply { this.gclid = gclid }
 
-            /** The host of the current page. Ex: example.com */
+            /**
+             * The Gravity attribution ID, captured from the `graid` URL parameter on the landing
+             * page. Gravity resolves it to the campaign, publisher, and ad IDs server-side. Ex:
+             * graid-abc123 Leading and trailing whitespace is removed before validation.
+             */
+            fun graid(graid: String?) = graid(JsonField.ofNullable(graid))
+
+            /**
+             * Sets [Builder.graid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.graid] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun graid(graid: JsonField<String>) = apply { this.graid = graid }
+
+            /**
+             * The Gravity click ID, captured from the `grclid` URL parameter that Gravity
+             * (trygravity.com) appends to ad click-through URLs on the landing page. Ex:
+             * grclid-abc123 Leading and trailing whitespace is removed before validation.
+             */
+            fun grclid(grclid: String?) = grclid(JsonField.ofNullable(grclid))
+
+            /**
+             * Sets [Builder.grclid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.grclid] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun grclid(grclid: JsonField<String>) = apply { this.grclid = grclid }
+
+            /**
+             * The host of the current page. Ex: example.com Leading and trailing whitespace is
+             * removed before validation.
+             */
             fun host(host: String?) = host(JsonField.ofNullable(host))
 
             /**
@@ -3488,7 +3774,10 @@ private constructor(
              */
             fun iframe(iframe: JsonField<Boolean>) = apply { this.iframe = iframe }
 
-            /** The Impact Click ID reference. Ex: im_ref123 */
+            /**
+             * The Impact Click ID reference. Ex: im_ref123 Leading and trailing whitespace is
+             * removed before validation.
+             */
             fun imRef(imRef: String?) = imRef(JsonField.ofNullable(imRef))
 
             /**
@@ -3500,7 +3789,10 @@ private constructor(
              */
             fun imRef(imRef: JsonField<String>) = apply { this.imRef = imRef }
 
-            /** The IP address of the user. Ex: 127.0.0.1 */
+            /**
+             * The IP address of the user. Ex: 127.0.0.1 Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun ip(ip: String?) = ip(JsonField.ofNullable(ip))
 
             /**
@@ -3512,7 +3804,10 @@ private constructor(
              */
             fun ip(ip: JsonField<String>) = apply { this.ip = ip }
 
-            /** The Impact Click ID. Ex: irclickid123 */
+            /**
+             * The Impact Click ID. Ex: irclickid123 Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun irclickid(irclickid: String?) = irclickid(JsonField.ofNullable(irclickid))
 
             /**
@@ -3524,22 +3819,38 @@ private constructor(
              */
             fun irclickid(irclickid: JsonField<String>) = apply { this.irclickid = irclickid }
 
-            /**
-             * Whether we have detected that the user is a bot. This is set automatically by the
-             * Ours server primarily for events tracked through the web SDK.
-             */
-            fun isBot(isBot: String?) = isBot(JsonField.ofNullable(isBot))
+            /** Any JSON value: string, number, boolean, array, object, or null. */
+            fun isBot(isBot: IsBot?) = isBot(JsonField.ofNullable(isBot))
 
             /**
              * Sets [Builder.isBot] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.isBot] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.isBot] with a well-typed [IsBot] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
              */
-            fun isBot(isBot: JsonField<String>) = apply { this.isBot = isBot }
+            fun isBot(isBot: JsonField<IsBot>) = apply { this.isBot = isBot }
 
-            /** The LinkedIn Click ID. Ex: li_fat_id123 */
+            /** Alias for calling [isBot] with `IsBot.ofString(string)`. */
+            fun isBot(string: String) = isBot(IsBot.ofString(string))
+
+            /** Alias for calling [isBot] with `IsBot.ofDouble(double)`. */
+            fun isBot(double: Double) = isBot(IsBot.ofDouble(double))
+
+            /** Alias for calling [isBot] with `IsBot.ofBoolean(boolean)`. */
+            fun isBot(boolean: Boolean) = isBot(IsBot.ofBoolean(boolean))
+
+            /** Alias for calling [isBot] with `IsBot.ofJsonValues(jsonValues)`. */
+            fun isBotOfJsonValues(jsonValues: List<JsonValue>) =
+                isBot(IsBot.ofJsonValues(jsonValues))
+
+            /** Alias for calling [isBot] with `IsBot.ofUnionMember4(unionMember4)`. */
+            fun isBot(unionMember4: IsBot.UnionMember4) = isBot(IsBot.ofUnionMember4(unionMember4))
+
+            /**
+             * The LinkedIn Click ID. Ex: li_fat_id123 Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun liFatId(liFatId: String?) = liFatId(JsonField.ofNullable(liFatId))
 
             /**
@@ -3551,7 +3862,10 @@ private constructor(
              */
             fun liFatId(liFatId: JsonField<String>) = apply { this.liFatId = liFatId }
 
-            /** The Microsoft Click ID. Ex: msclkid123 */
+            /**
+             * The Microsoft Click ID. Ex: msclkid123 Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun msclkid(msclkid: String?) = msclkid(JsonField.ofNullable(msclkid))
 
             /**
@@ -3563,7 +3877,10 @@ private constructor(
              */
             fun msclkid(msclkid: JsonField<String>) = apply { this.msclkid = msclkid }
 
-            /** The NextDoor Click ID. Ex: ndclid123 */
+            /**
+             * The NextDoor Click ID. Ex: ndclid123 Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun ndclid(ndclid: String?) = ndclid(JsonField.ofNullable(ndclid))
 
             /**
@@ -3596,7 +3913,8 @@ private constructor(
 
             /**
              * The Outbrain click ID, captured from the `ob_click_id` URL parameter (Outbrain
-             * `{{ob_click_id}}` macro) on the landing page. Ex: ob_click_abc123
+             * `{{ob_click_id}}` macro) on the landing page. Ex: ob_click_abc123 Leading and
+             * trailing whitespace is removed before validation.
              */
             fun obClickId(obClickId: String?) = obClickId(JsonField.ofNullable(obClickId))
 
@@ -3612,7 +3930,8 @@ private constructor(
             /**
              * The OpenAI Ads privacy-preserving reference, captured from the `oppref` URL parameter
              * on landing pages (the OpenAI Pixel also stores it in a `__oppref` cookie). Sent to
-             * OpenAI Ads on Conversions API events for attribution. Ex: oppref_abc
+             * OpenAI Ads on Conversions API events for attribution. Ex: oppref_abc Leading and
+             * trailing whitespace is removed before validation.
              */
             fun oppref(oppref: String?) = oppref(JsonField.ofNullable(oppref))
 
@@ -3625,7 +3944,10 @@ private constructor(
              */
             fun oppref(oppref: JsonField<String>) = apply { this.oppref = oppref }
 
-            /** The name of the operating system. Ex: Windows */
+            /**
+             * The name of the operating system. Ex: Windows Leading and trailing whitespace is
+             * removed before validation.
+             */
             fun osName(osName: String?) = osName(JsonField.ofNullable(osName))
 
             /**
@@ -3637,7 +3959,10 @@ private constructor(
              */
             fun osName(osName: JsonField<String>) = apply { this.osName = osName }
 
-            /** The version of the operating system. Ex: 10.0 */
+            /**
+             * The version of the operating system. Ex: 10.0 Leading and trailing whitespace is
+             * removed before validation.
+             */
             fun osVersion(osVersion: String?) = osVersion(JsonField.ofNullable(osVersion))
 
             /**
@@ -3668,7 +3993,10 @@ private constructor(
              */
             fun pageHash(pageHash: JsonField<Double>) = apply { this.pageHash = pageHash }
 
-            /** The pathname of the current page. Ex: /home */
+            /**
+             * The pathname of the current page. Ex: /home Leading and trailing whitespace is
+             * removed before validation.
+             */
             fun pathname(pathname: String?) = pathname(JsonField.ofNullable(pathname))
 
             /**
@@ -3680,7 +4008,10 @@ private constructor(
              */
             fun pathname(pathname: JsonField<String>) = apply { this.pathname = pathname }
 
-            /** The Quora Click ID. Ex: qclid123 */
+            /**
+             * The Quora Click ID. Ex: qclid123 Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun qclid(qclid: String?) = qclid(JsonField.ofNullable(qclid))
 
             /**
@@ -3692,7 +4023,10 @@ private constructor(
              */
             fun qclid(qclid: JsonField<String>) = apply { this.qclid = qclid }
 
-            /** The Reddit Click ID. Ex: rdt_cid123 */
+            /**
+             * The Reddit Click ID. Ex: rdt_cid123 Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun rdtCid(rdtCid: String?) = rdtCid(JsonField.ofNullable(rdtCid))
 
             /**
@@ -3716,7 +4050,10 @@ private constructor(
              */
             fun receivedAt(receivedAt: JsonField<String>) = apply { this.receivedAt = receivedAt }
 
-            /** The referrer URL of the current page */
+            /**
+             * The referrer URL of the current page Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun referrer(referrer: String?) = referrer(JsonField.ofNullable(referrer))
 
             /**
@@ -3728,7 +4065,10 @@ private constructor(
              */
             fun referrer(referrer: JsonField<String>) = apply { this.referrer = referrer }
 
-            /** The referring domain of the current page */
+            /**
+             * The referring domain of the current page Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun referringDomain(referringDomain: String?) =
                 referringDomain(JsonField.ofNullable(referringDomain))
 
@@ -3743,7 +4083,10 @@ private constructor(
                 this.referringDomain = referringDomain
             }
 
-            /** The StackAdapt Tracking ID. Ex: sacid123 */
+            /**
+             * The StackAdapt Tracking ID. Ex: sacid123 Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun sacid(sacid: String?) = sacid(JsonField.ofNullable(sacid))
 
             /**
@@ -3755,7 +4098,10 @@ private constructor(
              */
             fun sacid(sacid: JsonField<String>) = apply { this.sacid = sacid }
 
-            /** The SnapChat Click ID. Ex: sccid123 */
+            /**
+             * The SnapChat Click ID. Ex: sccid123 Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun sccid(sccid: String?) = sccid(JsonField.ofNullable(sccid))
 
             /**
@@ -3834,7 +4180,7 @@ private constructor(
 
             /**
              * The session ID as assigned automatically by the web SDK. This is required for session
-             * replay
+             * replay Leading and trailing whitespace is removed before validation.
              */
             fun sid(sid: String?) = sid(JsonField.ofNullable(sid))
 
@@ -3847,6 +4193,7 @@ private constructor(
              */
             fun sid(sid: JsonField<String>) = apply { this.sid = sid }
 
+            /** Leading and trailing whitespace is removed before validation. */
             fun sr(sr: String?) = sr(JsonField.ofNullable(sr))
 
             /**
@@ -3858,7 +4205,10 @@ private constructor(
              */
             fun sr(sr: JsonField<String>) = apply { this.sr = sr }
 
-            /** The title of the current page */
+            /**
+             * The title of the current page Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun title(title: String?) = title(JsonField.ofNullable(title))
 
             /**
@@ -3870,7 +4220,10 @@ private constructor(
              */
             fun title(title: JsonField<String>) = apply { this.title = title }
 
-            /** The TikTok Click ID. Ex: ttclid123 */
+            /**
+             * The TikTok Click ID. Ex: ttclid123 Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun ttclid(ttclid: String?) = ttclid(JsonField.ofNullable(ttclid))
 
             /**
@@ -3882,7 +4235,10 @@ private constructor(
              */
             fun ttclid(ttclid: JsonField<String>) = apply { this.ttclid = ttclid }
 
-            /** The Twitter Click ID. Ex: twclid123 */
+            /**
+             * The Twitter Click ID. Ex: twclid123 Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun twclid(twclid: String?) = twclid(JsonField.ofNullable(twclid))
 
             /**
@@ -3894,7 +4250,10 @@ private constructor(
              */
             fun twclid(twclid: JsonField<String>) = apply { this.twclid = twclid }
 
-            /** User agent as a full list of strings. */
+            /**
+             * User agent as a full list of strings. Leading and trailing whitespace is removed
+             * before validation.
+             */
             fun uafvl(uafvl: String?) = uafvl(JsonField.ofNullable(uafvl))
 
             /**
@@ -3906,7 +4265,10 @@ private constructor(
              */
             fun uafvl(uafvl: JsonField<String>) = apply { this.uafvl = uafvl }
 
-            /** The user agent of the browser */
+            /**
+             * The user agent of the browser Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun userAgent(userAgent: String?) = userAgent(JsonField.ofNullable(userAgent))
 
             /**
@@ -3918,7 +4280,10 @@ private constructor(
              */
             fun userAgent(userAgent: JsonField<String>) = apply { this.userAgent = userAgent }
 
-            /** The UTM Campaign. The web SDK automatically captures this from the query params. */
+            /**
+             * The UTM Campaign. The web SDK automatically captures this from the query params.
+             * Leading and trailing whitespace is removed before validation.
+             */
             fun utmCampaign(utmCampaign: String?) = utmCampaign(JsonField.ofNullable(utmCampaign))
 
             /**
@@ -3932,7 +4297,10 @@ private constructor(
                 this.utmCampaign = utmCampaign
             }
 
-            /** The UTM Content. The web SDK automatically captures this from the query params. */
+            /**
+             * The UTM Content. The web SDK automatically captures this from the query params.
+             * Leading and trailing whitespace is removed before validation.
+             */
             fun utmContent(utmContent: String?) = utmContent(JsonField.ofNullable(utmContent))
 
             /**
@@ -3944,7 +4312,10 @@ private constructor(
              */
             fun utmContent(utmContent: JsonField<String>) = apply { this.utmContent = utmContent }
 
-            /** The UTM Medium. The web SDK automatically captures this from the query params. */
+            /**
+             * The UTM Medium. The web SDK automatically captures this from the query params.
+             * Leading and trailing whitespace is removed before validation.
+             */
             fun utmMedium(utmMedium: String?) = utmMedium(JsonField.ofNullable(utmMedium))
 
             /**
@@ -3956,7 +4327,10 @@ private constructor(
              */
             fun utmMedium(utmMedium: JsonField<String>) = apply { this.utmMedium = utmMedium }
 
-            /** The UTM Name. The web SDK automatically captures this from the query params. */
+            /**
+             * The UTM Name. The web SDK automatically captures this from the query params. Leading
+             * and trailing whitespace is removed before validation.
+             */
             fun utmName(utmName: String?) = utmName(JsonField.ofNullable(utmName))
 
             /**
@@ -3968,7 +4342,10 @@ private constructor(
              */
             fun utmName(utmName: JsonField<String>) = apply { this.utmName = utmName }
 
-            /** The UTM Source. The web SDK automatically captures this from the query params. */
+            /**
+             * The UTM Source. The web SDK automatically captures this from the query params.
+             * Leading and trailing whitespace is removed before validation.
+             */
             fun utmSource(utmSource: String?) = utmSource(JsonField.ofNullable(utmSource))
 
             /**
@@ -3980,7 +4357,10 @@ private constructor(
              */
             fun utmSource(utmSource: JsonField<String>) = apply { this.utmSource = utmSource }
 
-            /** The UTM Term. The web SDK automatically captures this from the query params. */
+            /**
+             * The UTM Term. The web SDK automatically captures this from the query params. Leading
+             * and trailing whitespace is removed before validation.
+             */
             fun utmTerm(utmTerm: String?) = utmTerm(JsonField.ofNullable(utmTerm))
 
             /**
@@ -3992,7 +4372,10 @@ private constructor(
              */
             fun utmTerm(utmTerm: JsonField<String>) = apply { this.utmTerm = utmTerm }
 
-            /** The SDK version (e.g., web SDK or ingest-sdk-* via generated SDK headers) */
+            /**
+             * The SDK version (e.g., web SDK or ingest-sdk-* via generated SDK headers) Leading and
+             * trailing whitespace is removed before validation.
+             */
             fun version(version: String?) = version(JsonField.ofNullable(version))
 
             /**
@@ -4007,7 +4390,7 @@ private constructor(
             /**
              * The Viant (Adelphic) Click ID, captured from the `viant_click_id` URL parameter
              * (Viant `${ADELPHIC_CLICKID}` macro). Sent as `xid` on Viant postbacks. Ex:
-             * viant_click_abc123
+             * viant_click_abc123 Leading and trailing whitespace is removed before validation.
              */
             fun viantClickId(viantClickId: String?) =
                 viantClickId(JsonField.ofNullable(viantClickId))
@@ -4026,7 +4409,8 @@ private constructor(
             /**
              * The Viant (Adelphic) Impression ID, captured from the `viant_impression_id` URL
              * parameter (Viant `${ADELPHIC_IMPRESSIONID}` macro). Sent as `imp_id` on Viant
-             * postbacks for post-view attribution. Ex: viant_imp_abc123
+             * postbacks for post-view attribution. Ex: viant_imp_abc123 Leading and trailing
+             * whitespace is removed before validation.
              */
             fun viantImpressionId(viantImpressionId: String?) =
                 viantImpressionId(JsonField.ofNullable(viantImpressionId))
@@ -4044,6 +4428,7 @@ private constructor(
 
             /**
              * The WBRAID Identifier. The web SDK automatically captures this from the query params.
+             * Leading and trailing whitespace is removed before validation.
              */
             fun wbraid(wbraid: String?) = wbraid(JsonField.ofNullable(wbraid))
 
@@ -4135,6 +4520,8 @@ private constructor(
                     gadSource,
                     gbraid,
                     gclid,
+                    graid,
+                    grclid,
                     host,
                     iframe,
                     imRef,
@@ -4233,12 +4620,14 @@ private constructor(
             gadSource()
             gbraid()
             gclid()
+            graid()
+            grclid()
             host()
             iframe()
             imRef()
             ip()
             irclickid()
-            isBot()
+            isBot()?.validate()
             liFatId()
             msclkid()
             ndclid()
@@ -4329,12 +4718,14 @@ private constructor(
                 (if (gadSource.asKnown() == null) 0 else 1) +
                 (if (gbraid.asKnown() == null) 0 else 1) +
                 (if (gclid.asKnown() == null) 0 else 1) +
+                (if (graid.asKnown() == null) 0 else 1) +
+                (if (grclid.asKnown() == null) 0 else 1) +
                 (if (host.asKnown() == null) 0 else 1) +
                 (if (iframe.asKnown() == null) 0 else 1) +
                 (if (imRef.asKnown() == null) 0 else 1) +
                 (if (ip.asKnown() == null) 0 else 1) +
                 (if (irclickid.asKnown() == null) 0 else 1) +
-                (if (isBot.asKnown() == null) 0 else 1) +
+                (isBot.asKnown()?.validity() ?: 0) +
                 (if (liFatId.asKnown() == null) 0 else 1) +
                 (if (msclkid.asKnown() == null) 0 else 1) +
                 (if (ndclid.asKnown() == null) 0 else 1) +
@@ -4373,6 +4764,396 @@ private constructor(
                 (if (viantImpressionId.asKnown() == null) 0 else 1) +
                 (if (wbraid.asKnown() == null) 0 else 1) +
                 (if (webview.asKnown() == null) 0 else 1)
+
+        /** Any JSON value: string, number, boolean, array, object, or null. */
+        @JsonDeserialize(using = IsBot.Deserializer::class)
+        @JsonSerialize(using = IsBot.Serializer::class)
+        class IsBot
+        private constructor(
+            private val string: String? = null,
+            private val double: Double? = null,
+            private val boolean: Boolean? = null,
+            private val jsonValues: List<JsonValue>? = null,
+            private val unionMember4: UnionMember4? = null,
+            private val _json: JsonValue? = null,
+        ) {
+
+            fun string(): String? = string
+
+            fun double(): Double? = double
+
+            fun boolean(): Boolean? = boolean
+
+            fun jsonValues(): List<JsonValue>? = jsonValues
+
+            fun unionMember4(): UnionMember4? = unionMember4
+
+            fun isString(): Boolean = string != null
+
+            fun isDouble(): Boolean = double != null
+
+            fun isBoolean(): Boolean = boolean != null
+
+            fun isJsonValues(): Boolean = jsonValues != null
+
+            fun isUnionMember4(): Boolean = unionMember4 != null
+
+            fun asString(): String = string.getOrThrow("string")
+
+            fun asDouble(): Double = double.getOrThrow("double")
+
+            fun asBoolean(): Boolean = boolean.getOrThrow("boolean")
+
+            fun asJsonValues(): List<JsonValue> = jsonValues.getOrThrow("jsonValues")
+
+            fun asUnionMember4(): UnionMember4 = unionMember4.getOrThrow("unionMember4")
+
+            fun _json(): JsonValue? = _json
+
+            /**
+             * Maps this instance's current variant to a value of type [T] using the given
+             * [visitor].
+             *
+             * Note that this method is _not_ forwards compatible with new variants from the API,
+             * unless [visitor] overrides [Visitor.unknown]. To handle variants not known to this
+             * version of the SDK gracefully, consider overriding [Visitor.unknown]:
+             * ```kotlin
+             * import com.oursprivacy.core.JsonValue
+             *
+             * val result: String? = isBot.accept(object : IsBot.Visitor<String?> {
+             *     override fun visitString(string: String): String? = string.toString()
+             *
+             *     // ...
+             *
+             *     override fun unknown(json: JsonValue?): String? {
+             *         // Or inspect the `json`.
+             *         return null
+             *     }
+             * })
+             * ```
+             *
+             * @throws OursPrivacyInvalidDataException if [Visitor.unknown] is not overridden in
+             *   [visitor] and the current variant is unknown.
+             */
+            fun <T> accept(visitor: Visitor<T>): T =
+                when {
+                    string != null -> visitor.visitString(string)
+                    double != null -> visitor.visitDouble(double)
+                    boolean != null -> visitor.visitBoolean(boolean)
+                    jsonValues != null -> visitor.visitJsonValues(jsonValues)
+                    unionMember4 != null -> visitor.visitUnionMember4(unionMember4)
+                    else -> visitor.unknown(_json)
+                }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws OursPrivacyInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): IsBot = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                accept(
+                    object : Visitor<Unit> {
+                        override fun visitString(string: String) {}
+
+                        override fun visitDouble(double: Double) {}
+
+                        override fun visitBoolean(boolean: Boolean) {}
+
+                        override fun visitJsonValues(jsonValues: List<JsonValue>) {}
+
+                        override fun visitUnionMember4(unionMember4: UnionMember4) {
+                            unionMember4.validate()
+                        }
+                    }
+                )
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: OursPrivacyInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                accept(
+                    object : Visitor<Int> {
+                        override fun visitString(string: String) = 1
+
+                        override fun visitDouble(double: Double) = 1
+
+                        override fun visitBoolean(boolean: Boolean) = 1
+
+                        override fun visitJsonValues(jsonValues: List<JsonValue>) = jsonValues.size
+
+                        override fun visitUnionMember4(unionMember4: UnionMember4) =
+                            unionMember4.validity()
+
+                        override fun unknown(json: JsonValue?) = 0
+                    }
+                )
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is IsBot &&
+                    string == other.string &&
+                    double == other.double &&
+                    boolean == other.boolean &&
+                    jsonValues == other.jsonValues &&
+                    unionMember4 == other.unionMember4
+            }
+
+            override fun hashCode(): Int =
+                Objects.hash(string, double, boolean, jsonValues, unionMember4)
+
+            override fun toString(): String =
+                when {
+                    string != null -> "IsBot{string=$string}"
+                    double != null -> "IsBot{double=$double}"
+                    boolean != null -> "IsBot{boolean=$boolean}"
+                    jsonValues != null -> "IsBot{jsonValues=$jsonValues}"
+                    unionMember4 != null -> "IsBot{unionMember4=$unionMember4}"
+                    _json != null -> "IsBot{_unknown=$_json}"
+                    else -> throw IllegalStateException("Invalid IsBot")
+                }
+
+            companion object {
+
+                fun ofString(string: String) = IsBot(string = string)
+
+                fun ofDouble(double: Double) = IsBot(double = double)
+
+                fun ofBoolean(boolean: Boolean) = IsBot(boolean = boolean)
+
+                fun ofJsonValues(jsonValues: List<JsonValue>) =
+                    IsBot(jsonValues = jsonValues.toImmutable())
+
+                fun ofUnionMember4(unionMember4: UnionMember4) = IsBot(unionMember4 = unionMember4)
+            }
+
+            /**
+             * An interface that defines how to map each variant of [IsBot] to a value of type [T].
+             */
+            interface Visitor<out T> {
+
+                fun visitString(string: String): T
+
+                fun visitDouble(double: Double): T
+
+                fun visitBoolean(boolean: Boolean): T
+
+                fun visitJsonValues(jsonValues: List<JsonValue>): T
+
+                fun visitUnionMember4(unionMember4: UnionMember4): T
+
+                /**
+                 * Maps an unknown variant of [IsBot] to a value of type [T].
+                 *
+                 * An instance of [IsBot] can contain an unknown variant if it was deserialized from
+                 * data that doesn't match any known variant. For example, if the SDK is on an older
+                 * version than the API, then the API may respond with new variants that the SDK is
+                 * unaware of.
+                 *
+                 * @throws OursPrivacyInvalidDataException in the default implementation.
+                 */
+                fun unknown(json: JsonValue?): T {
+                    throw OursPrivacyInvalidDataException("Unknown IsBot: $json")
+                }
+            }
+
+            internal class Deserializer : BaseDeserializer<IsBot>(IsBot::class) {
+
+                override fun ObjectCodec.deserialize(node: JsonNode): IsBot {
+                    val json = JsonValue.fromJsonNode(node)
+
+                    val bestMatches =
+                        sequenceOf(
+                                tryDeserialize(node, jacksonTypeRef<UnionMember4>())?.let {
+                                    IsBot(unionMember4 = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<String>())?.let {
+                                    IsBot(string = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<Double>())?.let {
+                                    IsBot(double = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<Boolean>())?.let {
+                                    IsBot(boolean = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<List<JsonValue>>())?.let {
+                                    IsBot(jsonValues = it, _json = json)
+                                },
+                            )
+                            .filterNotNull()
+                            .allMaxBy { it.validity() }
+                            .toList()
+                    return when (bestMatches.size) {
+                        // This can happen if what we're deserializing is completely incompatible
+                        // with all the possible variants.
+                        0 -> IsBot(_json = json)
+                        1 -> bestMatches.single()
+                        // If there's more than one match with the highest validity, then use the
+                        // first completely valid match, or simply the first match if none are
+                        // completely valid.
+                        else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                    }
+                }
+            }
+
+            internal class Serializer : BaseSerializer<IsBot>(IsBot::class) {
+
+                override fun serialize(
+                    value: IsBot,
+                    generator: JsonGenerator,
+                    provider: SerializerProvider,
+                ) {
+                    when {
+                        value.string != null -> generator.writeObject(value.string)
+                        value.double != null -> generator.writeObject(value.double)
+                        value.boolean != null -> generator.writeObject(value.boolean)
+                        value.jsonValues != null -> generator.writeObject(value.jsonValues)
+                        value.unionMember4 != null -> generator.writeObject(value.unionMember4)
+                        value._json != null -> generator.writeObject(value._json)
+                        else -> throw IllegalStateException("Invalid IsBot")
+                    }
+                }
+            }
+
+            class UnionMember4
+            @JsonCreator
+            private constructor(
+                @com.fasterxml.jackson.annotation.JsonValue
+                private val additionalProperties: Map<String, JsonValue>
+            ) {
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /** Returns a mutable builder for constructing an instance of [UnionMember4]. */
+                    fun builder() = Builder()
+                }
+
+                /** A builder for [UnionMember4]. */
+                class Builder internal constructor() {
+
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    internal fun from(unionMember4: UnionMember4) = apply {
+                        additionalProperties = unionMember4.additionalProperties.toMutableMap()
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [UnionMember4].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): UnionMember4 = UnionMember4(additionalProperties.toImmutable())
+                }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws OursPrivacyInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
+                fun validate(): UnionMember4 = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: OursPrivacyInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    additionalProperties.count { (_, value) ->
+                        !value.isNull() && !value.isMissing()
+                    }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is UnionMember4 &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() = "UnionMember4{additionalProperties=$additionalProperties}"
+            }
+        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -4414,6 +5195,8 @@ private constructor(
                 gadSource == other.gadSource &&
                 gbraid == other.gbraid &&
                 gclid == other.gclid &&
+                graid == other.graid &&
+                grclid == other.grclid &&
                 host == other.host &&
                 iframe == other.iframe &&
                 imRef == other.imRef &&
@@ -4497,6 +5280,8 @@ private constructor(
                 gadSource,
                 gbraid,
                 gclid,
+                graid,
+                grclid,
                 host,
                 iframe,
                 imRef,
@@ -4548,10 +5333,16 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, obClickId=$obClickId, oppref=$oppref, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
+            "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, graid=$graid, grclid=$grclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, obClickId=$obClickId, oppref=$oppref, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
     }
 
-    /** Any additional event properties you want to pass along. */
+    /**
+     * Any additional event properties you want to pass along. Use at most 200 nonempty property
+     * keys and five object levels. Array contents do not count toward the object-depth limit. Empty
+     * keys are removed recursively, arrays are truncated to 250 entries, and top-level numbers
+     * outside the safe integer range become strings. After normalization, the serialized JSON must
+     * be shorter than 1,048,576 UTF-16 code units.
+     */
     class EventProperties
     @JsonCreator
     private constructor(
@@ -4905,10 +5696,12 @@ private constructor(
         private val gbraid: JsonField<String>,
         private val gclid: JsonField<String>,
         private val gender: JsonField<String>,
+        private val graid: JsonField<String>,
+        private val grclid: JsonField<String>,
         private val imRef: JsonField<String>,
         private val ip: JsonField<String>,
         private val irclickid: JsonField<String>,
-        private val isBot: JsonField<String>,
+        private val isBot: JsonField<IsBot>,
         private val jobTitle: JsonField<String>,
         private val lastName: JsonField<String>,
         private val liFatId: JsonField<String>,
@@ -4916,7 +5709,7 @@ private constructor(
         private val ndclid: JsonField<String>,
         private val obClickId: JsonField<String>,
         private val oppref: JsonField<String>,
-        private val phoneNumber: JsonField<String>,
+        private val phoneNumber: JsonField<PhoneNumber>,
         private val qclid: JsonField<String>,
         private val rdtCid: JsonField<String>,
         private val referrer: JsonField<String>,
@@ -4938,7 +5731,7 @@ private constructor(
         private val viantClickId: JsonField<String>,
         private val viantImpressionId: JsonField<String>,
         private val wbraid: JsonField<String>,
-        private val zip: JsonField<String>,
+        private val zip: JsonField<Zip>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -4996,12 +5789,14 @@ private constructor(
             @JsonProperty("gbraid") @ExcludeMissing gbraid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("gclid") @ExcludeMissing gclid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("gender") @ExcludeMissing gender: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("graid") @ExcludeMissing graid: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("grclid") @ExcludeMissing grclid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("im_ref") @ExcludeMissing imRef: JsonField<String> = JsonMissing.of(),
             @JsonProperty("ip") @ExcludeMissing ip: JsonField<String> = JsonMissing.of(),
             @JsonProperty("irclickid")
             @ExcludeMissing
             irclickid: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("is_bot") @ExcludeMissing isBot: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("is_bot") @ExcludeMissing isBot: JsonField<IsBot> = JsonMissing.of(),
             @JsonProperty("job_title")
             @ExcludeMissing
             jobTitle: JsonField<String> = JsonMissing.of(),
@@ -5019,7 +5814,7 @@ private constructor(
             @JsonProperty("oppref") @ExcludeMissing oppref: JsonField<String> = JsonMissing.of(),
             @JsonProperty("phone_number")
             @ExcludeMissing
-            phoneNumber: JsonField<String> = JsonMissing.of(),
+            phoneNumber: JsonField<PhoneNumber> = JsonMissing.of(),
             @JsonProperty("qclid") @ExcludeMissing qclid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("rdt_cid") @ExcludeMissing rdtCid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("referrer")
@@ -5061,7 +5856,7 @@ private constructor(
             @ExcludeMissing
             viantImpressionId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("wbraid") @ExcludeMissing wbraid: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("zip") @ExcludeMissing zip: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("zip") @ExcludeMissing zip: JsonField<Zip> = JsonMissing.of(),
         ) : this(
             _efTransactionId,
             adId,
@@ -5093,6 +5888,8 @@ private constructor(
             gbraid,
             gclid,
             gender,
+            graid,
+            grclid,
             imRef,
             ip,
             irclickid,
@@ -5131,6 +5928,8 @@ private constructor(
         )
 
         /**
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -5143,6 +5942,8 @@ private constructor(
         fun adId(): String? = adId.getNullable("ad_id")
 
         /**
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -5173,12 +5974,16 @@ private constructor(
         fun axwrt(): String? = axwrt.getNullable("axwrt")
 
         /**
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun basisCid(): String? = basisCid.getNullable("basis_cid")
 
         /**
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -5191,6 +5996,9 @@ private constructor(
         fun campaignId(): String? = campaignId.getNullable("campaign_id")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -5209,24 +6017,41 @@ private constructor(
         fun clid(): String? = clid.getNullable("clid")
 
         /**
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun companyName(): String? = companyName.getNullable("company_name")
 
         /**
+         * Use at most 200 nonempty property keys and five object levels. Array contents do not
+         * count toward the object-depth limit. Empty keys are removed recursively, arrays are
+         * truncated to 250 entries, and top-level numbers outside the safe integer range become
+         * strings. After normalization, the serialized JSON must be shorter than 1,048,576 UTF-16
+         * code units.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun consent(): Consent? = consent.getNullable("consent")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun country(): String? = country.getNullable("country")
 
         /**
+         * Use at most 200 nonempty property keys and five object levels. Array contents do not
+         * count toward the object-depth limit. Empty keys are removed recursively, arrays are
+         * truncated to 250 entries, and top-level numbers outside the safe integer range become
+         * strings. After normalization, the serialized JSON must be shorter than 1,048,576 UTF-16
+         * code units.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -5234,6 +6059,9 @@ private constructor(
             customProperties.getNullable("custom_properties")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -5246,18 +6074,26 @@ private constructor(
         fun dclid(): String? = dclid.getNullable("dclid")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun email(): String? = email.getNullable("email")
 
         /**
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun epik(): String? = epik.getNullable("epik")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -5282,6 +6118,9 @@ private constructor(
         fun fbp(): String? = fbp.getNullable("fbp")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -5306,10 +6145,29 @@ private constructor(
         fun gclid(): String? = gclid.getNullable("gclid")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun gender(): String? = gender.getNullable("gender")
+
+        /**
+         * Leading and trailing whitespace is removed before validation.
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun graid(): String? = graid.getNullable("graid")
+
+        /**
+         * Leading and trailing whitespace is removed before validation.
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun grclid(): String? = grclid.getNullable("grclid")
 
         /**
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -5318,7 +6176,7 @@ private constructor(
         fun imRef(): String? = imRef.getNullable("im_ref")
 
         /**
-         * The IP address of the user
+         * The IP address of the user Leading and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -5332,18 +6190,25 @@ private constructor(
         fun irclickid(): String? = irclickid.getNullable("irclickid")
 
         /**
+         * Any JSON value: string, number, boolean, array, object, or null.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun isBot(): String? = isBot.getNullable("is_bot")
+        fun isBot(): IsBot? = isBot.getNullable("is_bot")
 
         /**
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun jobTitle(): String? = jobTitle.getNullable("job_title")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -5368,6 +6233,8 @@ private constructor(
         fun ndclid(): String? = ndclid.getNullable("ndclid")
 
         /**
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -5380,10 +6247,12 @@ private constructor(
         fun oppref(): String? = oppref.getNullable("oppref")
 
         /**
+         * Any JSON value: string, number, boolean, array, object, or null.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun phoneNumber(): String? = phoneNumber.getNullable("phone_number")
+        fun phoneNumber(): PhoneNumber? = phoneNumber.getNullable("phone_number")
 
         /**
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -5410,6 +6279,8 @@ private constructor(
         fun referringDomain(): String? = referringDomain.getNullable("referring_domain")
 
         /**
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -5422,12 +6293,17 @@ private constructor(
         fun sccid(): String? = sccid.getNullable("sccid")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun sid(): String? = sid.getNullable("sid")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -5458,48 +6334,64 @@ private constructor(
         fun userAgentFullList(): String? = userAgentFullList.getNullable("user_agent_full_list")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun utmCampaign(): String? = utmCampaign.getNullable("utm_campaign")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun utmContent(): String? = utmContent.getNullable("utm_content")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun utmMedium(): String? = utmMedium.getNullable("utm_medium")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun utmName(): String? = utmName.getNullable("utm_name")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun utmSource(): String? = utmSource.getNullable("utm_source")
 
         /**
+         * Non-string input is converted to text before validation; clients should send a string.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun utmTerm(): String? = utmTerm.getNullable("utm_term")
 
         /**
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun viantClickId(): String? = viantClickId.getNullable("viant_click_id")
 
         /**
+         * Leading and trailing whitespace is removed before validation.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -5512,10 +6404,12 @@ private constructor(
         fun wbraid(): String? = wbraid.getNullable("wbraid")
 
         /**
+         * Any JSON value: string, number, boolean, array, object, or null.
+         *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun zip(): String? = zip.getNullable("zip")
+        fun zip(): Zip? = zip.getNullable("zip")
 
         /**
          * Returns the raw JSON value of [_efTransactionId].
@@ -5747,6 +6641,20 @@ private constructor(
         @JsonProperty("gender") @ExcludeMissing fun _gender(): JsonField<String> = gender
 
         /**
+         * Returns the raw JSON value of [graid].
+         *
+         * Unlike [graid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("graid") @ExcludeMissing fun _graid(): JsonField<String> = graid
+
+        /**
+         * Returns the raw JSON value of [grclid].
+         *
+         * Unlike [grclid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("grclid") @ExcludeMissing fun _grclid(): JsonField<String> = grclid
+
+        /**
          * Returns the raw JSON value of [imRef].
          *
          * Unlike [imRef], this method doesn't throw if the JSON field has an unexpected type.
@@ -5772,7 +6680,7 @@ private constructor(
          *
          * Unlike [isBot], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("is_bot") @ExcludeMissing fun _isBot(): JsonField<String> = isBot
+        @JsonProperty("is_bot") @ExcludeMissing fun _isBot(): JsonField<IsBot> = isBot
 
         /**
          * Returns the raw JSON value of [jobTitle].
@@ -5830,7 +6738,7 @@ private constructor(
          */
         @JsonProperty("phone_number")
         @ExcludeMissing
-        fun _phoneNumber(): JsonField<String> = phoneNumber
+        fun _phoneNumber(): JsonField<PhoneNumber> = phoneNumber
 
         /**
          * Returns the raw JSON value of [qclid].
@@ -6000,7 +6908,7 @@ private constructor(
          *
          * Unlike [zip], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("zip") @ExcludeMissing fun _zip(): JsonField<String> = zip
+        @JsonProperty("zip") @ExcludeMissing fun _zip(): JsonField<Zip> = zip
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -6053,10 +6961,12 @@ private constructor(
             private var gbraid: JsonField<String> = JsonMissing.of()
             private var gclid: JsonField<String> = JsonMissing.of()
             private var gender: JsonField<String> = JsonMissing.of()
+            private var graid: JsonField<String> = JsonMissing.of()
+            private var grclid: JsonField<String> = JsonMissing.of()
             private var imRef: JsonField<String> = JsonMissing.of()
             private var ip: JsonField<String> = JsonMissing.of()
             private var irclickid: JsonField<String> = JsonMissing.of()
-            private var isBot: JsonField<String> = JsonMissing.of()
+            private var isBot: JsonField<IsBot> = JsonMissing.of()
             private var jobTitle: JsonField<String> = JsonMissing.of()
             private var lastName: JsonField<String> = JsonMissing.of()
             private var liFatId: JsonField<String> = JsonMissing.of()
@@ -6064,7 +6974,7 @@ private constructor(
             private var ndclid: JsonField<String> = JsonMissing.of()
             private var obClickId: JsonField<String> = JsonMissing.of()
             private var oppref: JsonField<String> = JsonMissing.of()
-            private var phoneNumber: JsonField<String> = JsonMissing.of()
+            private var phoneNumber: JsonField<PhoneNumber> = JsonMissing.of()
             private var qclid: JsonField<String> = JsonMissing.of()
             private var rdtCid: JsonField<String> = JsonMissing.of()
             private var referrer: JsonField<String> = JsonMissing.of()
@@ -6086,7 +6996,7 @@ private constructor(
             private var viantClickId: JsonField<String> = JsonMissing.of()
             private var viantImpressionId: JsonField<String> = JsonMissing.of()
             private var wbraid: JsonField<String> = JsonMissing.of()
-            private var zip: JsonField<String> = JsonMissing.of()
+            private var zip: JsonField<Zip> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(userProperties: UserProperties) = apply {
@@ -6120,6 +7030,8 @@ private constructor(
                 gbraid = userProperties.gbraid
                 gclid = userProperties.gclid
                 gender = userProperties.gender
+                graid = userProperties.graid
+                grclid = userProperties.grclid
                 imRef = userProperties.imRef
                 ip = userProperties.ip
                 irclickid = userProperties.irclickid
@@ -6157,6 +7069,7 @@ private constructor(
                 additionalProperties = userProperties.additionalProperties.toMutableMap()
             }
 
+            /** Leading and trailing whitespace is removed before validation. */
             fun _efTransactionId(_efTransactionId: String?) =
                 _efTransactionId(JsonField.ofNullable(_efTransactionId))
 
@@ -6182,6 +7095,7 @@ private constructor(
              */
             fun adId(adId: JsonField<String>) = apply { this.adId = adId }
 
+            /** Leading and trailing whitespace is removed before validation. */
             fun admitadUid(admitadUid: String?) = admitadUid(JsonField.ofNullable(admitadUid))
 
             /**
@@ -6237,6 +7151,7 @@ private constructor(
              */
             fun axwrt(axwrt: JsonField<String>) = apply { this.axwrt = axwrt }
 
+            /** Leading and trailing whitespace is removed before validation. */
             fun basisCid(basisCid: String?) = basisCid(JsonField.ofNullable(basisCid))
 
             /**
@@ -6248,6 +7163,7 @@ private constructor(
              */
             fun basisCid(basisCid: JsonField<String>) = apply { this.basisCid = basisCid }
 
+            /** Leading and trailing whitespace is removed before validation. */
             fun beeswaxAuctionId(beeswaxAuctionId: String?) =
                 beeswaxAuctionId(JsonField.ofNullable(beeswaxAuctionId))
 
@@ -6273,6 +7189,10 @@ private constructor(
              */
             fun campaignId(campaignId: JsonField<String>) = apply { this.campaignId = campaignId }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string. Leading and trailing whitespace is removed before validation.
+             */
             fun city(city: String?) = city(JsonField.ofNullable(city))
 
             /**
@@ -6306,6 +7226,7 @@ private constructor(
              */
             fun clid(clid: JsonField<String>) = apply { this.clid = clid }
 
+            /** Leading and trailing whitespace is removed before validation. */
             fun companyName(companyName: String?) = companyName(JsonField.ofNullable(companyName))
 
             /**
@@ -6319,6 +7240,13 @@ private constructor(
                 this.companyName = companyName
             }
 
+            /**
+             * Use at most 200 nonempty property keys and five object levels. Array contents do not
+             * count toward the object-depth limit. Empty keys are removed recursively, arrays are
+             * truncated to 250 entries, and top-level numbers outside the safe integer range become
+             * strings. After normalization, the serialized JSON must be shorter than 1,048,576
+             * UTF-16 code units.
+             */
             fun consent(consent: Consent?) = consent(JsonField.ofNullable(consent))
 
             /**
@@ -6330,6 +7258,10 @@ private constructor(
              */
             fun consent(consent: JsonField<Consent>) = apply { this.consent = consent }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string. Leading and trailing whitespace is removed before validation.
+             */
             fun country(country: String?) = country(JsonField.ofNullable(country))
 
             /**
@@ -6341,6 +7273,13 @@ private constructor(
              */
             fun country(country: JsonField<String>) = apply { this.country = country }
 
+            /**
+             * Use at most 200 nonempty property keys and five object levels. Array contents do not
+             * count toward the object-depth limit. Empty keys are removed recursively, arrays are
+             * truncated to 250 entries, and top-level numbers outside the safe integer range become
+             * strings. After normalization, the serialized JSON must be shorter than 1,048,576
+             * UTF-16 code units.
+             */
             fun customProperties(customProperties: CustomProperties?) =
                 customProperties(JsonField.ofNullable(customProperties))
 
@@ -6355,6 +7294,10 @@ private constructor(
                 this.customProperties = customProperties
             }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string. Leading and trailing whitespace is removed before validation.
+             */
             fun dateOfBirth(dateOfBirth: String?) = dateOfBirth(JsonField.ofNullable(dateOfBirth))
 
             /**
@@ -6379,6 +7322,10 @@ private constructor(
              */
             fun dclid(dclid: JsonField<String>) = apply { this.dclid = dclid }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string. Leading and trailing whitespace is removed before validation.
+             */
             fun email(email: String?) = email(JsonField.ofNullable(email))
 
             /**
@@ -6390,6 +7337,7 @@ private constructor(
              */
             fun email(email: JsonField<String>) = apply { this.email = email }
 
+            /** Leading and trailing whitespace is removed before validation. */
             fun epik(epik: String?) = epik(JsonField.ofNullable(epik))
 
             /**
@@ -6401,6 +7349,10 @@ private constructor(
              */
             fun epik(epik: JsonField<String>) = apply { this.epik = epik }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string. Leading and trailing whitespace is removed before validation.
+             */
             fun externalId(externalId: String?) = externalId(JsonField.ofNullable(externalId))
 
             /**
@@ -6445,6 +7397,10 @@ private constructor(
              */
             fun fbp(fbp: JsonField<String>) = apply { this.fbp = fbp }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string. Leading and trailing whitespace is removed before validation.
+             */
             fun firstName(firstName: String?) = firstName(JsonField.ofNullable(firstName))
 
             /**
@@ -6489,6 +7445,10 @@ private constructor(
              */
             fun gclid(gclid: JsonField<String>) = apply { this.gclid = gclid }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string. Leading and trailing whitespace is removed before validation.
+             */
             fun gender(gender: String?) = gender(JsonField.ofNullable(gender))
 
             /**
@@ -6499,6 +7459,30 @@ private constructor(
              * supported value.
              */
             fun gender(gender: JsonField<String>) = apply { this.gender = gender }
+
+            /** Leading and trailing whitespace is removed before validation. */
+            fun graid(graid: String?) = graid(JsonField.ofNullable(graid))
+
+            /**
+             * Sets [Builder.graid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.graid] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun graid(graid: JsonField<String>) = apply { this.graid = graid }
+
+            /** Leading and trailing whitespace is removed before validation. */
+            fun grclid(grclid: String?) = grclid(JsonField.ofNullable(grclid))
+
+            /**
+             * Sets [Builder.grclid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.grclid] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun grclid(grclid: JsonField<String>) = apply { this.grclid = grclid }
 
             fun imRef(imRef: String?) = imRef(JsonField.ofNullable(imRef))
 
@@ -6511,7 +7495,10 @@ private constructor(
              */
             fun imRef(imRef: JsonField<String>) = apply { this.imRef = imRef }
 
-            /** The IP address of the user */
+            /**
+             * The IP address of the user Leading and trailing whitespace is removed before
+             * validation.
+             */
             fun ip(ip: String?) = ip(JsonField.ofNullable(ip))
 
             /**
@@ -6534,17 +7521,35 @@ private constructor(
              */
             fun irclickid(irclickid: JsonField<String>) = apply { this.irclickid = irclickid }
 
-            fun isBot(isBot: String?) = isBot(JsonField.ofNullable(isBot))
+            /** Any JSON value: string, number, boolean, array, object, or null. */
+            fun isBot(isBot: IsBot?) = isBot(JsonField.ofNullable(isBot))
 
             /**
              * Sets [Builder.isBot] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.isBot] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.isBot] with a well-typed [IsBot] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
              */
-            fun isBot(isBot: JsonField<String>) = apply { this.isBot = isBot }
+            fun isBot(isBot: JsonField<IsBot>) = apply { this.isBot = isBot }
 
+            /** Alias for calling [isBot] with `IsBot.ofString(string)`. */
+            fun isBot(string: String) = isBot(IsBot.ofString(string))
+
+            /** Alias for calling [isBot] with `IsBot.ofDouble(double)`. */
+            fun isBot(double: Double) = isBot(IsBot.ofDouble(double))
+
+            /** Alias for calling [isBot] with `IsBot.ofBoolean(boolean)`. */
+            fun isBot(boolean: Boolean) = isBot(IsBot.ofBoolean(boolean))
+
+            /** Alias for calling [isBot] with `IsBot.ofJsonValues(jsonValues)`. */
+            fun isBotOfJsonValues(jsonValues: List<JsonValue>) =
+                isBot(IsBot.ofJsonValues(jsonValues))
+
+            /** Alias for calling [isBot] with `IsBot.ofUnionMember4(unionMember4)`. */
+            fun isBot(unionMember4: IsBot.UnionMember4) = isBot(IsBot.ofUnionMember4(unionMember4))
+
+            /** Leading and trailing whitespace is removed before validation. */
             fun jobTitle(jobTitle: String?) = jobTitle(JsonField.ofNullable(jobTitle))
 
             /**
@@ -6556,6 +7561,10 @@ private constructor(
              */
             fun jobTitle(jobTitle: JsonField<String>) = apply { this.jobTitle = jobTitle }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string. Leading and trailing whitespace is removed before validation.
+             */
             fun lastName(lastName: String?) = lastName(JsonField.ofNullable(lastName))
 
             /**
@@ -6600,6 +7609,7 @@ private constructor(
              */
             fun ndclid(ndclid: JsonField<String>) = apply { this.ndclid = ndclid }
 
+            /** Leading and trailing whitespace is removed before validation. */
             fun obClickId(obClickId: String?) = obClickId(JsonField.ofNullable(obClickId))
 
             /**
@@ -6622,18 +7632,37 @@ private constructor(
              */
             fun oppref(oppref: JsonField<String>) = apply { this.oppref = oppref }
 
-            fun phoneNumber(phoneNumber: String?) = phoneNumber(JsonField.ofNullable(phoneNumber))
+            /** Any JSON value: string, number, boolean, array, object, or null. */
+            fun phoneNumber(phoneNumber: PhoneNumber?) =
+                phoneNumber(JsonField.ofNullable(phoneNumber))
 
             /**
              * Sets [Builder.phoneNumber] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.phoneNumber] with a well-typed [String] value
+             * You should usually call [Builder.phoneNumber] with a well-typed [PhoneNumber] value
              * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun phoneNumber(phoneNumber: JsonField<String>) = apply {
+            fun phoneNumber(phoneNumber: JsonField<PhoneNumber>) = apply {
                 this.phoneNumber = phoneNumber
             }
+
+            /** Alias for calling [phoneNumber] with `PhoneNumber.ofString(string)`. */
+            fun phoneNumber(string: String) = phoneNumber(PhoneNumber.ofString(string))
+
+            /** Alias for calling [phoneNumber] with `PhoneNumber.ofDouble(double)`. */
+            fun phoneNumber(double: Double) = phoneNumber(PhoneNumber.ofDouble(double))
+
+            /** Alias for calling [phoneNumber] with `PhoneNumber.ofBoolean(boolean)`. */
+            fun phoneNumber(boolean: Boolean) = phoneNumber(PhoneNumber.ofBoolean(boolean))
+
+            /** Alias for calling [phoneNumber] with `PhoneNumber.ofJsonValues(jsonValues)`. */
+            fun phoneNumberOfJsonValues(jsonValues: List<JsonValue>) =
+                phoneNumber(PhoneNumber.ofJsonValues(jsonValues))
+
+            /** Alias for calling [phoneNumber] with `PhoneNumber.ofUnionMember4(unionMember4)`. */
+            fun phoneNumber(unionMember4: PhoneNumber.UnionMember4) =
+                phoneNumber(PhoneNumber.ofUnionMember4(unionMember4))
 
             fun qclid(qclid: String?) = qclid(JsonField.ofNullable(qclid))
 
@@ -6682,6 +7711,7 @@ private constructor(
                 this.referringDomain = referringDomain
             }
 
+            /** Leading and trailing whitespace is removed before validation. */
             fun sacid(sacid: String?) = sacid(JsonField.ofNullable(sacid))
 
             /**
@@ -6704,6 +7734,10 @@ private constructor(
              */
             fun sccid(sccid: JsonField<String>) = apply { this.sccid = sccid }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string.
+             */
             fun sid(sid: String?) = sid(JsonField.ofNullable(sid))
 
             /**
@@ -6715,6 +7749,10 @@ private constructor(
              */
             fun sid(sid: JsonField<String>) = apply { this.sid = sid }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string. Leading and trailing whitespace is removed before validation.
+             */
             fun state(state: String?) = state(JsonField.ofNullable(state))
 
             /**
@@ -6773,6 +7811,10 @@ private constructor(
                 this.userAgentFullList = userAgentFullList
             }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string.
+             */
             fun utmCampaign(utmCampaign: String?) = utmCampaign(JsonField.ofNullable(utmCampaign))
 
             /**
@@ -6786,6 +7828,10 @@ private constructor(
                 this.utmCampaign = utmCampaign
             }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string.
+             */
             fun utmContent(utmContent: String?) = utmContent(JsonField.ofNullable(utmContent))
 
             /**
@@ -6797,6 +7843,10 @@ private constructor(
              */
             fun utmContent(utmContent: JsonField<String>) = apply { this.utmContent = utmContent }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string.
+             */
             fun utmMedium(utmMedium: String?) = utmMedium(JsonField.ofNullable(utmMedium))
 
             /**
@@ -6808,6 +7858,10 @@ private constructor(
              */
             fun utmMedium(utmMedium: JsonField<String>) = apply { this.utmMedium = utmMedium }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string.
+             */
             fun utmName(utmName: String?) = utmName(JsonField.ofNullable(utmName))
 
             /**
@@ -6819,6 +7873,10 @@ private constructor(
              */
             fun utmName(utmName: JsonField<String>) = apply { this.utmName = utmName }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string.
+             */
             fun utmSource(utmSource: String?) = utmSource(JsonField.ofNullable(utmSource))
 
             /**
@@ -6830,6 +7888,10 @@ private constructor(
              */
             fun utmSource(utmSource: JsonField<String>) = apply { this.utmSource = utmSource }
 
+            /**
+             * Non-string input is converted to text before validation; clients should send a
+             * string.
+             */
             fun utmTerm(utmTerm: String?) = utmTerm(JsonField.ofNullable(utmTerm))
 
             /**
@@ -6841,6 +7903,7 @@ private constructor(
              */
             fun utmTerm(utmTerm: JsonField<String>) = apply { this.utmTerm = utmTerm }
 
+            /** Leading and trailing whitespace is removed before validation. */
             fun viantClickId(viantClickId: String?) =
                 viantClickId(JsonField.ofNullable(viantClickId))
 
@@ -6855,6 +7918,7 @@ private constructor(
                 this.viantClickId = viantClickId
             }
 
+            /** Leading and trailing whitespace is removed before validation. */
             fun viantImpressionId(viantImpressionId: String?) =
                 viantImpressionId(JsonField.ofNullable(viantImpressionId))
 
@@ -6880,16 +7944,32 @@ private constructor(
              */
             fun wbraid(wbraid: JsonField<String>) = apply { this.wbraid = wbraid }
 
-            fun zip(zip: String?) = zip(JsonField.ofNullable(zip))
+            /** Any JSON value: string, number, boolean, array, object, or null. */
+            fun zip(zip: Zip?) = zip(JsonField.ofNullable(zip))
 
             /**
              * Sets [Builder.zip] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.zip] with a well-typed [String] value instead. This
+             * You should usually call [Builder.zip] with a well-typed [Zip] value instead. This
              * method is primarily for setting the field to an undocumented or not yet supported
              * value.
              */
-            fun zip(zip: JsonField<String>) = apply { this.zip = zip }
+            fun zip(zip: JsonField<Zip>) = apply { this.zip = zip }
+
+            /** Alias for calling [zip] with `Zip.ofString(string)`. */
+            fun zip(string: String) = zip(Zip.ofString(string))
+
+            /** Alias for calling [zip] with `Zip.ofDouble(double)`. */
+            fun zip(double: Double) = zip(Zip.ofDouble(double))
+
+            /** Alias for calling [zip] with `Zip.ofBoolean(boolean)`. */
+            fun zip(boolean: Boolean) = zip(Zip.ofBoolean(boolean))
+
+            /** Alias for calling [zip] with `Zip.ofJsonValues(jsonValues)`. */
+            fun zipOfJsonValues(jsonValues: List<JsonValue>) = zip(Zip.ofJsonValues(jsonValues))
+
+            /** Alias for calling [zip] with `Zip.ofUnionMember4(unionMember4)`. */
+            fun zip(unionMember4: Zip.UnionMember4) = zip(Zip.ofUnionMember4(unionMember4))
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -6947,6 +8027,8 @@ private constructor(
                     gbraid,
                     gclid,
                     gender,
+                    graid,
+                    grclid,
                     imRef,
                     ip,
                     irclickid,
@@ -7031,10 +8113,12 @@ private constructor(
             gbraid()
             gclid()
             gender()
+            graid()
+            grclid()
             imRef()
             ip()
             irclickid()
-            isBot()
+            isBot()?.validate()
             jobTitle()
             lastName()
             liFatId()
@@ -7042,7 +8126,7 @@ private constructor(
             ndclid()
             obClickId()
             oppref()
-            phoneNumber()
+            phoneNumber()?.validate()
             qclid()
             rdtCid()
             referrer()
@@ -7064,7 +8148,7 @@ private constructor(
             viantClickId()
             viantImpressionId()
             wbraid()
-            zip()
+            zip()?.validate()
             validated = true
         }
 
@@ -7113,10 +8197,12 @@ private constructor(
                 (if (gbraid.asKnown() == null) 0 else 1) +
                 (if (gclid.asKnown() == null) 0 else 1) +
                 (if (gender.asKnown() == null) 0 else 1) +
+                (if (graid.asKnown() == null) 0 else 1) +
+                (if (grclid.asKnown() == null) 0 else 1) +
                 (if (imRef.asKnown() == null) 0 else 1) +
                 (if (ip.asKnown() == null) 0 else 1) +
                 (if (irclickid.asKnown() == null) 0 else 1) +
-                (if (isBot.asKnown() == null) 0 else 1) +
+                (isBot.asKnown()?.validity() ?: 0) +
                 (if (jobTitle.asKnown() == null) 0 else 1) +
                 (if (lastName.asKnown() == null) 0 else 1) +
                 (if (liFatId.asKnown() == null) 0 else 1) +
@@ -7124,7 +8210,7 @@ private constructor(
                 (if (ndclid.asKnown() == null) 0 else 1) +
                 (if (obClickId.asKnown() == null) 0 else 1) +
                 (if (oppref.asKnown() == null) 0 else 1) +
-                (if (phoneNumber.asKnown() == null) 0 else 1) +
+                (phoneNumber.asKnown()?.validity() ?: 0) +
                 (if (qclid.asKnown() == null) 0 else 1) +
                 (if (rdtCid.asKnown() == null) 0 else 1) +
                 (if (referrer.asKnown() == null) 0 else 1) +
@@ -7146,8 +8232,15 @@ private constructor(
                 (if (viantClickId.asKnown() == null) 0 else 1) +
                 (if (viantImpressionId.asKnown() == null) 0 else 1) +
                 (if (wbraid.asKnown() == null) 0 else 1) +
-                (if (zip.asKnown() == null) 0 else 1)
+                (zip.asKnown()?.validity() ?: 0)
 
+        /**
+         * Use at most 200 nonempty property keys and five object levels. Array contents do not
+         * count toward the object-depth limit. Empty keys are removed recursively, arrays are
+         * truncated to 250 entries, and top-level numbers outside the safe integer range become
+         * strings. After normalization, the serialized JSON must be shorter than 1,048,576 UTF-16
+         * code units.
+         */
         class Consent
         @JsonCreator
         private constructor(
@@ -7258,6 +8351,13 @@ private constructor(
             override fun toString() = "Consent{additionalProperties=$additionalProperties}"
         }
 
+        /**
+         * Use at most 200 nonempty property keys and five object levels. Array contents do not
+         * count toward the object-depth limit. Empty keys are removed recursively, arrays are
+         * truncated to 250 entries, and top-level numbers outside the safe integer range become
+         * strings. After normalization, the serialized JSON must be shorter than 1,048,576 UTF-16
+         * code units.
+         */
         class CustomProperties
         @JsonCreator
         private constructor(
@@ -7369,6 +8469,1178 @@ private constructor(
             override fun toString() = "CustomProperties{additionalProperties=$additionalProperties}"
         }
 
+        /** Any JSON value: string, number, boolean, array, object, or null. */
+        @JsonDeserialize(using = IsBot.Deserializer::class)
+        @JsonSerialize(using = IsBot.Serializer::class)
+        class IsBot
+        private constructor(
+            private val string: String? = null,
+            private val double: Double? = null,
+            private val boolean: Boolean? = null,
+            private val jsonValues: List<JsonValue>? = null,
+            private val unionMember4: UnionMember4? = null,
+            private val _json: JsonValue? = null,
+        ) {
+
+            fun string(): String? = string
+
+            fun double(): Double? = double
+
+            fun boolean(): Boolean? = boolean
+
+            fun jsonValues(): List<JsonValue>? = jsonValues
+
+            fun unionMember4(): UnionMember4? = unionMember4
+
+            fun isString(): Boolean = string != null
+
+            fun isDouble(): Boolean = double != null
+
+            fun isBoolean(): Boolean = boolean != null
+
+            fun isJsonValues(): Boolean = jsonValues != null
+
+            fun isUnionMember4(): Boolean = unionMember4 != null
+
+            fun asString(): String = string.getOrThrow("string")
+
+            fun asDouble(): Double = double.getOrThrow("double")
+
+            fun asBoolean(): Boolean = boolean.getOrThrow("boolean")
+
+            fun asJsonValues(): List<JsonValue> = jsonValues.getOrThrow("jsonValues")
+
+            fun asUnionMember4(): UnionMember4 = unionMember4.getOrThrow("unionMember4")
+
+            fun _json(): JsonValue? = _json
+
+            /**
+             * Maps this instance's current variant to a value of type [T] using the given
+             * [visitor].
+             *
+             * Note that this method is _not_ forwards compatible with new variants from the API,
+             * unless [visitor] overrides [Visitor.unknown]. To handle variants not known to this
+             * version of the SDK gracefully, consider overriding [Visitor.unknown]:
+             * ```kotlin
+             * import com.oursprivacy.core.JsonValue
+             *
+             * val result: String? = isBot.accept(object : IsBot.Visitor<String?> {
+             *     override fun visitString(string: String): String? = string.toString()
+             *
+             *     // ...
+             *
+             *     override fun unknown(json: JsonValue?): String? {
+             *         // Or inspect the `json`.
+             *         return null
+             *     }
+             * })
+             * ```
+             *
+             * @throws OursPrivacyInvalidDataException if [Visitor.unknown] is not overridden in
+             *   [visitor] and the current variant is unknown.
+             */
+            fun <T> accept(visitor: Visitor<T>): T =
+                when {
+                    string != null -> visitor.visitString(string)
+                    double != null -> visitor.visitDouble(double)
+                    boolean != null -> visitor.visitBoolean(boolean)
+                    jsonValues != null -> visitor.visitJsonValues(jsonValues)
+                    unionMember4 != null -> visitor.visitUnionMember4(unionMember4)
+                    else -> visitor.unknown(_json)
+                }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws OursPrivacyInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): IsBot = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                accept(
+                    object : Visitor<Unit> {
+                        override fun visitString(string: String) {}
+
+                        override fun visitDouble(double: Double) {}
+
+                        override fun visitBoolean(boolean: Boolean) {}
+
+                        override fun visitJsonValues(jsonValues: List<JsonValue>) {}
+
+                        override fun visitUnionMember4(unionMember4: UnionMember4) {
+                            unionMember4.validate()
+                        }
+                    }
+                )
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: OursPrivacyInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                accept(
+                    object : Visitor<Int> {
+                        override fun visitString(string: String) = 1
+
+                        override fun visitDouble(double: Double) = 1
+
+                        override fun visitBoolean(boolean: Boolean) = 1
+
+                        override fun visitJsonValues(jsonValues: List<JsonValue>) = jsonValues.size
+
+                        override fun visitUnionMember4(unionMember4: UnionMember4) =
+                            unionMember4.validity()
+
+                        override fun unknown(json: JsonValue?) = 0
+                    }
+                )
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is IsBot &&
+                    string == other.string &&
+                    double == other.double &&
+                    boolean == other.boolean &&
+                    jsonValues == other.jsonValues &&
+                    unionMember4 == other.unionMember4
+            }
+
+            override fun hashCode(): Int =
+                Objects.hash(string, double, boolean, jsonValues, unionMember4)
+
+            override fun toString(): String =
+                when {
+                    string != null -> "IsBot{string=$string}"
+                    double != null -> "IsBot{double=$double}"
+                    boolean != null -> "IsBot{boolean=$boolean}"
+                    jsonValues != null -> "IsBot{jsonValues=$jsonValues}"
+                    unionMember4 != null -> "IsBot{unionMember4=$unionMember4}"
+                    _json != null -> "IsBot{_unknown=$_json}"
+                    else -> throw IllegalStateException("Invalid IsBot")
+                }
+
+            companion object {
+
+                fun ofString(string: String) = IsBot(string = string)
+
+                fun ofDouble(double: Double) = IsBot(double = double)
+
+                fun ofBoolean(boolean: Boolean) = IsBot(boolean = boolean)
+
+                fun ofJsonValues(jsonValues: List<JsonValue>) =
+                    IsBot(jsonValues = jsonValues.toImmutable())
+
+                fun ofUnionMember4(unionMember4: UnionMember4) = IsBot(unionMember4 = unionMember4)
+            }
+
+            /**
+             * An interface that defines how to map each variant of [IsBot] to a value of type [T].
+             */
+            interface Visitor<out T> {
+
+                fun visitString(string: String): T
+
+                fun visitDouble(double: Double): T
+
+                fun visitBoolean(boolean: Boolean): T
+
+                fun visitJsonValues(jsonValues: List<JsonValue>): T
+
+                fun visitUnionMember4(unionMember4: UnionMember4): T
+
+                /**
+                 * Maps an unknown variant of [IsBot] to a value of type [T].
+                 *
+                 * An instance of [IsBot] can contain an unknown variant if it was deserialized from
+                 * data that doesn't match any known variant. For example, if the SDK is on an older
+                 * version than the API, then the API may respond with new variants that the SDK is
+                 * unaware of.
+                 *
+                 * @throws OursPrivacyInvalidDataException in the default implementation.
+                 */
+                fun unknown(json: JsonValue?): T {
+                    throw OursPrivacyInvalidDataException("Unknown IsBot: $json")
+                }
+            }
+
+            internal class Deserializer : BaseDeserializer<IsBot>(IsBot::class) {
+
+                override fun ObjectCodec.deserialize(node: JsonNode): IsBot {
+                    val json = JsonValue.fromJsonNode(node)
+
+                    val bestMatches =
+                        sequenceOf(
+                                tryDeserialize(node, jacksonTypeRef<UnionMember4>())?.let {
+                                    IsBot(unionMember4 = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<String>())?.let {
+                                    IsBot(string = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<Double>())?.let {
+                                    IsBot(double = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<Boolean>())?.let {
+                                    IsBot(boolean = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<List<JsonValue>>())?.let {
+                                    IsBot(jsonValues = it, _json = json)
+                                },
+                            )
+                            .filterNotNull()
+                            .allMaxBy { it.validity() }
+                            .toList()
+                    return when (bestMatches.size) {
+                        // This can happen if what we're deserializing is completely incompatible
+                        // with all the possible variants.
+                        0 -> IsBot(_json = json)
+                        1 -> bestMatches.single()
+                        // If there's more than one match with the highest validity, then use the
+                        // first completely valid match, or simply the first match if none are
+                        // completely valid.
+                        else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                    }
+                }
+            }
+
+            internal class Serializer : BaseSerializer<IsBot>(IsBot::class) {
+
+                override fun serialize(
+                    value: IsBot,
+                    generator: JsonGenerator,
+                    provider: SerializerProvider,
+                ) {
+                    when {
+                        value.string != null -> generator.writeObject(value.string)
+                        value.double != null -> generator.writeObject(value.double)
+                        value.boolean != null -> generator.writeObject(value.boolean)
+                        value.jsonValues != null -> generator.writeObject(value.jsonValues)
+                        value.unionMember4 != null -> generator.writeObject(value.unionMember4)
+                        value._json != null -> generator.writeObject(value._json)
+                        else -> throw IllegalStateException("Invalid IsBot")
+                    }
+                }
+            }
+
+            class UnionMember4
+            @JsonCreator
+            private constructor(
+                @com.fasterxml.jackson.annotation.JsonValue
+                private val additionalProperties: Map<String, JsonValue>
+            ) {
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /** Returns a mutable builder for constructing an instance of [UnionMember4]. */
+                    fun builder() = Builder()
+                }
+
+                /** A builder for [UnionMember4]. */
+                class Builder internal constructor() {
+
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    internal fun from(unionMember4: UnionMember4) = apply {
+                        additionalProperties = unionMember4.additionalProperties.toMutableMap()
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [UnionMember4].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): UnionMember4 = UnionMember4(additionalProperties.toImmutable())
+                }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws OursPrivacyInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
+                fun validate(): UnionMember4 = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: OursPrivacyInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    additionalProperties.count { (_, value) ->
+                        !value.isNull() && !value.isMissing()
+                    }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is UnionMember4 &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() = "UnionMember4{additionalProperties=$additionalProperties}"
+            }
+        }
+
+        /** Any JSON value: string, number, boolean, array, object, or null. */
+        @JsonDeserialize(using = PhoneNumber.Deserializer::class)
+        @JsonSerialize(using = PhoneNumber.Serializer::class)
+        class PhoneNumber
+        private constructor(
+            private val string: String? = null,
+            private val double: Double? = null,
+            private val boolean: Boolean? = null,
+            private val jsonValues: List<JsonValue>? = null,
+            private val unionMember4: UnionMember4? = null,
+            private val _json: JsonValue? = null,
+        ) {
+
+            fun string(): String? = string
+
+            fun double(): Double? = double
+
+            fun boolean(): Boolean? = boolean
+
+            fun jsonValues(): List<JsonValue>? = jsonValues
+
+            fun unionMember4(): UnionMember4? = unionMember4
+
+            fun isString(): Boolean = string != null
+
+            fun isDouble(): Boolean = double != null
+
+            fun isBoolean(): Boolean = boolean != null
+
+            fun isJsonValues(): Boolean = jsonValues != null
+
+            fun isUnionMember4(): Boolean = unionMember4 != null
+
+            fun asString(): String = string.getOrThrow("string")
+
+            fun asDouble(): Double = double.getOrThrow("double")
+
+            fun asBoolean(): Boolean = boolean.getOrThrow("boolean")
+
+            fun asJsonValues(): List<JsonValue> = jsonValues.getOrThrow("jsonValues")
+
+            fun asUnionMember4(): UnionMember4 = unionMember4.getOrThrow("unionMember4")
+
+            fun _json(): JsonValue? = _json
+
+            /**
+             * Maps this instance's current variant to a value of type [T] using the given
+             * [visitor].
+             *
+             * Note that this method is _not_ forwards compatible with new variants from the API,
+             * unless [visitor] overrides [Visitor.unknown]. To handle variants not known to this
+             * version of the SDK gracefully, consider overriding [Visitor.unknown]:
+             * ```kotlin
+             * import com.oursprivacy.core.JsonValue
+             *
+             * val result: String? = phoneNumber.accept(object : PhoneNumber.Visitor<String?> {
+             *     override fun visitString(string: String): String? = string.toString()
+             *
+             *     // ...
+             *
+             *     override fun unknown(json: JsonValue?): String? {
+             *         // Or inspect the `json`.
+             *         return null
+             *     }
+             * })
+             * ```
+             *
+             * @throws OursPrivacyInvalidDataException if [Visitor.unknown] is not overridden in
+             *   [visitor] and the current variant is unknown.
+             */
+            fun <T> accept(visitor: Visitor<T>): T =
+                when {
+                    string != null -> visitor.visitString(string)
+                    double != null -> visitor.visitDouble(double)
+                    boolean != null -> visitor.visitBoolean(boolean)
+                    jsonValues != null -> visitor.visitJsonValues(jsonValues)
+                    unionMember4 != null -> visitor.visitUnionMember4(unionMember4)
+                    else -> visitor.unknown(_json)
+                }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws OursPrivacyInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): PhoneNumber = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                accept(
+                    object : Visitor<Unit> {
+                        override fun visitString(string: String) {}
+
+                        override fun visitDouble(double: Double) {}
+
+                        override fun visitBoolean(boolean: Boolean) {}
+
+                        override fun visitJsonValues(jsonValues: List<JsonValue>) {}
+
+                        override fun visitUnionMember4(unionMember4: UnionMember4) {
+                            unionMember4.validate()
+                        }
+                    }
+                )
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: OursPrivacyInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                accept(
+                    object : Visitor<Int> {
+                        override fun visitString(string: String) = 1
+
+                        override fun visitDouble(double: Double) = 1
+
+                        override fun visitBoolean(boolean: Boolean) = 1
+
+                        override fun visitJsonValues(jsonValues: List<JsonValue>) = jsonValues.size
+
+                        override fun visitUnionMember4(unionMember4: UnionMember4) =
+                            unionMember4.validity()
+
+                        override fun unknown(json: JsonValue?) = 0
+                    }
+                )
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is PhoneNumber &&
+                    string == other.string &&
+                    double == other.double &&
+                    boolean == other.boolean &&
+                    jsonValues == other.jsonValues &&
+                    unionMember4 == other.unionMember4
+            }
+
+            override fun hashCode(): Int =
+                Objects.hash(string, double, boolean, jsonValues, unionMember4)
+
+            override fun toString(): String =
+                when {
+                    string != null -> "PhoneNumber{string=$string}"
+                    double != null -> "PhoneNumber{double=$double}"
+                    boolean != null -> "PhoneNumber{boolean=$boolean}"
+                    jsonValues != null -> "PhoneNumber{jsonValues=$jsonValues}"
+                    unionMember4 != null -> "PhoneNumber{unionMember4=$unionMember4}"
+                    _json != null -> "PhoneNumber{_unknown=$_json}"
+                    else -> throw IllegalStateException("Invalid PhoneNumber")
+                }
+
+            companion object {
+
+                fun ofString(string: String) = PhoneNumber(string = string)
+
+                fun ofDouble(double: Double) = PhoneNumber(double = double)
+
+                fun ofBoolean(boolean: Boolean) = PhoneNumber(boolean = boolean)
+
+                fun ofJsonValues(jsonValues: List<JsonValue>) =
+                    PhoneNumber(jsonValues = jsonValues.toImmutable())
+
+                fun ofUnionMember4(unionMember4: UnionMember4) =
+                    PhoneNumber(unionMember4 = unionMember4)
+            }
+
+            /**
+             * An interface that defines how to map each variant of [PhoneNumber] to a value of type
+             * [T].
+             */
+            interface Visitor<out T> {
+
+                fun visitString(string: String): T
+
+                fun visitDouble(double: Double): T
+
+                fun visitBoolean(boolean: Boolean): T
+
+                fun visitJsonValues(jsonValues: List<JsonValue>): T
+
+                fun visitUnionMember4(unionMember4: UnionMember4): T
+
+                /**
+                 * Maps an unknown variant of [PhoneNumber] to a value of type [T].
+                 *
+                 * An instance of [PhoneNumber] can contain an unknown variant if it was
+                 * deserialized from data that doesn't match any known variant. For example, if the
+                 * SDK is on an older version than the API, then the API may respond with new
+                 * variants that the SDK is unaware of.
+                 *
+                 * @throws OursPrivacyInvalidDataException in the default implementation.
+                 */
+                fun unknown(json: JsonValue?): T {
+                    throw OursPrivacyInvalidDataException("Unknown PhoneNumber: $json")
+                }
+            }
+
+            internal class Deserializer : BaseDeserializer<PhoneNumber>(PhoneNumber::class) {
+
+                override fun ObjectCodec.deserialize(node: JsonNode): PhoneNumber {
+                    val json = JsonValue.fromJsonNode(node)
+
+                    val bestMatches =
+                        sequenceOf(
+                                tryDeserialize(node, jacksonTypeRef<UnionMember4>())?.let {
+                                    PhoneNumber(unionMember4 = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<String>())?.let {
+                                    PhoneNumber(string = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<Double>())?.let {
+                                    PhoneNumber(double = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<Boolean>())?.let {
+                                    PhoneNumber(boolean = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<List<JsonValue>>())?.let {
+                                    PhoneNumber(jsonValues = it, _json = json)
+                                },
+                            )
+                            .filterNotNull()
+                            .allMaxBy { it.validity() }
+                            .toList()
+                    return when (bestMatches.size) {
+                        // This can happen if what we're deserializing is completely incompatible
+                        // with all the possible variants.
+                        0 -> PhoneNumber(_json = json)
+                        1 -> bestMatches.single()
+                        // If there's more than one match with the highest validity, then use the
+                        // first completely valid match, or simply the first match if none are
+                        // completely valid.
+                        else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                    }
+                }
+            }
+
+            internal class Serializer : BaseSerializer<PhoneNumber>(PhoneNumber::class) {
+
+                override fun serialize(
+                    value: PhoneNumber,
+                    generator: JsonGenerator,
+                    provider: SerializerProvider,
+                ) {
+                    when {
+                        value.string != null -> generator.writeObject(value.string)
+                        value.double != null -> generator.writeObject(value.double)
+                        value.boolean != null -> generator.writeObject(value.boolean)
+                        value.jsonValues != null -> generator.writeObject(value.jsonValues)
+                        value.unionMember4 != null -> generator.writeObject(value.unionMember4)
+                        value._json != null -> generator.writeObject(value._json)
+                        else -> throw IllegalStateException("Invalid PhoneNumber")
+                    }
+                }
+            }
+
+            class UnionMember4
+            @JsonCreator
+            private constructor(
+                @com.fasterxml.jackson.annotation.JsonValue
+                private val additionalProperties: Map<String, JsonValue>
+            ) {
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /** Returns a mutable builder for constructing an instance of [UnionMember4]. */
+                    fun builder() = Builder()
+                }
+
+                /** A builder for [UnionMember4]. */
+                class Builder internal constructor() {
+
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    internal fun from(unionMember4: UnionMember4) = apply {
+                        additionalProperties = unionMember4.additionalProperties.toMutableMap()
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [UnionMember4].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): UnionMember4 = UnionMember4(additionalProperties.toImmutable())
+                }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws OursPrivacyInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
+                fun validate(): UnionMember4 = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: OursPrivacyInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    additionalProperties.count { (_, value) ->
+                        !value.isNull() && !value.isMissing()
+                    }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is UnionMember4 &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() = "UnionMember4{additionalProperties=$additionalProperties}"
+            }
+        }
+
+        /** Any JSON value: string, number, boolean, array, object, or null. */
+        @JsonDeserialize(using = Zip.Deserializer::class)
+        @JsonSerialize(using = Zip.Serializer::class)
+        class Zip
+        private constructor(
+            private val string: String? = null,
+            private val double: Double? = null,
+            private val boolean: Boolean? = null,
+            private val jsonValues: List<JsonValue>? = null,
+            private val unionMember4: UnionMember4? = null,
+            private val _json: JsonValue? = null,
+        ) {
+
+            fun string(): String? = string
+
+            fun double(): Double? = double
+
+            fun boolean(): Boolean? = boolean
+
+            fun jsonValues(): List<JsonValue>? = jsonValues
+
+            fun unionMember4(): UnionMember4? = unionMember4
+
+            fun isString(): Boolean = string != null
+
+            fun isDouble(): Boolean = double != null
+
+            fun isBoolean(): Boolean = boolean != null
+
+            fun isJsonValues(): Boolean = jsonValues != null
+
+            fun isUnionMember4(): Boolean = unionMember4 != null
+
+            fun asString(): String = string.getOrThrow("string")
+
+            fun asDouble(): Double = double.getOrThrow("double")
+
+            fun asBoolean(): Boolean = boolean.getOrThrow("boolean")
+
+            fun asJsonValues(): List<JsonValue> = jsonValues.getOrThrow("jsonValues")
+
+            fun asUnionMember4(): UnionMember4 = unionMember4.getOrThrow("unionMember4")
+
+            fun _json(): JsonValue? = _json
+
+            /**
+             * Maps this instance's current variant to a value of type [T] using the given
+             * [visitor].
+             *
+             * Note that this method is _not_ forwards compatible with new variants from the API,
+             * unless [visitor] overrides [Visitor.unknown]. To handle variants not known to this
+             * version of the SDK gracefully, consider overriding [Visitor.unknown]:
+             * ```kotlin
+             * import com.oursprivacy.core.JsonValue
+             *
+             * val result: String? = zip.accept(object : Zip.Visitor<String?> {
+             *     override fun visitString(string: String): String? = string.toString()
+             *
+             *     // ...
+             *
+             *     override fun unknown(json: JsonValue?): String? {
+             *         // Or inspect the `json`.
+             *         return null
+             *     }
+             * })
+             * ```
+             *
+             * @throws OursPrivacyInvalidDataException if [Visitor.unknown] is not overridden in
+             *   [visitor] and the current variant is unknown.
+             */
+            fun <T> accept(visitor: Visitor<T>): T =
+                when {
+                    string != null -> visitor.visitString(string)
+                    double != null -> visitor.visitDouble(double)
+                    boolean != null -> visitor.visitBoolean(boolean)
+                    jsonValues != null -> visitor.visitJsonValues(jsonValues)
+                    unionMember4 != null -> visitor.visitUnionMember4(unionMember4)
+                    else -> visitor.unknown(_json)
+                }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws OursPrivacyInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): Zip = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                accept(
+                    object : Visitor<Unit> {
+                        override fun visitString(string: String) {}
+
+                        override fun visitDouble(double: Double) {}
+
+                        override fun visitBoolean(boolean: Boolean) {}
+
+                        override fun visitJsonValues(jsonValues: List<JsonValue>) {}
+
+                        override fun visitUnionMember4(unionMember4: UnionMember4) {
+                            unionMember4.validate()
+                        }
+                    }
+                )
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: OursPrivacyInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                accept(
+                    object : Visitor<Int> {
+                        override fun visitString(string: String) = 1
+
+                        override fun visitDouble(double: Double) = 1
+
+                        override fun visitBoolean(boolean: Boolean) = 1
+
+                        override fun visitJsonValues(jsonValues: List<JsonValue>) = jsonValues.size
+
+                        override fun visitUnionMember4(unionMember4: UnionMember4) =
+                            unionMember4.validity()
+
+                        override fun unknown(json: JsonValue?) = 0
+                    }
+                )
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Zip &&
+                    string == other.string &&
+                    double == other.double &&
+                    boolean == other.boolean &&
+                    jsonValues == other.jsonValues &&
+                    unionMember4 == other.unionMember4
+            }
+
+            override fun hashCode(): Int =
+                Objects.hash(string, double, boolean, jsonValues, unionMember4)
+
+            override fun toString(): String =
+                when {
+                    string != null -> "Zip{string=$string}"
+                    double != null -> "Zip{double=$double}"
+                    boolean != null -> "Zip{boolean=$boolean}"
+                    jsonValues != null -> "Zip{jsonValues=$jsonValues}"
+                    unionMember4 != null -> "Zip{unionMember4=$unionMember4}"
+                    _json != null -> "Zip{_unknown=$_json}"
+                    else -> throw IllegalStateException("Invalid Zip")
+                }
+
+            companion object {
+
+                fun ofString(string: String) = Zip(string = string)
+
+                fun ofDouble(double: Double) = Zip(double = double)
+
+                fun ofBoolean(boolean: Boolean) = Zip(boolean = boolean)
+
+                fun ofJsonValues(jsonValues: List<JsonValue>) =
+                    Zip(jsonValues = jsonValues.toImmutable())
+
+                fun ofUnionMember4(unionMember4: UnionMember4) = Zip(unionMember4 = unionMember4)
+            }
+
+            /**
+             * An interface that defines how to map each variant of [Zip] to a value of type [T].
+             */
+            interface Visitor<out T> {
+
+                fun visitString(string: String): T
+
+                fun visitDouble(double: Double): T
+
+                fun visitBoolean(boolean: Boolean): T
+
+                fun visitJsonValues(jsonValues: List<JsonValue>): T
+
+                fun visitUnionMember4(unionMember4: UnionMember4): T
+
+                /**
+                 * Maps an unknown variant of [Zip] to a value of type [T].
+                 *
+                 * An instance of [Zip] can contain an unknown variant if it was deserialized from
+                 * data that doesn't match any known variant. For example, if the SDK is on an older
+                 * version than the API, then the API may respond with new variants that the SDK is
+                 * unaware of.
+                 *
+                 * @throws OursPrivacyInvalidDataException in the default implementation.
+                 */
+                fun unknown(json: JsonValue?): T {
+                    throw OursPrivacyInvalidDataException("Unknown Zip: $json")
+                }
+            }
+
+            internal class Deserializer : BaseDeserializer<Zip>(Zip::class) {
+
+                override fun ObjectCodec.deserialize(node: JsonNode): Zip {
+                    val json = JsonValue.fromJsonNode(node)
+
+                    val bestMatches =
+                        sequenceOf(
+                                tryDeserialize(node, jacksonTypeRef<UnionMember4>())?.let {
+                                    Zip(unionMember4 = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<String>())?.let {
+                                    Zip(string = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<Double>())?.let {
+                                    Zip(double = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<Boolean>())?.let {
+                                    Zip(boolean = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<List<JsonValue>>())?.let {
+                                    Zip(jsonValues = it, _json = json)
+                                },
+                            )
+                            .filterNotNull()
+                            .allMaxBy { it.validity() }
+                            .toList()
+                    return when (bestMatches.size) {
+                        // This can happen if what we're deserializing is completely incompatible
+                        // with all the possible variants.
+                        0 -> Zip(_json = json)
+                        1 -> bestMatches.single()
+                        // If there's more than one match with the highest validity, then use the
+                        // first completely valid match, or simply the first match if none are
+                        // completely valid.
+                        else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                    }
+                }
+            }
+
+            internal class Serializer : BaseSerializer<Zip>(Zip::class) {
+
+                override fun serialize(
+                    value: Zip,
+                    generator: JsonGenerator,
+                    provider: SerializerProvider,
+                ) {
+                    when {
+                        value.string != null -> generator.writeObject(value.string)
+                        value.double != null -> generator.writeObject(value.double)
+                        value.boolean != null -> generator.writeObject(value.boolean)
+                        value.jsonValues != null -> generator.writeObject(value.jsonValues)
+                        value.unionMember4 != null -> generator.writeObject(value.unionMember4)
+                        value._json != null -> generator.writeObject(value._json)
+                        else -> throw IllegalStateException("Invalid Zip")
+                    }
+                }
+            }
+
+            class UnionMember4
+            @JsonCreator
+            private constructor(
+                @com.fasterxml.jackson.annotation.JsonValue
+                private val additionalProperties: Map<String, JsonValue>
+            ) {
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /** Returns a mutable builder for constructing an instance of [UnionMember4]. */
+                    fun builder() = Builder()
+                }
+
+                /** A builder for [UnionMember4]. */
+                class Builder internal constructor() {
+
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    internal fun from(unionMember4: UnionMember4) = apply {
+                        additionalProperties = unionMember4.additionalProperties.toMutableMap()
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [UnionMember4].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): UnionMember4 = UnionMember4(additionalProperties.toImmutable())
+                }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws OursPrivacyInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
+                fun validate(): UnionMember4 = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: OursPrivacyInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    additionalProperties.count { (_, value) ->
+                        !value.isNull() && !value.isMissing()
+                    }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is UnionMember4 &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() = "UnionMember4{additionalProperties=$additionalProperties}"
+            }
+        }
+
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
@@ -7405,6 +9677,8 @@ private constructor(
                 gbraid == other.gbraid &&
                 gclid == other.gclid &&
                 gender == other.gender &&
+                graid == other.graid &&
+                grclid == other.grclid &&
                 imRef == other.imRef &&
                 ip == other.ip &&
                 irclickid == other.irclickid &&
@@ -7474,6 +9748,8 @@ private constructor(
                 gbraid,
                 gclid,
                 gender,
+                graid,
+                grclid,
                 imRef,
                 ip,
                 irclickid,
@@ -7515,7 +9791,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "UserProperties{_efTransactionId=$_efTransactionId, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, obClickId=$obClickId, oppref=$oppref, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
+            "UserProperties{_efTransactionId=$_efTransactionId, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, graid=$graid, grclid=$grclid, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, obClickId=$obClickId, oppref=$oppref, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
