@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.23.1 (2026-10-19)
+
+Full Changelog: [v1.23.0...v1.23.1](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.23.0...v1.23.1)
+
+### Chores
+
+* **deps:** update published Jackson dependencies from 2.18.2 to 2.18.12; update Gradle, Kotlin, Dokka, and Maven publishing tools.
+
 ## 1.23.0 (2026-10-16)
 
 Full Changelog: [v1.22.0...v1.23.0](https://github.com/with-ours/ingest-sdk-kotlin/compare/v1.22.0...v1.23.0)
