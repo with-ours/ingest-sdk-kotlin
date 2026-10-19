@@ -58,6 +58,9 @@ jobs:
       - name: Build SDK
         run: ./scripts/build
 
+      - name: Verify documentation and publication artifacts
+        run: ./gradlew publishAllPublicationsToLocalFileSystemRepository :dokkaGenerate -PpublishLocal
+
   test:
     permissions:
       contents: read
