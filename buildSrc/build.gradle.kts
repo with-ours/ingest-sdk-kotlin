@@ -1,7 +1,7 @@
 plugins {
     `kotlin-dsl`
-    kotlin("jvm") version "1.9.20"
-    id("com.vanniktech.maven.publish") version "0.28.0"
+    kotlin("jvm") version "1.9.25"
+    id("com.vanniktech.maven.publish") version "0.37.0"
 }
 
 repositories {
@@ -10,6 +10,6 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.20")
-    implementation("com.vanniktech:gradle-maven-publish-plugin:0.28.0")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.25")
+    implementation("com.vanniktech:gradle-maven-publish-plugin:0.37.0")
 }
