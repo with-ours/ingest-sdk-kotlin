@@ -1021,6 +1021,7 @@ private constructor(
         private val sid: JsonField<String>,
         private val state: JsonField<String>,
         private val ttclid: JsonField<String>,
+        private val ttdImpressionId: JsonField<String>,
         private val twclid: JsonField<String>,
         private val userAgent: JsonField<String>,
         private val userAgentFullList: JsonField<String>,
@@ -1033,6 +1034,7 @@ private constructor(
         private val viantClickId: JsonField<String>,
         private val viantImpressionId: JsonField<String>,
         private val wbraid: JsonField<String>,
+        private val ylpcid: JsonField<String>,
         private val zip: JsonField<Zip>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -1130,6 +1132,9 @@ private constructor(
             @JsonProperty("sid") @ExcludeMissing sid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("state") @ExcludeMissing state: JsonField<String> = JsonMissing.of(),
             @JsonProperty("ttclid") @ExcludeMissing ttclid: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("ttd_impression_id")
+            @ExcludeMissing
+            ttdImpressionId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("twclid") @ExcludeMissing twclid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("user_agent")
             @ExcludeMissing
@@ -1158,6 +1163,7 @@ private constructor(
             @ExcludeMissing
             viantImpressionId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("wbraid") @ExcludeMissing wbraid: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("ylpcid") @ExcludeMissing ylpcid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("zip") @ExcludeMissing zip: JsonField<Zip> = JsonMissing.of(),
         ) : this(
             _efTransactionId,
@@ -1213,6 +1219,7 @@ private constructor(
             sid,
             state,
             ttclid,
+            ttdImpressionId,
             twclid,
             userAgent,
             userAgentFullList,
@@ -1225,6 +1232,7 @@ private constructor(
             viantClickId,
             viantImpressionId,
             wbraid,
+            ylpcid,
             zip,
             mutableMapOf(),
         )
@@ -1618,6 +1626,14 @@ private constructor(
         fun ttclid(): String? = ttclid.getNullable("ttclid")
 
         /**
+         * Leading and trailing whitespace is removed before validation.
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun ttdImpressionId(): String? = ttdImpressionId.getNullable("ttd_impression_id")
+
+        /**
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -1704,6 +1720,12 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun wbraid(): String? = wbraid.getNullable("wbraid")
+
+        /**
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun ylpcid(): String? = ylpcid.getNullable("ylpcid")
 
         /**
          * Any JSON value: string, number, boolean, array, object, or null.
@@ -2109,6 +2131,16 @@ private constructor(
         @JsonProperty("ttclid") @ExcludeMissing fun _ttclid(): JsonField<String> = ttclid
 
         /**
+         * Returns the raw JSON value of [ttdImpressionId].
+         *
+         * Unlike [ttdImpressionId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("ttd_impression_id")
+        @ExcludeMissing
+        fun _ttdImpressionId(): JsonField<String> = ttdImpressionId
+
+        /**
          * Returns the raw JSON value of [twclid].
          *
          * Unlike [twclid], this method doesn't throw if the JSON field has an unexpected type.
@@ -2206,6 +2238,13 @@ private constructor(
         @JsonProperty("wbraid") @ExcludeMissing fun _wbraid(): JsonField<String> = wbraid
 
         /**
+         * Returns the raw JSON value of [ylpcid].
+         *
+         * Unlike [ylpcid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("ylpcid") @ExcludeMissing fun _ylpcid(): JsonField<String> = ylpcid
+
+        /**
          * Returns the raw JSON value of [zip].
          *
          * Unlike [zip], this method doesn't throw if the JSON field has an unexpected type.
@@ -2286,6 +2325,7 @@ private constructor(
             private var sid: JsonField<String> = JsonMissing.of()
             private var state: JsonField<String> = JsonMissing.of()
             private var ttclid: JsonField<String> = JsonMissing.of()
+            private var ttdImpressionId: JsonField<String> = JsonMissing.of()
             private var twclid: JsonField<String> = JsonMissing.of()
             private var userAgent: JsonField<String> = JsonMissing.of()
             private var userAgentFullList: JsonField<String> = JsonMissing.of()
@@ -2298,6 +2338,7 @@ private constructor(
             private var viantClickId: JsonField<String> = JsonMissing.of()
             private var viantImpressionId: JsonField<String> = JsonMissing.of()
             private var wbraid: JsonField<String> = JsonMissing.of()
+            private var ylpcid: JsonField<String> = JsonMissing.of()
             private var zip: JsonField<Zip> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -2355,6 +2396,7 @@ private constructor(
                 sid = userProperties.sid
                 state = userProperties.state
                 ttclid = userProperties.ttclid
+                ttdImpressionId = userProperties.ttdImpressionId
                 twclid = userProperties.twclid
                 userAgent = userProperties.userAgent
                 userAgentFullList = userProperties.userAgentFullList
@@ -2367,6 +2409,7 @@ private constructor(
                 viantClickId = userProperties.viantClickId
                 viantImpressionId = userProperties.viantImpressionId
                 wbraid = userProperties.wbraid
+                ylpcid = userProperties.ylpcid
                 zip = userProperties.zip
                 additionalProperties = userProperties.additionalProperties.toMutableMap()
             }
@@ -3077,6 +3120,21 @@ private constructor(
              */
             fun ttclid(ttclid: JsonField<String>) = apply { this.ttclid = ttclid }
 
+            /** Leading and trailing whitespace is removed before validation. */
+            fun ttdImpressionId(ttdImpressionId: String?) =
+                ttdImpressionId(JsonField.ofNullable(ttdImpressionId))
+
+            /**
+             * Sets [Builder.ttdImpressionId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.ttdImpressionId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun ttdImpressionId(ttdImpressionId: JsonField<String>) = apply {
+                this.ttdImpressionId = ttdImpressionId
+            }
+
             fun twclid(twclid: String?) = twclid(JsonField.ofNullable(twclid))
 
             /**
@@ -3246,6 +3304,17 @@ private constructor(
              */
             fun wbraid(wbraid: JsonField<String>) = apply { this.wbraid = wbraid }
 
+            fun ylpcid(ylpcid: String?) = ylpcid(JsonField.ofNullable(ylpcid))
+
+            /**
+             * Sets [Builder.ylpcid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.ylpcid] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun ylpcid(ylpcid: JsonField<String>) = apply { this.ylpcid = ylpcid }
+
             /** Any JSON value: string, number, boolean, array, object, or null. */
             fun zip(zip: Zip?) = zip(JsonField.ofNullable(zip))
 
@@ -3352,6 +3421,7 @@ private constructor(
                     sid,
                     state,
                     ttclid,
+                    ttdImpressionId,
                     twclid,
                     userAgent,
                     userAgentFullList,
@@ -3364,6 +3434,7 @@ private constructor(
                     viantClickId,
                     viantImpressionId,
                     wbraid,
+                    ylpcid,
                     zip,
                     additionalProperties.toMutableMap(),
                 )
@@ -3438,6 +3509,7 @@ private constructor(
             sid()
             state()
             ttclid()
+            ttdImpressionId()
             twclid()
             userAgent()
             userAgentFullList()
@@ -3450,6 +3522,7 @@ private constructor(
             viantClickId()
             viantImpressionId()
             wbraid()
+            ylpcid()
             zip()?.validate()
             validated = true
         }
@@ -3522,6 +3595,7 @@ private constructor(
                 (if (sid.asKnown() == null) 0 else 1) +
                 (if (state.asKnown() == null) 0 else 1) +
                 (if (ttclid.asKnown() == null) 0 else 1) +
+                (if (ttdImpressionId.asKnown() == null) 0 else 1) +
                 (if (twclid.asKnown() == null) 0 else 1) +
                 (if (userAgent.asKnown() == null) 0 else 1) +
                 (if (userAgentFullList.asKnown() == null) 0 else 1) +
@@ -3534,6 +3608,7 @@ private constructor(
                 (if (viantClickId.asKnown() == null) 0 else 1) +
                 (if (viantImpressionId.asKnown() == null) 0 else 1) +
                 (if (wbraid.asKnown() == null) 0 else 1) +
+                (if (ylpcid.asKnown() == null) 0 else 1) +
                 (zip.asKnown()?.validity() ?: 0)
 
         /**
@@ -5002,6 +5077,7 @@ private constructor(
                 sid == other.sid &&
                 state == other.state &&
                 ttclid == other.ttclid &&
+                ttdImpressionId == other.ttdImpressionId &&
                 twclid == other.twclid &&
                 userAgent == other.userAgent &&
                 userAgentFullList == other.userAgentFullList &&
@@ -5014,6 +5090,7 @@ private constructor(
                 viantClickId == other.viantClickId &&
                 viantImpressionId == other.viantImpressionId &&
                 wbraid == other.wbraid &&
+                ylpcid == other.ylpcid &&
                 zip == other.zip &&
                 additionalProperties == other.additionalProperties
         }
@@ -5073,6 +5150,7 @@ private constructor(
                 sid,
                 state,
                 ttclid,
+                ttdImpressionId,
                 twclid,
                 userAgent,
                 userAgentFullList,
@@ -5085,6 +5163,7 @@ private constructor(
                 viantClickId,
                 viantImpressionId,
                 wbraid,
+                ylpcid,
                 zip,
                 additionalProperties,
             )
@@ -5093,7 +5172,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "UserProperties{_efTransactionId=$_efTransactionId, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, graid=$graid, grclid=$grclid, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, obClickId=$obClickId, oppref=$oppref, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, zip=$zip, additionalProperties=$additionalProperties}"
+            "UserProperties{_efTransactionId=$_efTransactionId, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, graid=$graid, grclid=$grclid, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, obClickId=$obClickId, oppref=$oppref, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, ttdImpressionId=$ttdImpressionId, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, ylpcid=$ylpcid, zip=$zip, additionalProperties=$additionalProperties}"
     }
 
     /** These properties are used throughout the Ours app to pass known values onto destinations */
@@ -5166,6 +5245,7 @@ private constructor(
         private val sr: JsonField<String>,
         private val title: JsonField<String>,
         private val ttclid: JsonField<String>,
+        private val ttdImpressionId: JsonField<String>,
         private val twclid: JsonField<String>,
         private val uafvl: JsonField<String>,
         private val userAgent: JsonField<String>,
@@ -5180,6 +5260,7 @@ private constructor(
         private val viantImpressionId: JsonField<String>,
         private val wbraid: JsonField<String>,
         private val webview: JsonField<Boolean>,
+        private val ylpcid: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -5313,6 +5394,9 @@ private constructor(
             @JsonProperty("sr") @ExcludeMissing sr: JsonField<String> = JsonMissing.of(),
             @JsonProperty("title") @ExcludeMissing title: JsonField<String> = JsonMissing.of(),
             @JsonProperty("ttclid") @ExcludeMissing ttclid: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("ttd_impression_id")
+            @ExcludeMissing
+            ttdImpressionId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("twclid") @ExcludeMissing twclid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("uafvl") @ExcludeMissing uafvl: JsonField<String> = JsonMissing.of(),
             @JsonProperty("user_agent")
@@ -5341,6 +5425,7 @@ private constructor(
             viantImpressionId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("wbraid") @ExcludeMissing wbraid: JsonField<String> = JsonMissing.of(),
             @JsonProperty("webview") @ExcludeMissing webview: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("ylpcid") @ExcludeMissing ylpcid: JsonField<String> = JsonMissing.of(),
         ) : this(
             _efTransactionId,
             activeDuration,
@@ -5408,6 +5493,7 @@ private constructor(
             sr,
             title,
             ttclid,
+            ttdImpressionId,
             twclid,
             uafvl,
             userAgent,
@@ -5422,6 +5508,7 @@ private constructor(
             viantImpressionId,
             wbraid,
             webview,
+            ylpcid,
             mutableMapOf(),
         )
 
@@ -6018,6 +6105,16 @@ private constructor(
         fun ttclid(): String? = ttclid.getNullable("ttclid")
 
         /**
+         * The Trade Desk impression ID, captured from a configured ttd_impression_id URL parameter
+         * using the %%TTD_IMPRESSIONID%% creative macro. Sent as imp on conversions. Leading and
+         * trailing whitespace is removed before validation.
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun ttdImpressionId(): String? = ttdImpressionId.getNullable("ttd_impression_id")
+
+        /**
          * The Twitter Click ID. Ex: twclid123 Leading and trailing whitespace is removed before
          * validation.
          *
@@ -6144,6 +6241,14 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun webview(): Boolean? = webview.getNullable("webview")
+
+        /**
+         * The Yelp Click ID from the landing URL, sent unchanged and unhashed.
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun ylpcid(): String? = ylpcid.getNullable("ylpcid")
 
         /**
          * Returns the raw JSON value of [_efTransactionId].
@@ -6659,6 +6764,16 @@ private constructor(
         @JsonProperty("ttclid") @ExcludeMissing fun _ttclid(): JsonField<String> = ttclid
 
         /**
+         * Returns the raw JSON value of [ttdImpressionId].
+         *
+         * Unlike [ttdImpressionId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("ttd_impression_id")
+        @ExcludeMissing
+        fun _ttdImpressionId(): JsonField<String> = ttdImpressionId
+
+        /**
          * Returns the raw JSON value of [twclid].
          *
          * Unlike [twclid], this method doesn't throw if the JSON field has an unexpected type.
@@ -6766,6 +6881,13 @@ private constructor(
          */
         @JsonProperty("webview") @ExcludeMissing fun _webview(): JsonField<Boolean> = webview
 
+        /**
+         * Returns the raw JSON value of [ylpcid].
+         *
+         * Unlike [ylpcid], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("ylpcid") @ExcludeMissing fun _ylpcid(): JsonField<String> = ylpcid
+
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
             additionalProperties.put(key, value)
@@ -6853,6 +6975,7 @@ private constructor(
             private var sr: JsonField<String> = JsonMissing.of()
             private var title: JsonField<String> = JsonMissing.of()
             private var ttclid: JsonField<String> = JsonMissing.of()
+            private var ttdImpressionId: JsonField<String> = JsonMissing.of()
             private var twclid: JsonField<String> = JsonMissing.of()
             private var uafvl: JsonField<String> = JsonMissing.of()
             private var userAgent: JsonField<String> = JsonMissing.of()
@@ -6867,6 +6990,7 @@ private constructor(
             private var viantImpressionId: JsonField<String> = JsonMissing.of()
             private var wbraid: JsonField<String> = JsonMissing.of()
             private var webview: JsonField<Boolean> = JsonMissing.of()
+            private var ylpcid: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(defaultProperties: DefaultProperties) = apply {
@@ -6936,6 +7060,7 @@ private constructor(
                 sr = defaultProperties.sr
                 title = defaultProperties.title
                 ttclid = defaultProperties.ttclid
+                ttdImpressionId = defaultProperties.ttdImpressionId
                 twclid = defaultProperties.twclid
                 uafvl = defaultProperties.uafvl
                 userAgent = defaultProperties.userAgent
@@ -6950,6 +7075,7 @@ private constructor(
                 viantImpressionId = defaultProperties.viantImpressionId
                 wbraid = defaultProperties.wbraid
                 webview = defaultProperties.webview
+                ylpcid = defaultProperties.ylpcid
                 additionalProperties = defaultProperties.additionalProperties.toMutableMap()
             }
 
@@ -8036,6 +8162,25 @@ private constructor(
             fun ttclid(ttclid: JsonField<String>) = apply { this.ttclid = ttclid }
 
             /**
+             * The Trade Desk impression ID, captured from a configured ttd_impression_id URL
+             * parameter using the %%TTD_IMPRESSIONID%% creative macro. Sent as imp on conversions.
+             * Leading and trailing whitespace is removed before validation.
+             */
+            fun ttdImpressionId(ttdImpressionId: String?) =
+                ttdImpressionId(JsonField.ofNullable(ttdImpressionId))
+
+            /**
+             * Sets [Builder.ttdImpressionId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.ttdImpressionId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun ttdImpressionId(ttdImpressionId: JsonField<String>) = apply {
+                this.ttdImpressionId = ttdImpressionId
+            }
+
+            /**
              * The Twitter Click ID. Ex: twclid123 Leading and trailing whitespace is removed before
              * validation.
              */
@@ -8260,6 +8405,18 @@ private constructor(
              */
             fun webview(webview: JsonField<Boolean>) = apply { this.webview = webview }
 
+            /** The Yelp Click ID from the landing URL, sent unchanged and unhashed. */
+            fun ylpcid(ylpcid: String?) = ylpcid(JsonField.ofNullable(ylpcid))
+
+            /**
+             * Sets [Builder.ylpcid] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.ylpcid] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun ylpcid(ylpcid: JsonField<String>) = apply { this.ylpcid = ylpcid }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -8352,6 +8509,7 @@ private constructor(
                     sr,
                     title,
                     ttclid,
+                    ttdImpressionId,
                     twclid,
                     uafvl,
                     userAgent,
@@ -8366,6 +8524,7 @@ private constructor(
                     viantImpressionId,
                     wbraid,
                     webview,
+                    ylpcid,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -8452,6 +8611,7 @@ private constructor(
             sr()
             title()
             ttclid()
+            ttdImpressionId()
             twclid()
             uafvl()
             userAgent()
@@ -8466,6 +8626,7 @@ private constructor(
             viantImpressionId()
             wbraid()
             webview()
+            ylpcid()
             validated = true
         }
 
@@ -8550,6 +8711,7 @@ private constructor(
                 (if (sr.asKnown() == null) 0 else 1) +
                 (if (title.asKnown() == null) 0 else 1) +
                 (if (ttclid.asKnown() == null) 0 else 1) +
+                (if (ttdImpressionId.asKnown() == null) 0 else 1) +
                 (if (twclid.asKnown() == null) 0 else 1) +
                 (if (uafvl.asKnown() == null) 0 else 1) +
                 (if (userAgent.asKnown() == null) 0 else 1) +
@@ -8563,7 +8725,8 @@ private constructor(
                 (if (viantClickId.asKnown() == null) 0 else 1) +
                 (if (viantImpressionId.asKnown() == null) 0 else 1) +
                 (if (wbraid.asKnown() == null) 0 else 1) +
-                (if (webview.asKnown() == null) 0 else 1)
+                (if (webview.asKnown() == null) 0 else 1) +
+                (if (ylpcid.asKnown() == null) 0 else 1)
 
         /** Any JSON value: string, number, boolean, array, object, or null. */
         @JsonDeserialize(using = IsBot.Deserializer::class)
@@ -9027,6 +9190,7 @@ private constructor(
                 sr == other.sr &&
                 title == other.title &&
                 ttclid == other.ttclid &&
+                ttdImpressionId == other.ttdImpressionId &&
                 twclid == other.twclid &&
                 uafvl == other.uafvl &&
                 userAgent == other.userAgent &&
@@ -9041,6 +9205,7 @@ private constructor(
                 viantImpressionId == other.viantImpressionId &&
                 wbraid == other.wbraid &&
                 webview == other.webview &&
+                ylpcid == other.ylpcid &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -9112,6 +9277,7 @@ private constructor(
                 sr,
                 title,
                 ttclid,
+                ttdImpressionId,
                 twclid,
                 uafvl,
                 userAgent,
@@ -9126,6 +9292,7 @@ private constructor(
                 viantImpressionId,
                 wbraid,
                 webview,
+                ylpcid,
                 additionalProperties,
             )
         }
@@ -9133,7 +9300,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, graid=$graid, grclid=$grclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, obClickId=$obClickId, oppref=$oppref, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, webview=$webview, additionalProperties=$additionalProperties}"
+            "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, graid=$graid, grclid=$grclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, obClickId=$obClickId, oppref=$oppref, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, ttdImpressionId=$ttdImpressionId, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, webview=$webview, ylpcid=$ylpcid, additionalProperties=$additionalProperties}"
     }
 
     /**
