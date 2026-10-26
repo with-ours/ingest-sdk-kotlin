@@ -660,3 +660,22 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
 We are keen for your feedback; please open an [issue](https://www.github.com/with-ours/ingest-sdk-kotlin/issues) with questions, bugs, or suggestions.
+
+## Building from source
+
+Use JDK 21 to run the checked-in Gradle wrapper. The SDK still targets Java 8 and
+Kotlin 1.8; the build uses a separate Kotlin 2.2 compiler to retain Kotlin 1.8 metadata
+while the build plugins use a newer Kotlin version.
+
+Run `./scripts/lint`, `./scripts/build`, and `./scripts/test`. To also verify the
+documentation, local Maven artifacts, and Kotlin 1.8 / Java 8 consumers, install a
+JDK 8 alongside JDK 21 and run:
+
+```sh
+./gradlew publishAllPublicationsToLocalFileSystemRepository :dokkaGenerate -PpublishLocal
+./gradlew -p compatibility check
+```
+
+These commands publish only to `build/local-maven-repo` and require no signing or
+Maven Central credentials. The consumer checks resolve the published SDK artifacts,
+compile with Kotlin 1.8.22 and Java 8 API restrictions, and execute on Java 8.
