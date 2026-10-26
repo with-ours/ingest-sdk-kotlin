@@ -1,3 +1,10 @@
+buildscript {
+    dependencies {
+        // Dokka's Jackson parser also needs the security fixes used by the SDK.
+        classpath(platform("com.fasterxml.jackson:jackson-bom:2.18.12"))
+    }
+}
+
 plugins {
     id("org.jetbrains.dokka") version "2.2.0"
 }

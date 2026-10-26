@@ -43,9 +43,10 @@ tasks.withType<Test>().configureEach {
     }
 }
 
-val palantir by configurations.creating
+val palantir = configurations.create("palantir")
 dependencies {
     palantir("com.palantir.javaformat:palantir-java-format:2.89.0")
+    palantir(platform("com.fasterxml.jackson:jackson-bom:2.21.8"))
 }
 
 fun registerPalantir(
