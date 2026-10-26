@@ -1,6 +1,8 @@
+import com.vanniktech.maven.publish.DeploymentValidation
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinJvm
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
+import com.vanniktech.maven.publish.SourcesJar
 
 plugins {
     id("com.vanniktech.maven.publish")
@@ -29,14 +31,19 @@ extra["signingInMemoryKeyPassword"] = System.getenv("GPG_SIGNING_PASSWORD")
 configure<MavenPublishBaseExtension> {
     if (!project.hasProperty("publishLocal")) {
         signAllPublications()
-        publishToMavenCentral()
+        // Preserve the previous plugin default: finish validation only after publication.
+        publishToMavenCentral(validateDeployment = DeploymentValidation.PUBLISHED)
     }
 
     coordinates(project.group.toString(), project.name, project.version.toString())
     configure(
         KotlinJvm(
-            javadocJar = JavadocJar.Dokka("dokkaGeneratePublicationHtml"),
-            sourcesJar = true,
+            javadocJar = JavadocJar.Dokka(
+                // The umbrella artifact contains the aggregated Dokka v2 documentation.
+                (if (project.name == "ours-privacy-kotlin") rootProject else project)
+                    .tasks.named("dokkaGeneratePublicationHtml")
+            ),
+            sourcesJar = SourcesJar.Sources(),
         )
     )
 

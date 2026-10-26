@@ -4,6 +4,8 @@
 # Jackson uses Kotlin reflection utilities, which themselves use reflection to access things.
 -keep class kotlin.reflect.** { *; }
 -keep class kotlin.Metadata { *; }
+# Kotlin reflection loads Unit by its original name when locating built-in resources.
+-keep class kotlin.Unit { *; }
 
 # Jackson uses reflection to access enum members (e.g. via `java.lang.Class.getEnumConstants()`).
 -keepclassmembers class com.fasterxml.jackson.** extends java.lang.Enum {

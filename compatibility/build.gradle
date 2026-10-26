@@ -1,0 +1,82 @@
+import groovy.json.JsonSlurper
+import java.util.zip.ZipFile
+
+plugins {
+    id 'java'
+}
+
+repositories {
+    exclusiveContent {
+        forRepository { maven { url = uri('../build/local-maven-repo') } }
+        filter { includeGroup 'com.oursprivacy' }
+    }
+    mavenCentral()
+}
+
+configurations {
+    kotlinCompiler
+}
+
+def sdkVersion = new JsonSlurper().parse(file('../.release-please-manifest.json'))['.']
+dependencies {
+    implementation "com.oursprivacy:ours-privacy-kotlin:$sdkVersion"
+    // Compile a real consumer with the oldest supported Kotlin line, independently of buildSrc.
+    kotlinCompiler 'org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.22'
+}
+
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(21) }
+}
+tasks.withType(JavaCompile).configureEach { options.release = 8 }
+
+def kotlinClasses = layout.buildDirectory.dir('classes/kotlin-consumer')
+def compileKotlinConsumer = tasks.register('compileKotlinConsumer', JavaExec) {
+    classpath = configurations.kotlinCompiler
+    mainClass = 'org.jetbrains.kotlin.cli.jvm.K2JVMCompiler'
+    inputs.files(configurations.runtimeClasspath, file('src/main/kotlin/Consumer.kt'))
+    outputs.dir(kotlinClasses)
+    doFirst {
+        kotlinClasses.get().asFile.mkdirs()
+        args = ['-no-stdlib', '-no-reflect', '-jvm-target', '1.8',
+                '-language-version', '1.8', '-api-version', '1.8',
+                '-classpath', configurations.runtimeClasspath.asPath,
+                '-d', kotlinClasses.get().asFile.absolutePath,
+                file('src/main/kotlin/Consumer.kt').absolutePath]
+    }
+}
+
+def java8 = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(8) }
+def kotlinConsumer = tasks.register('runKotlinConsumer', JavaExec) {
+    dependsOn compileKotlinConsumer
+    javaLauncher = java8
+    classpath = files(kotlinClasses) + configurations.runtimeClasspath
+    mainClass = 'ConsumerKt'
+}
+def javaConsumer = tasks.register('runJavaConsumer', JavaExec) {
+    dependsOn tasks.classes
+    javaLauncher = java8
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'JavaConsumer'
+}
+
+def verifyBytecode = tasks.register('verifySdkBytecode') {
+    inputs.files(configurations.runtimeClasspath)
+    doLast {
+        configurations.runtimeClasspath.resolvedConfiguration.resolvedArtifacts
+            .findAll { it.moduleVersion.id.group == 'com.oursprivacy' }
+            .each { artifact ->
+                new ZipFile(artifact.file).withCloseable { zip ->
+                    zip.entries().findAll { it.name.endsWith('.class') }.each { entry ->
+                        zip.getInputStream(entry).withCloseable { stream ->
+                            def header = new DataInputStream(stream)
+                            assert header.readInt() == -889275714
+                            header.readUnsignedShort()
+                            assert header.readUnsignedShort() <= 52 : "$artifact: $entry requires Java 9+"
+                        }
+                    }
+                }
+            }
+    }
+}
+
+tasks.check { dependsOn kotlinConsumer, javaConsumer, verifyBytecode }

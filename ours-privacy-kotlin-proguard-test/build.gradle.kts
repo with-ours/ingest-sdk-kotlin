@@ -1,6 +1,6 @@
 plugins {
     id("ours-privacy.kotlin")
-    id("com.gradleup.shadow") version "8.3.8"
+    id("com.gradleup.shadow")
 }
 
 buildscript {
@@ -9,8 +9,8 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.guardsquare:proguard-gradle:7.4.2")
-        classpath("com.android.tools:r8:8.3.37")
+        classpath("com.guardsquare:proguard-gradle:7.10.0")
+        classpath("com.android.tools:r8:9.5.26")
     }
 }
 
@@ -23,17 +23,20 @@ dependencies {
 }
 
 tasks.shadowJar {
+    // No relocation is used; preserve module metadata instead of remapping it.
+    @Suppress("DEPRECATION")
+    enableKotlinModuleRemapping = false
     from(sourceSets.test.get().output)
     configurations = listOf(project.configurations.testRuntimeClasspath.get())
 }
 
 val proguardJarPath = "${layout.buildDirectory.get()}/libs/${project.name}-${project.version}-proguard.jar"
-val proguardJar by tasks.registering(proguard.gradle.ProGuardTask::class) {
+val proguardJar = tasks.register<proguard.gradle.ProGuardTask>("proguardJar") {
     group = "verification"
     dependsOn(tasks.shadowJar)
     notCompatibleWithConfigurationCache("ProGuard")
 
-    injars(tasks.shadowJar)
+    injars(tasks.shadowJar.flatMap { it.archiveFile })
     outjars(proguardJarPath)
     printmapping("${layout.buildDirectory.get()}/proguard-mapping.txt")
 
@@ -54,7 +57,7 @@ val proguardJar by tasks.registering(proguard.gradle.ProGuardTask::class) {
     configuration("../ours-privacy-kotlin-core/src/main/resources/META-INF/proguard/ours-privacy-kotlin-core.pro")
 }
 
-val testProGuard by tasks.registering(JavaExec::class) {
+val testProGuard = tasks.register<JavaExec>("testProGuard") {
     group = "verification"
     dependsOn(proguardJar)
     notCompatibleWithConfigurationCache("ProGuard")
@@ -64,7 +67,7 @@ val testProGuard by tasks.registering(JavaExec::class) {
 }
 
 val r8JarPath = "${layout.buildDirectory.get()}/libs/${project.name}-${project.version}-r8.jar"
-val r8Jar by tasks.registering(JavaExec::class) {
+val r8Jar = tasks.register<JavaExec>("r8Jar") {
     group = "verification"
     dependsOn(tasks.shadowJar)
     notCompatibleWithConfigurationCache("R8")
@@ -84,7 +87,7 @@ val r8Jar by tasks.registering(JavaExec::class) {
     )
 }
 
-val testR8 by tasks.registering(JavaExec::class) {
+val testR8 = tasks.register<JavaExec>("testR8") {
     group = "verification"
     dependsOn(r8Jar)
     notCompatibleWithConfigurationCache("R8")

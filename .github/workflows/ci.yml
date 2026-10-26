@@ -63,6 +63,9 @@ jobs:
       - name: Verify documentation and publication artifacts
         run: ./gradlew publishAllPublicationsToLocalFileSystemRepository :dokkaGenerate -PpublishLocal
 
+      - name: Verify Kotlin 1.8 and Java 8 consumers
+        run: ./gradlew -p compatibility check
+
   test:
     permissions:
       contents: read

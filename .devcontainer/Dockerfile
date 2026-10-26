@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM debian:bookworm-slim
+FROM eclipse-temurin:21-jdk-noble
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   libxkbcommon0 \
@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   make \
   curl \
   git \
-  openjdk-17-jdk-headless \
   unzip \
   libc++1 \
   vim \
