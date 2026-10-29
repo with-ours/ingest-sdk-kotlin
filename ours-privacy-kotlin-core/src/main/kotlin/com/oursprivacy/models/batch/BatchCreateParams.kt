@@ -1495,7 +1495,7 @@ private constructor(
             fun _efTransactionId(): String? = _efTransactionId.getNullable("_ef_transaction_id")
 
             /**
-             * The active time in milliseconds that the user had this tab active
+             * The total time in milliseconds this tab has been visible since the page loaded
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -1503,8 +1503,8 @@ private constructor(
             fun activeDuration(): Double? = activeDuration.getNullable("activeDuration")
 
             /**
-             * The ad id for detected in the session. This is set by the web sdk automatically.
-             * Leading and trailing whitespace is removed before validation.
+             * The ad id detected in the session. This is set by the web sdk automatically. Leading
+             * and trailing whitespace is removed before validation.
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -1521,7 +1521,7 @@ private constructor(
             fun admitadUid(): String? = admitadUid.getNullable("admitad_uid")
 
             /**
-             * The adset id for detected in the session. This is set by the web sdk automatically.
+             * The adset id detected in the session. This is set by the web sdk automatically.
              * Leading and trailing whitespace is removed before validation.
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
@@ -1576,8 +1576,8 @@ private constructor(
             fun beeswaxAuctionId(): String? = beeswaxAuctionId.getNullable("beeswax_auction_id")
 
             /**
-             * The language of the browser. Ex: en-US Leading and trailing whitespace is removed
-             * before validation.
+             * The language of the browser, lowercased. Ex: en-us Leading and trailing whitespace is
+             * removed before validation.
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -1603,8 +1603,8 @@ private constructor(
             fun browserVersion(): String? = browserVersion.getNullable("browser_version")
 
             /**
-             * The campaign id for detected in the session. This is set by the web sdk
-             * automatically. Leading and trailing whitespace is removed before validation.
+             * The campaign id detected in the session. This is set by the web sdk automatically.
+             * Leading and trailing whitespace is removed before validation.
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -1630,7 +1630,7 @@ private constructor(
             fun clid(): String? = clid.getNullable("clid")
 
             /**
-             * The architecture of the CPU. Ex: x64 Leading and trailing whitespace is removed
+             * The architecture of the CPU. Ex: amd64 Leading and trailing whitespace is removed
              * before validation.
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
@@ -1657,8 +1657,8 @@ private constructor(
             fun dclid(): String? = dclid.getNullable("dclid")
 
             /**
-             * The model of the device. Ex: iPhone 13 Leading and trailing whitespace is removed
-             * before validation.
+             * The model of the device. Ex: iPhone Leading and trailing whitespace is removed before
+             * validation.
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -1684,7 +1684,8 @@ private constructor(
             fun deviceVendor(): String? = deviceVendor.getNullable("device_vendor")
 
             /**
-             * The time in milliseconds since the page was loaded // script was loaded
+             * The time in milliseconds since the previous event on this page, or since the web SDK
+             * loaded for the first event. Restarts when a hidden tab becomes visible again.
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -1692,7 +1693,7 @@ private constructor(
             fun duration(): Double? = duration.getNullable("duration")
 
             /**
-             * The browsers encoding. Ex: UTF-8 Leading and trailing whitespace is removed before
+             * The browser's encoding. Ex: UTF-8 Leading and trailing whitespace is removed before
              * validation.
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
@@ -1974,7 +1975,7 @@ private constructor(
             fun rdtCid(): String? = rdtCid.getNullable("rdt_cid")
 
             /**
-             * The time the event was received by an Ours server in ISO format
+             * The time an Ours server received the event, in ISO 8601 UTC
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -2009,7 +2010,7 @@ private constructor(
             fun sacid(): String? = sacid.getNullable("sacid")
 
             /**
-             * The SnapChat Click ID. Ex: sccid123 Leading and trailing whitespace is removed before
+             * The Snapchat Click ID. Ex: sccid123 Leading and trailing whitespace is removed before
              * validation.
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
@@ -2051,7 +2052,8 @@ private constructor(
             fun sid(): String? = sid.getNullable("sid")
 
             /**
-             * Leading and trailing whitespace is removed before validation.
+             * The screen resolution as width x height in pixels. Ex: 1920x1080 Leading and trailing
+             * whitespace is removed before validation.
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -2096,8 +2098,8 @@ private constructor(
             fun twclid(): String? = twclid.getNullable("twclid")
 
             /**
-             * User agent as a full list of strings. Leading and trailing whitespace is removed
-             * before validation.
+             * The browser brands and full versions from User-Agent Client Hints, as brand;version
+             * pairs separated by |. Leading and trailing whitespace is removed before validation.
              *
              * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -3110,7 +3112,9 @@ private constructor(
                     this._efTransactionId = _efTransactionId
                 }
 
-                /** The active time in milliseconds that the user had this tab active */
+                /**
+                 * The total time in milliseconds this tab has been visible since the page loaded
+                 */
                 fun activeDuration(activeDuration: Double?) =
                     activeDuration(JsonField.ofNullable(activeDuration))
 
@@ -3134,7 +3138,7 @@ private constructor(
                 }
 
                 /**
-                 * The ad id for detected in the session. This is set by the web sdk automatically.
+                 * The ad id detected in the session. This is set by the web sdk automatically.
                  * Leading and trailing whitespace is removed before validation.
                  */
                 fun adId(adId: String?) = adId(JsonField.ofNullable(adId))
@@ -3166,8 +3170,8 @@ private constructor(
                 }
 
                 /**
-                 * The adset id for detected in the session. This is set by the web sdk
-                 * automatically. Leading and trailing whitespace is removed before validation.
+                 * The adset id detected in the session. This is set by the web sdk automatically.
+                 * Leading and trailing whitespace is removed before validation.
                  */
                 fun adsetId(adsetId: String?) = adsetId(JsonField.ofNullable(adsetId))
 
@@ -3260,8 +3264,8 @@ private constructor(
                 }
 
                 /**
-                 * The language of the browser. Ex: en-US Leading and trailing whitespace is removed
-                 * before validation.
+                 * The language of the browser, lowercased. Ex: en-us Leading and trailing
+                 * whitespace is removed before validation.
                  */
                 fun browserLanguage(browserLanguage: String?) =
                     browserLanguage(JsonField.ofNullable(browserLanguage))
@@ -3314,7 +3318,7 @@ private constructor(
                 }
 
                 /**
-                 * The campaign id for detected in the session. This is set by the web sdk
+                 * The campaign id detected in the session. This is set by the web sdk
                  * automatically. Leading and trailing whitespace is removed before validation.
                  */
                 fun campaignId(campaignId: String?) = campaignId(JsonField.ofNullable(campaignId))
@@ -3361,7 +3365,7 @@ private constructor(
                 fun clid(clid: JsonField<String>) = apply { this.clid = clid }
 
                 /**
-                 * The architecture of the CPU. Ex: x64 Leading and trailing whitespace is removed
+                 * The architecture of the CPU. Ex: amd64 Leading and trailing whitespace is removed
                  * before validation.
                  */
                 fun cpuArchitecture(cpuArchitecture: String?) =
@@ -3411,7 +3415,7 @@ private constructor(
                 fun dclid(dclid: JsonField<String>) = apply { this.dclid = dclid }
 
                 /**
-                 * The model of the device. Ex: iPhone 13 Leading and trailing whitespace is removed
+                 * The model of the device. Ex: iPhone Leading and trailing whitespace is removed
                  * before validation.
                  */
                 fun deviceModel(deviceModel: String?) =
@@ -3463,7 +3467,10 @@ private constructor(
                     this.deviceVendor = deviceVendor
                 }
 
-                /** The time in milliseconds since the page was loaded // script was loaded */
+                /**
+                 * The time in milliseconds since the previous event on this page, or since the web
+                 * SDK loaded for the first event. Restarts when a hidden tab becomes visible again.
+                 */
                 fun duration(duration: Double?) = duration(JsonField.ofNullable(duration))
 
                 /**
@@ -3483,7 +3490,7 @@ private constructor(
                 fun duration(duration: JsonField<Double>) = apply { this.duration = duration }
 
                 /**
-                 * The browsers encoding. Ex: UTF-8 Leading and trailing whitespace is removed
+                 * The browser's encoding. Ex: UTF-8 Leading and trailing whitespace is removed
                  * before validation.
                  */
                 fun encoding(encoding: String?) = encoding(JsonField.ofNullable(encoding))
@@ -3991,7 +3998,7 @@ private constructor(
                  */
                 fun rdtCid(rdtCid: JsonField<String>) = apply { this.rdtCid = rdtCid }
 
-                /** The time the event was received by an Ours server in ISO format */
+                /** The time an Ours server received the event, in ISO 8601 UTC */
                 fun receivedAt(receivedAt: String?) = receivedAt(JsonField.ofNullable(receivedAt))
 
                 /**
@@ -4054,7 +4061,7 @@ private constructor(
                 fun sacid(sacid: JsonField<String>) = apply { this.sacid = sacid }
 
                 /**
-                 * The SnapChat Click ID. Ex: sccid123 Leading and trailing whitespace is removed
+                 * The Snapchat Click ID. Ex: sccid123 Leading and trailing whitespace is removed
                  * before validation.
                  */
                 fun sccid(sccid: String?) = sccid(JsonField.ofNullable(sccid))
@@ -4149,7 +4156,10 @@ private constructor(
                  */
                 fun sid(sid: JsonField<String>) = apply { this.sid = sid }
 
-                /** Leading and trailing whitespace is removed before validation. */
+                /**
+                 * The screen resolution as width x height in pixels. Ex: 1920x1080 Leading and
+                 * trailing whitespace is removed before validation.
+                 */
                 fun sr(sr: String?) = sr(JsonField.ofNullable(sr))
 
                 /**
@@ -4226,7 +4236,8 @@ private constructor(
                 fun twclid(twclid: JsonField<String>) = apply { this.twclid = twclid }
 
                 /**
-                 * User agent as a full list of strings. Leading and trailing whitespace is removed
+                 * The browser brands and full versions from User-Agent Client Hints, as
+                 * brand;version pairs separated by |. Leading and trailing whitespace is removed
                  * before validation.
                  */
                 fun uafvl(uafvl: String?) = uafvl(JsonField.ofNullable(uafvl))
