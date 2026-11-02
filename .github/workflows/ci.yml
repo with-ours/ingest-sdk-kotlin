@@ -66,7 +66,7 @@ jobs:
       - name: Verify Kotlin 1.8 and Java 8 consumers
         run: ./gradlew -p compatibility check
 
-  test:
+  test-matrix:
     permissions:
       contents: read
     timeout-minutes: 15
@@ -98,3 +98,19 @@ jobs:
         env:
           JACKSON_TEST_VERSION: ${{ matrix.jackson-version }}
         run: ./scripts/test -PjacksonTestVersion="$JACKSON_TEST_VERSION"
+
+  # Stable required-check name; matrix legs above include versions in their names.
+  test:
+    name: test
+    needs: [test-matrix]
+    if: always()
+    permissions: {}
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require all matrix legs
+        env:
+          RESULT: ${{ needs.test-matrix.result }}
+        run: |
+          echo "test-matrix: $RESULT"
+          [ "$RESULT" = "success" ]
