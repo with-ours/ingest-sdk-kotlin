@@ -1,7 +1,7 @@
 buildscript {
     dependencies {
         // Dokka's Jackson parser also needs the security fixes used by the SDK.
-        classpath(platform("com.fasterxml.jackson:jackson-bom:2.18.12"))
+        classpath(platform("com.fasterxml.jackson:jackson-bom:2.22.4"))
     }
 }
 
