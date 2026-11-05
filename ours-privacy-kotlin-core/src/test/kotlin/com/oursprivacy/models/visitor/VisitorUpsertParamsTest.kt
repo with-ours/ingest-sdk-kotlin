@@ -18,6 +18,7 @@ internal class VisitorUpsertParamsTest {
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
                     .adsetId("adset_id")
+                    .affiliatlyV3("affiliatly_v3")
                     .alart("alart")
                     .aleid("aleid")
                     .axwrt("axwrt")
@@ -99,6 +100,7 @@ internal class VisitorUpsertParamsTest {
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
                     .adsetId("adset_id")
+                    .affiliatlyV3("affiliatly_v3")
                     .alart("alart")
                     .aleid("aleid")
                     .axwrt("axwrt")
@@ -201,6 +203,7 @@ internal class VisitorUpsertParamsTest {
                         .adId("ad_id")
                         .admitadUid("admitad_uid")
                         .adsetId("adset_id")
+                        .affiliatlyV3("affiliatly_v3")
                         .alart("alart")
                         .aleid("aleid")
                         .axwrt("axwrt")
@@ -282,6 +285,7 @@ internal class VisitorUpsertParamsTest {
                         .adId("ad_id")
                         .admitadUid("admitad_uid")
                         .adsetId("adset_id")
+                        .affiliatlyV3("affiliatly_v3")
                         .alart("alart")
                         .aleid("aleid")
                         .axwrt("axwrt")
@@ -382,6 +386,7 @@ internal class VisitorUpsertParamsTest {
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
                     .adsetId("adset_id")
+                    .affiliatlyV3("affiliatly_v3")
                     .alart("alart")
                     .aleid("aleid")
                     .axwrt("axwrt")
@@ -464,6 +469,7 @@ internal class VisitorUpsertParamsTest {
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
                     .adsetId("adset_id")
+                    .affiliatlyV3("affiliatly_v3")
                     .alart("alart")
                     .aleid("aleid")
                     .axwrt("axwrt")
@@ -568,5 +574,21 @@ internal class VisitorUpsertParamsTest {
         assertThat(body.token()).isEqualTo("P")
         assertThat(body.userProperties())
             .isEqualTo(VisitorUpsertParams.UserProperties.builder().build())
+    }
+
+    @Test
+    fun toStringRedactsSensitiveFields() {
+        val secret = "SENTINEL_SECRET_DO_NOT_LOG"
+        val params =
+            VisitorUpsertParams.builder()
+                .token("P")
+                .userProperties(VisitorUpsertParams.UserProperties.builder().build())
+                .build()
+                .toBuilder()
+                .token(secret)
+                .build()
+
+        assertThat(params.toString()).doesNotContain(secret).contains("token=██")
+        assertThat(params.token()).isEqualTo(secret)
     }
 }

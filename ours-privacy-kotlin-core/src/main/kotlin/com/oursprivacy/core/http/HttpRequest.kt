@@ -162,8 +162,14 @@ private constructor(
 
         fun body(body: HttpRequestBody) = apply { this.body = body }
 
-        fun build(): HttpRequest =
-            HttpRequest(
+        fun build(): HttpRequest {
+            pathSegments.forEach { segment ->
+                require(segment != "." && segment != "..") {
+                    "Path parameter can't be the dot segment '$segment'"
+                }
+            }
+
+            return HttpRequest(
                 checkRequired("method", method),
                 checkRequired("baseUrl", baseUrl),
                 pathSegments.toImmutable(),
@@ -171,5 +177,6 @@ private constructor(
                 queryParams.build(),
                 body,
             )
+        }
     }
 }
