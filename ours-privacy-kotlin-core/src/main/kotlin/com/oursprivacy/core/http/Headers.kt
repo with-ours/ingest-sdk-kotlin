@@ -107,5 +107,8 @@ class Headers private constructor(private val map: Map<String, List<String>>, va
         return other is Headers && map == other.map
     }
 
-    override fun toString(): String = "Headers{map=$map}"
+    override fun toString(): String =
+        "Headers{map=${map.mapValues { (name, values) ->
+            if (name.lowercase() in setOf("authorization", "api-key", "x-api-key", "cookie", "set-cookie")) listOf("██") else values
+        }}}"
 }

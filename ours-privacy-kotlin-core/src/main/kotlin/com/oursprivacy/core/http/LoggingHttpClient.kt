@@ -4,6 +4,7 @@ package com.oursprivacy.core.http
 
 import com.oursprivacy.core.LogLevel
 import com.oursprivacy.core.RequestOptions
+import com.oursprivacy.core.SensitiveFieldRedactor
 import com.oursprivacy.core.checkRequired
 import com.oursprivacy.core.toImmutable
 import java.io.ByteArrayOutputStream
@@ -414,6 +415,8 @@ private class LoggingBuffer(charset: Charset?) {
 
     private val charset = charset ?: StandardCharsets.UTF_8
 
+    private val redactor = SensitiveFieldRedactor()
+
     private val decoder: CharsetDecoder =
         this.charset
             .newDecoder()
@@ -518,7 +521,7 @@ private class LoggingBuffer(charset: Charset?) {
 
         val line =
             try {
-                decoder.decode(ByteBuffer.wrap(buffer.toByteArray()))
+                redactor.redact(decoder.decode(ByteBuffer.wrap(buffer.toByteArray())).toString())
             } catch (e: CharacterCodingException) {
                 "(omitted line is not valid $charset)"
             }

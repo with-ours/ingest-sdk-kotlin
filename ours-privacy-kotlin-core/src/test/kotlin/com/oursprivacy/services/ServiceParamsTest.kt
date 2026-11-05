@@ -17,7 +17,6 @@ import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
 import com.oursprivacy.core.JsonValue
 import com.oursprivacy.models.track.TrackEventParams
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.ResourceLock
 
@@ -32,7 +31,6 @@ internal class ServiceParamsTest {
         client = OursPrivacyOkHttpClient.builder().baseUrl(wmRuntimeInfo.httpBaseUrl).build()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun event() {
         val trackService = client.track()
@@ -49,6 +47,7 @@ internal class ServiceParamsTest {
                         .adId("ad_id")
                         .admitadUid("admitad_uid")
                         .adsetId("adset_id")
+                        .affiliatlyV3("affiliatly_v3")
                         .alart("alart")
                         .aleid("aleid")
                         .axwrt("axwrt")
@@ -150,6 +149,7 @@ internal class ServiceParamsTest {
                         .adId("ad_id")
                         .admitadUid("admitad_uid")
                         .adsetId("adset_id")
+                        .affiliatlyV3("affiliatly_v3")
                         .alart("alart")
                         .aleid("aleid")
                         .axwrt("axwrt")

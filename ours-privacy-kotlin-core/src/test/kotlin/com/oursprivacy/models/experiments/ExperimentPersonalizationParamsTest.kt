@@ -21,4 +21,20 @@ internal class ExperimentPersonalizationParamsTest {
         assertThat(body.token()).isEqualTo("token")
         assertThat(body.visitorId()).isEqualTo("x")
     }
+
+    @Test
+    fun toStringRedactsSensitiveFields() {
+        val secret = "SENTINEL_SECRET_DO_NOT_LOG"
+        val params =
+            ExperimentPersonalizationParams.builder()
+                .token("token")
+                .visitorId("x")
+                .build()
+                .toBuilder()
+                .token(secret)
+                .build()
+
+        assertThat(params.toString()).doesNotContain(secret).contains("token=██")
+        assertThat(params.token()).isEqualTo(secret)
+    }
 }

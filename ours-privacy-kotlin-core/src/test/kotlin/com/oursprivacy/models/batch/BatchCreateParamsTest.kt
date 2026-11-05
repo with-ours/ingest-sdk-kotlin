@@ -23,6 +23,7 @@ internal class BatchCreateParamsTest {
                             .adId("ad_id")
                             .admitadUid("admitad_uid")
                             .adsetId("adset_id")
+                            .affiliatlyV3("affiliatly_v3")
                             .alart("alart")
                             .aleid("aleid")
                             .axwrt("axwrt")
@@ -123,6 +124,7 @@ internal class BatchCreateParamsTest {
                             .adId("ad_id")
                             .admitadUid("admitad_uid")
                             .adsetId("adset_id")
+                            .affiliatlyV3("affiliatly_v3")
                             .alart("alart")
                             .aleid("aleid")
                             .axwrt("axwrt")
@@ -218,6 +220,7 @@ internal class BatchCreateParamsTest {
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
+                                .affiliatlyV3("affiliatly_v3")
                                 .alart("alart")
                                 .aleid("aleid")
                                 .axwrt("axwrt")
@@ -318,6 +321,7 @@ internal class BatchCreateParamsTest {
                                 .adId("ad_id")
                                 .admitadUid("admitad_uid")
                                 .adsetId("adset_id")
+                                .affiliatlyV3("affiliatly_v3")
                                 .alart("alart")
                                 .aleid("aleid")
                                 .axwrt("axwrt")
@@ -412,6 +416,7 @@ internal class BatchCreateParamsTest {
                             .adId("ad_id")
                             .admitadUid("admitad_uid")
                             .adsetId("adset_id")
+                            .affiliatlyV3("affiliatly_v3")
                             .alart("alart")
                             .aleid("aleid")
                             .axwrt("axwrt")
@@ -512,6 +517,7 @@ internal class BatchCreateParamsTest {
                             .adId("ad_id")
                             .admitadUid("admitad_uid")
                             .adsetId("adset_id")
+                            .affiliatlyV3("affiliatly_v3")
                             .alart("alart")
                             .aleid("aleid")
                             .axwrt("axwrt")
@@ -603,5 +609,21 @@ internal class BatchCreateParamsTest {
         assertThat(body.token()).isEqualTo("P")
         assertThat(body.events())
             .containsExactly(BatchCreateParams.Event.builder().distinctId("P").event("P").build())
+    }
+
+    @Test
+    fun toStringRedactsSensitiveFields() {
+        val secret = "SENTINEL_SECRET_DO_NOT_LOG"
+        val params =
+            BatchCreateParams.builder()
+                .token("P")
+                .addEvent(BatchCreateParams.Event.builder().distinctId("P").event("P").build())
+                .build()
+                .toBuilder()
+                .token(secret)
+                .build()
+
+        assertThat(params.toString()).doesNotContain(secret).contains("token=██")
+        assertThat(params.token()).isEqualTo(secret)
     }
 }
