@@ -1,8 +1,10 @@
 package com.oursprivacy.core.http
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
+import org.junit.jupiter.params.provider.ValueSource
 
 internal class HttpRequestTest {
 
@@ -98,6 +100,31 @@ internal class HttpRequestTest {
             expectedUrl =
                 "https://api.example.com/v1/users/123?include=profile&include=settings&format=json",
         ),
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = [".", ".."])
+    fun build_rejectsDotSegments(segment: String) {
+        val builder =
+            HttpRequest.builder()
+                .method(HttpMethod.GET)
+                .baseUrl("https://api.example.com")
+                .addPathSegments("v1", segment)
+
+        assertThatThrownBy { builder.build() }.isInstanceOf(IllegalArgumentException::class.java)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["a b", "a/b", "../../track?x=1", "...", "a..b", "%2E%2E"])
+    fun build_keepsOtherSegments(segment: String) {
+        val request =
+            HttpRequest.builder()
+                .method(HttpMethod.GET)
+                .baseUrl("https://api.example.com")
+                .addPathSegments("v1", segment)
+                .build()
+
+        assertThat(request.pathSegments).containsExactly("v1", segment)
     }
 
     @ParameterizedTest

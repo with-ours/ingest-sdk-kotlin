@@ -6,6 +6,7 @@ import com.oursprivacy.core.JsonValue
 import com.oursprivacy.core.checkRequired
 import com.oursprivacy.core.http.Headers
 import com.oursprivacy.core.jsonMapper
+import com.oursprivacy.core.redactSensitiveFields
 
 class UnexpectedStatusCodeException
 private constructor(
@@ -15,7 +16,7 @@ private constructor(
     cause: Throwable?,
 ) :
     OursPrivacyServiceException(
-        "$statusCode: ${if (body.isMissing()) "Unknown" else jsonMapper().writeValueAsString(body)}",
+        "$statusCode: ${if (body.isMissing()) "Unknown" else redactSensitiveFields(jsonMapper().writeValueAsString(body))}",
         cause,
     ) {
 

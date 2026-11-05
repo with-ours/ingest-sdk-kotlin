@@ -2,18 +2,20 @@
 
 package com.oursprivacy.services.async
 
+import com.oursprivacy.TestServerExtension
 import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClientAsync
 import com.oursprivacy.models.experiments.ExperimentAssignmentParams
 import com.oursprivacy.models.experiments.ExperimentPersonalizationParams
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class ExperimentServiceAsyncTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun assignment() {
-        val client = OursPrivacyOkHttpClientAsync.fromEnv()
+        val client =
+            OursPrivacyOkHttpClientAsync.builder().baseUrl(TestServerExtension.BASE_URL).build()
         val experimentServiceAsync = client.experiments()
 
         val response =
@@ -35,10 +37,10 @@ internal class ExperimentServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun personalization() {
-        val client = OursPrivacyOkHttpClientAsync.fromEnv()
+        val client =
+            OursPrivacyOkHttpClientAsync.builder().baseUrl(TestServerExtension.BASE_URL).build()
         val experimentServiceAsync = client.experiments()
 
         val response =
