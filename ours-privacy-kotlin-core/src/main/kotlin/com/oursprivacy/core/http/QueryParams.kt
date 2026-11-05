@@ -121,5 +121,8 @@ class QueryParams private constructor(private val map: Map<String, List<String>>
         return other is QueryParams && map == other.map
     }
 
-    override fun toString(): String = "QueryParams{map=$map}"
+    override fun toString(): String =
+        "QueryParams{map=${map.mapValues { (name, values) ->
+            if (name.lowercase().replace("_", "").replace("-", "") in setOf("accesstoken", "apikey", "clientsecret", "password", "refreshtoken", "token")) listOf("██") else values
+        }}}"
 }

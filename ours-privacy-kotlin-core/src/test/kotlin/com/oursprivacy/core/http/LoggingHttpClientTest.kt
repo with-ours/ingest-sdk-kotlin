@@ -4,6 +4,7 @@ package com.oursprivacy.core.http
 
 import com.oursprivacy.core.LogLevel
 import com.oursprivacy.core.RequestOptions
+import com.oursprivacy.core.redactSensitiveFields
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -317,6 +318,45 @@ internal class LoggingHttpClientTest {
                 |"""
                     .trimMargin()
             )
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun debugLevel_redactsSensitiveBodyFields(async: Boolean) {
+        val secret = "SENTINEL_SECRET_DO_NOT_LOG"
+        val field = "token"
+        val padding = "x".repeat(20_000) + "\\\"".repeat(20_000)
+        val requestBody =
+            """{"event":"still_visible","padding":"$padding","$field":"$secret","nested":[{"$field":"$secret"}]}"""
+        val responseBody =
+            "{\n  \"$field\": [\n    \"$secret\"\n  ],\n  \"after\": \"still_visible\"\n}"
+        val responseHeaders = Headers.builder().put("Content-Type", "application/json").build()
+        val client =
+            loggingClient(
+                fakeHttpClient(
+                    responseBody = responseBody.toByteArray(StandardCharsets.UTF_8),
+                    responseHeaders = responseHeaders,
+                ),
+                LogLevel.DEBUG,
+            )
+
+        val response = client.execute(postRequestWithBody(requestBody), async)
+        val received = response.body().readBytes().toString(StandardCharsets.UTF_8)
+
+        assertThat(received).isEqualTo(responseBody)
+        assertThat(stderrOutput())
+            .doesNotContain(secret)
+            .contains("still_visible")
+            .contains("\"$field\":\"██\"")
+    }
+
+    @Test
+    fun redactSensitiveFields_keepsTheRestOfTheBody() {
+        val field = "token"
+        assertThat(
+                redactSensitiveFields("""{"$field":{"a":["b"]},"text":"say \"$field\"","n":1}""")
+            )
+            .isEqualTo("""{"$field":"██","text":"say \"$field\"","n":1}""")
     }
 
     @ParameterizedTest
