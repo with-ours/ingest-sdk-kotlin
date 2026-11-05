@@ -474,7 +474,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{token=$token, visitorId=$visitorId, additionalProperties=$additionalProperties}"
+            "Body{token=██, visitorId=$visitorId, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

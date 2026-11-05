@@ -2,18 +2,20 @@
 
 package com.oursprivacy.services.async
 
+import com.oursprivacy.TestServerExtension
 import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClientAsync
 import com.oursprivacy.core.JsonValue
 import com.oursprivacy.models.visitor.VisitorUpsertParams
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class VisitorServiceAsyncTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun upsert() {
-        val client = OursPrivacyOkHttpClientAsync.fromEnv()
+        val client =
+            OursPrivacyOkHttpClientAsync.builder().baseUrl(TestServerExtension.BASE_URL).build()
         val visitorServiceAsync = client.visitor()
 
         val response =
@@ -26,6 +28,7 @@ internal class VisitorServiceAsyncTest {
                             .adId("ad_id")
                             .admitadUid("admitad_uid")
                             .adsetId("adset_id")
+                            .affiliatlyV3("affiliatly_v3")
                             .alart("alart")
                             .aleid("aleid")
                             .axwrt("axwrt")
@@ -107,6 +110,7 @@ internal class VisitorServiceAsyncTest {
                             .adId("ad_id")
                             .admitadUid("admitad_uid")
                             .adsetId("adset_id")
+                            .affiliatlyV3("affiliatly_v3")
                             .alart("alart")
                             .aleid("aleid")
                             .axwrt("axwrt")

@@ -2,18 +2,20 @@
 
 package com.oursprivacy.services.async
 
+import com.oursprivacy.TestServerExtension
 import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClientAsync
 import com.oursprivacy.core.JsonValue
 import com.oursprivacy.models.track.TrackEventParams
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class TrackServiceAsyncTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun event() {
-        val client = OursPrivacyOkHttpClientAsync.fromEnv()
+        val client =
+            OursPrivacyOkHttpClientAsync.builder().baseUrl(TestServerExtension.BASE_URL).build()
         val trackServiceAsync = client.track()
 
         val response =
@@ -28,6 +30,7 @@ internal class TrackServiceAsyncTest {
                             .adId("ad_id")
                             .admitadUid("admitad_uid")
                             .adsetId("adset_id")
+                            .affiliatlyV3("affiliatly_v3")
                             .alart("alart")
                             .aleid("aleid")
                             .axwrt("axwrt")
@@ -129,6 +132,7 @@ internal class TrackServiceAsyncTest {
                             .adId("ad_id")
                             .admitadUid("admitad_uid")
                             .adsetId("adset_id")
+                            .affiliatlyV3("affiliatly_v3")
                             .alart("alart")
                             .aleid("aleid")
                             .axwrt("axwrt")

@@ -20,6 +20,7 @@ internal class TrackEventParamsTest {
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
                     .adsetId("adset_id")
+                    .affiliatlyV3("affiliatly_v3")
                     .alart("alart")
                     .aleid("aleid")
                     .axwrt("axwrt")
@@ -118,6 +119,7 @@ internal class TrackEventParamsTest {
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
                     .adsetId("adset_id")
+                    .affiliatlyV3("affiliatly_v3")
                     .alart("alart")
                     .aleid("aleid")
                     .axwrt("axwrt")
@@ -208,6 +210,7 @@ internal class TrackEventParamsTest {
                         .adId("ad_id")
                         .admitadUid("admitad_uid")
                         .adsetId("adset_id")
+                        .affiliatlyV3("affiliatly_v3")
                         .alart("alart")
                         .aleid("aleid")
                         .axwrt("axwrt")
@@ -309,6 +312,7 @@ internal class TrackEventParamsTest {
                         .adId("ad_id")
                         .admitadUid("admitad_uid")
                         .adsetId("adset_id")
+                        .affiliatlyV3("affiliatly_v3")
                         .alart("alart")
                         .aleid("aleid")
                         .axwrt("axwrt")
@@ -397,6 +401,7 @@ internal class TrackEventParamsTest {
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
                     .adsetId("adset_id")
+                    .affiliatlyV3("affiliatly_v3")
                     .alart("alart")
                     .aleid("aleid")
                     .axwrt("axwrt")
@@ -498,6 +503,7 @@ internal class TrackEventParamsTest {
                     .adId("ad_id")
                     .admitadUid("admitad_uid")
                     .adsetId("adset_id")
+                    .affiliatlyV3("affiliatly_v3")
                     .alart("alart")
                     .aleid("aleid")
                     .axwrt("axwrt")
@@ -582,5 +588,21 @@ internal class TrackEventParamsTest {
 
         assertThat(body.token()).isEqualTo("P")
         assertThat(body.event()).isEqualTo("P")
+    }
+
+    @Test
+    fun toStringRedactsSensitiveFields() {
+        val secret = "SENTINEL_SECRET_DO_NOT_LOG"
+        val params =
+            TrackEventParams.builder()
+                .token("P")
+                .event("P")
+                .build()
+                .toBuilder()
+                .token(secret)
+                .build()
+
+        assertThat(params.toString()).doesNotContain(secret).contains("token=██")
+        assertThat(params.token()).isEqualTo(secret)
     }
 }
