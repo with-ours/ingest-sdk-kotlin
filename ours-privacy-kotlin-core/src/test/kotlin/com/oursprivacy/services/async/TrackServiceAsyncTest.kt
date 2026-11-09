@@ -207,6 +207,7 @@ internal class TrackServiceAsyncTest {
                             .zip("string")
                             .build()
                     )
+                    .visitorId("P")
                     .build()
             )
 

@@ -209,6 +209,7 @@ internal class BatchServiceTest {
                                     .zip("string")
                                     .build()
                             )
+                            .visitorId("P")
                             .build()
                     )
                     .build()

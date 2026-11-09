@@ -199,6 +199,7 @@ internal class VisitorServiceAsyncTest {
                             .build()
                     )
                     .userId("P")
+                    .visitorId("P")
                     .build()
             )
 
