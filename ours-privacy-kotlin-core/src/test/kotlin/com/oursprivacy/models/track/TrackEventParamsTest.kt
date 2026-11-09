@@ -194,6 +194,7 @@ internal class TrackEventParamsTest {
                     .zip("string")
                     .build()
             )
+            .visitorId("P")
             .build()
     }
 
@@ -387,6 +388,7 @@ internal class TrackEventParamsTest {
                         .zip("string")
                         .build()
                 )
+                .visitorId("P")
                 .build()
 
         val body = params._body()
@@ -578,6 +580,7 @@ internal class TrackEventParamsTest {
                     .zip("string")
                     .build()
             )
+        assertThat(body.visitorId()).isEqualTo("P")
     }
 
     @Test
