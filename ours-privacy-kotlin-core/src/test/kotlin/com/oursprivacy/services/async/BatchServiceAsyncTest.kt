@@ -2,18 +2,20 @@
 
 package com.oursprivacy.services.async
 
+import com.oursprivacy.TestServerExtension
 import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClientAsync
 import com.oursprivacy.core.JsonValue
 import com.oursprivacy.models.batch.BatchCreateParams
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class BatchServiceAsyncTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun create() {
-        val client = OursPrivacyOkHttpClientAsync.fromEnv()
+        val client =
+            OursPrivacyOkHttpClientAsync.builder().baseUrl(TestServerExtension.BASE_URL).build()
         val batchServiceAsync = client.batch()
 
         val batch =
@@ -31,6 +33,7 @@ internal class BatchServiceAsyncTest {
                                     .adId("ad_id")
                                     .admitadUid("admitad_uid")
                                     .adsetId("adset_id")
+                                    .affiliatlyV3("affiliatly_v3")
                                     .alart("alart")
                                     .aleid("aleid")
                                     .axwrt("axwrt")
@@ -131,6 +134,7 @@ internal class BatchServiceAsyncTest {
                                     .adId("ad_id")
                                     .admitadUid("admitad_uid")
                                     .adsetId("adset_id")
+                                    .affiliatlyV3("affiliatly_v3")
                                     .alart("alart")
                                     .aleid("aleid")
                                     .axwrt("axwrt")

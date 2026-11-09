@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.oursprivacy/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.oursprivacy/ours-privacy-kotlin/1.25.0)
-[![javadoc](https://javadoc.io/badge2/com.oursprivacy/ours-privacy-kotlin/javadoc.svg)](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.25.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.oursprivacy/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.oursprivacy/ours-privacy-kotlin/1.26.0)
+[![javadoc](https://javadoc.io/badge2/com.oursprivacy/ours-privacy-kotlin/javadoc.svg)](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.26.0)
 
 <!-- x-release-please-end -->
 
@@ -11,9 +11,13 @@ The Ours Privacy Kotlin SDK provides convenient access to the [Ours Privacy REST
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.25.0).
+The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.26.0).
 
 <!-- x-release-please-end -->
+
+`token` is the Source token from your Ours Privacy dashboard. Events must be allow-listed: an event that isn't on your [Event Allowlist](https://docs.oursprivacy.com/docs/allow-listing-events) isn't forwarded to your destinations.
+
+See the [SDK guide](https://docs.oursprivacy.com/docs/kotlin) and the runnable code in [`ours-privacy-kotlin-example`](ours-privacy-kotlin-example).
 
 ## Installation
 
@@ -22,7 +26,7 @@ The REST API documentation can be found on [docs.oursprivacy.com](https://docs.o
 ### Gradle
 
 ```kotlin
-implementation("com.oursprivacy:ours-privacy-kotlin:1.25.0")
+implementation("com.oursprivacy:ours-privacy-kotlin:1.26.0")
 ```
 
 ### Maven
@@ -31,7 +35,7 @@ implementation("com.oursprivacy:ours-privacy-kotlin:1.25.0")
 <dependency>
   <groupId>com.oursprivacy</groupId>
   <artifactId>ours-privacy-kotlin</artifactId>
-  <version>1.25.0</version>
+  <version>1.26.0</version>
 </dependency>
 ```
 
@@ -46,6 +50,7 @@ This library requires Java 8 or later.
 ```kotlin
 import com.oursprivacy.client.OursPrivacyClient
 import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.core.JsonValue
 import com.oursprivacy.models.track.TrackEventParams
 import com.oursprivacy.models.track.TrackEventResponse
 
@@ -54,11 +59,111 @@ import com.oursprivacy.models.track.TrackEventResponse
 val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
 
 val params: TrackEventParams = TrackEventParams.builder()
-    .token("REPLACE_ME")
-    .event("REPLACE_ME")
+    .token("YOUR_SOURCE_TOKEN")
+    .event("signup_completed")
+    .distinctId("evt_01J9ZK3Q7X")
+    .eventProperties(TrackEventParams.EventProperties.builder()
+        .putAdditionalProperty("plan", JsonValue.from("pro"))
+        .putAdditionalProperty("value", JsonValue.from(49))
+        .putAdditionalProperty("currency", JsonValue.from("USD"))
+        .build())
+    .externalId("crm_contact_1042")
+    .identityContext(TrackEventParams.IdentityContext.builder()
+        .ip("203.0.113.10")
+        .userAgent("Mozilla/5.0")
+        .build())
     .build()
 val response: TrackEventResponse = client.track().event(params)
 ```
+
+### Identify a visitor
+
+Set properties on a visitor, creating the visitor if there's no match.
+
+```kotlin
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.models.visitor.VisitorUpsertParams
+import com.oursprivacy.models.visitor.VisitorUpsertResponse
+
+// Configures using the `oursprivacy.baseUrl` system property
+// Or configures using the `OURS_PRIVACY_BASE_URL` environment variable
+val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
+
+val params: VisitorUpsertParams = VisitorUpsertParams.builder()
+    .token("YOUR_SOURCE_TOKEN")
+    .userProperties(VisitorUpsertParams.UserProperties.builder()
+        .firstName("Sample")
+        .lastName("User")
+        .build())
+    .email("user@example.com")
+    .build()
+val response: VisitorUpsertResponse = client.visitor().upsert(params)
+```
+
+### Send a batch of events
+
+Send many events in one request, each with its own required `distinctId`.
+
+```kotlin
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.models.batch.BatchCreateParams
+import com.oursprivacy.models.batch.BatchCreateResponse
+
+// Configures using the `oursprivacy.baseUrl` system property
+// Or configures using the `OURS_PRIVACY_BASE_URL` environment variable
+val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
+
+val params: BatchCreateParams = BatchCreateParams.builder()
+    .token("YOUR_SOURCE_TOKEN")
+    .addEvent(BatchCreateParams.Event.builder()
+        .event("signup_completed")
+        .distinctId("evt_01J9ZK3Q7X")
+        .externalId("crm_contact_1042")
+        .build())
+    .addEvent(BatchCreateParams.Event.builder()
+        .event("plan_upgraded")
+        .distinctId("evt_01J9ZK3Q8Y")
+        .externalId("crm_contact_1042")
+        .build())
+    .build()
+val batch: BatchCreateResponse = client.batch().create(params)
+```
+
+A partial success returns HTTP 207 with a result for each row. Retry only the rows whose `code` is `queue_failed`, with the same `distinctId`. You can backfill events up to one year old; older `time` values are clamped.
+
+### Get an experiment assignment
+
+Look up a visitor's variant, using the experiment's `exp_*` token rather than the Source token.
+
+```kotlin
+import com.oursprivacy.client.OursPrivacyClient
+import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.models.experiments.ExperimentAssignmentParams
+import com.oursprivacy.models.experiments.ExperimentAssignmentResponse
+
+// Configures using the `oursprivacy.baseUrl` system property
+// Or configures using the `OURS_PRIVACY_BASE_URL` environment variable
+val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
+
+val params: ExperimentAssignmentParams = ExperimentAssignmentParams.builder()
+    .experimentKey("checkout_redesign")
+    .token("exp_YOUR_EXPERIMENT_TOKEN")
+    .visitorId("visitor_1042")
+    .build()
+val response: ExperimentAssignmentResponse = client.experiments().assignment(params)
+```
+
+### Further reading
+
+The docs cover each endpoint in full.
+
+- [Track](https://docs.oursprivacy.com/docs/reference/track)
+- [Identify](https://docs.oursprivacy.com/docs/reference/identify)
+- [Batch](https://docs.oursprivacy.com/docs/reference/batch)
+- [Rate limits](https://docs.oursprivacy.com/docs/reference/rate-limits)
+- [Server-side experimentation](https://docs.oursprivacy.com/docs/experimentation/server-side)
 
 ## Client configuration
 
@@ -141,6 +246,7 @@ The default client is synchronous. To switch to asynchronous execution, call the
 ```kotlin
 import com.oursprivacy.client.OursPrivacyClient
 import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClient
+import com.oursprivacy.core.JsonValue
 import com.oursprivacy.models.track.TrackEventParams
 import com.oursprivacy.models.track.TrackEventResponse
 
@@ -149,8 +255,19 @@ import com.oursprivacy.models.track.TrackEventResponse
 val client: OursPrivacyClient = OursPrivacyOkHttpClient.fromEnv()
 
 val params: TrackEventParams = TrackEventParams.builder()
-    .token("REPLACE_ME")
-    .event("REPLACE_ME")
+    .token("YOUR_SOURCE_TOKEN")
+    .event("signup_completed")
+    .distinctId("evt_01J9ZK3Q7X")
+    .eventProperties(TrackEventParams.EventProperties.builder()
+        .putAdditionalProperty("plan", JsonValue.from("pro"))
+        .putAdditionalProperty("value", JsonValue.from(49))
+        .putAdditionalProperty("currency", JsonValue.from("USD"))
+        .build())
+    .externalId("crm_contact_1042")
+    .identityContext(TrackEventParams.IdentityContext.builder()
+        .ip("203.0.113.10")
+        .userAgent("Mozilla/5.0")
+        .build())
     .build()
 val response: TrackEventResponse = client.async().track().event(params)
 ```
@@ -160,6 +277,7 @@ Or create an asynchronous client from the beginning:
 ```kotlin
 import com.oursprivacy.client.OursPrivacyClientAsync
 import com.oursprivacy.client.okhttp.OursPrivacyOkHttpClientAsync
+import com.oursprivacy.core.JsonValue
 import com.oursprivacy.models.track.TrackEventParams
 import com.oursprivacy.models.track.TrackEventResponse
 
@@ -168,8 +286,19 @@ import com.oursprivacy.models.track.TrackEventResponse
 val client: OursPrivacyClientAsync = OursPrivacyOkHttpClientAsync.fromEnv()
 
 val params: TrackEventParams = TrackEventParams.builder()
-    .token("REPLACE_ME")
-    .event("REPLACE_ME")
+    .token("YOUR_SOURCE_TOKEN")
+    .event("signup_completed")
+    .distinctId("evt_01J9ZK3Q7X")
+    .eventProperties(TrackEventParams.EventProperties.builder()
+        .putAdditionalProperty("plan", JsonValue.from("pro"))
+        .putAdditionalProperty("value", JsonValue.from(49))
+        .putAdditionalProperty("currency", JsonValue.from("USD"))
+        .build())
+    .externalId("crm_contact_1042")
+    .identityContext(TrackEventParams.IdentityContext.builder()
+        .ip("203.0.113.10")
+        .userAgent("Mozilla/5.0")
+        .build())
     .build()
 val response: TrackEventResponse = client.track().event(params)
 ```
@@ -487,7 +616,18 @@ import com.oursprivacy.models.track.TrackEventParams
 
 val params: TrackEventParams = TrackEventParams.builder()
     .token(JsonValue.from(42))
-    .event("REPLACE_ME")
+    .event("signup_completed")
+    .distinctId("evt_01J9ZK3Q7X")
+    .eventProperties(TrackEventParams.EventProperties.builder()
+        .putAdditionalProperty("plan", JsonValue.from("pro"))
+        .putAdditionalProperty("value", JsonValue.from(49))
+        .putAdditionalProperty("currency", JsonValue.from("USD"))
+        .build())
+    .externalId("crm_contact_1042")
+    .identityContext(TrackEventParams.IdentityContext.builder()
+        .ip("203.0.113.10")
+        .userAgent("Mozilla/5.0")
+        .build())
     .build()
 ```
 

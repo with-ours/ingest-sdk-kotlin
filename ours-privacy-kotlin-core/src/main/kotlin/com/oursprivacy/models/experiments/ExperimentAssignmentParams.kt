@@ -691,7 +691,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{token=$token, visitorId=$visitorId, context=$context, trackImpression=$trackImpression, additionalProperties=$additionalProperties}"
+            "Body{token=██, visitorId=$visitorId, context=$context, trackImpression=$trackImpression, additionalProperties=$additionalProperties}"
     }
 
     /**
