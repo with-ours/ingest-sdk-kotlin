@@ -224,6 +224,7 @@ internal class ServiceParamsTest {
                         .zip("string")
                         .build()
                 )
+                .visitorId("P")
                 .putAdditionalHeader("Secret-Header", "42")
                 .putAdditionalQueryParam("secret_query_param", "42")
                 .putAdditionalBodyProperty("secretProperty", JsonValue.from("42"))

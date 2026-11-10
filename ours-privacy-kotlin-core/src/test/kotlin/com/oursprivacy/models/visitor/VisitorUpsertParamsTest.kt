@@ -189,6 +189,7 @@ internal class VisitorUpsertParamsTest {
                     .build()
             )
             .userId("P")
+            .visitorId("P")
             .build()
     }
 
@@ -374,6 +375,7 @@ internal class VisitorUpsertParamsTest {
                         .build()
                 )
                 .userId("P")
+                .visitorId("P")
                 .build()
 
         val body = params._body()
@@ -559,6 +561,7 @@ internal class VisitorUpsertParamsTest {
                     .build()
             )
         assertThat(body.userId()).isEqualTo("P")
+        assertThat(body.visitorId()).isEqualTo("P")
     }
 
     @Test
