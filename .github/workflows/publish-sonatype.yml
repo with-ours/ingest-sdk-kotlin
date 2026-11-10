@@ -16,20 +16,45 @@ on:
 
 permissions: {}
 
-concurrency:
-  group: release-${{ github.repository }}
-  cancel-in-progress: false
-
 jobs:
-  publish:
+  # Starts this workflow on the default branch when a release PR merges.
+  dispatch:
     if: >-
-      (github.event_name == 'workflow_dispatch' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)) ||
-      (github.event.pull_request.merged == true &&
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.merged == true &&
       github.event.pull_request.base.ref == github.event.repository.default_branch &&
-      startsWith(github.event.pull_request.title, 'release: '))
+      startsWith(github.event.pull_request.title, 'release: ')
+    name: dispatch release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: Run this workflow on the default branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          RELEASE_COMMIT: ${{ github.event.pull_request.merge_commit_sha }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          RELEASE_VERSION="${PR_TITLE#release: }"
+          gh api --method POST "repos/$GITHUB_REPOSITORY/actions/workflows/publish-sonatype.yml/dispatches" \
+            -f "ref=$DEFAULT_BRANCH" \
+            -f "inputs[version]=$RELEASE_VERSION" \
+            -f "inputs[commit]=$RELEASE_COMMIT"
+          echo "Dispatched publish-sonatype.yml on $DEFAULT_BRANCH for $RELEASE_VERSION at $RELEASE_COMMIT"
+
+  # Validates the release, publishes to Maven Central, then tags and creates the GitHub Release.
+  publish:
+    if: github.event_name == 'workflow_dispatch' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     name: publish
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: release
+    concurrency:
+      group: release-${{ github.repository }}
+      cancel-in-progress: false
     permissions:
       contents: write
 
@@ -38,22 +63,15 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.merge_commit_sha || inputs.commit }}
 
       - name: Validate release version and commit
         env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
           INPUT_VERSION: ${{ inputs.version }}
-          RELEASE_COMMIT: ${{ github.event.pull_request.merge_commit_sha || inputs.commit }}
+          RELEASE_COMMIT: ${{ inputs.commit }}
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
-          if [[ "$GITHUB_EVENT_NAME" == 'pull_request' ]]; then
-            RELEASE_VERSION="${PR_TITLE#release: }"
-          else
-            RELEASE_VERSION="$INPUT_VERSION"
-          fi
-          RELEASE_VERSION="${RELEASE_VERSION#v}"
+          RELEASE_VERSION="${INPUT_VERSION#v}"
           if ! [[ "$RELEASE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
             echo "Expected a semantic release version" >&2
             exit 1
@@ -62,8 +80,9 @@ jobs:
             echo "Expected a full release commit SHA" >&2
             exit 1
           fi
-          test "$(git rev-parse HEAD)" = "$RELEASE_COMMIT"
           git merge-base --is-ancestor "$RELEASE_COMMIT" "origin/$DEFAULT_BRANCH"
+          git checkout --quiet --detach "$RELEASE_COMMIT"
+          test "$(git rev-parse HEAD)" = "$RELEASE_COMMIT"
           test "$(jq -er '.["."]' .release-please-manifest.json)" = "$RELEASE_VERSION"
           TAG="v${RELEASE_VERSION}"
           if git show-ref --verify --quiet "refs/tags/$TAG"; then
@@ -81,7 +100,7 @@ jobs:
             21
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
         with:
           cache-disabled: true
 

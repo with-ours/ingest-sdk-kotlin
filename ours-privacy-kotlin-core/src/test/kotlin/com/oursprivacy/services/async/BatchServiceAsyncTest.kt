@@ -210,6 +210,7 @@ internal class BatchServiceAsyncTest {
                                     .zip("string")
                                     .build()
                             )
+                            .visitorId("P")
                             .build()
                     )
                     .build()

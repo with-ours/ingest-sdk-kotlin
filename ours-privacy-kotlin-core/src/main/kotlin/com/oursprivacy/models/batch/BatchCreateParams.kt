@@ -537,6 +537,7 @@ private constructor(
         private val time: JsonField<Double>,
         private val userId: JsonField<String>,
         private val userProperties: JsonField<UserProperties>,
+        private val visitorId: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -564,6 +565,9 @@ private constructor(
             @JsonProperty("userProperties")
             @ExcludeMissing
             userProperties: JsonField<UserProperties> = JsonMissing.of(),
+            @JsonProperty("visitorId")
+            @ExcludeMissing
+            visitorId: JsonField<String> = JsonMissing.of(),
         ) : this(
             distinctId,
             event,
@@ -575,6 +579,7 @@ private constructor(
             time,
             userId,
             userProperties,
+            visitorId,
             mutableMapOf(),
         )
 
@@ -608,7 +613,7 @@ private constructor(
             defaultProperties.getNullable("defaultProperties")
 
         /**
-         * The email address of a user. When userId is absent and externalId does not resolve a
+         * The email address of a user. When visitorId is absent and externalId does not resolve a
          * visitor, we search your account for a visitor with this email. If no match is found, we
          * try userProperties.phone_number before creating a new visitor. Leading and trailing
          * whitespace is removed before validation.
@@ -631,10 +636,10 @@ private constructor(
         fun eventProperties(): EventProperties? = eventProperties.getNullable("eventProperties")
 
         /**
-         * Your system's unique identifier for this user. When userId is absent, we search your
+         * Your system's unique identifier for this user. When visitorId is absent, we search your
          * account for an existing visitor with this externalId. If no match is found, we try email
          * and then userProperties.phone_number before creating a new visitor. If you also have the
-         * userId from cookies or local storage, send both — it removes the lookup round-trip.
+         * visitorId from cookies or local storage, send both — it removes the lookup round-trip.
          * Non-string input is converted to text before validation; clients should send a string.
          * Leading and trailing whitespace is removed before validation.
          *
@@ -664,14 +669,14 @@ private constructor(
         /**
          * The Ours Visitor ID stored in local storage and cookies on your web properties. When
          * present, this is used directly — no lookup by externalId, email, or phone is performed.
-         * If you have both a userId and an externalId, send both so the event is attached to the
-         * right visitor without any lookup overhead. Leading and trailing whitespace is removed
-         * before validation.
+         * If you have both a visitorId and an externalId, send both so the event is attached to the
+         * right visitor without any lookup overhead. visitorId takes precedence over the deprecated
+         * userId alias. Leading and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun userId(): String? = userId.getNullable("userId")
+        @Deprecated("deprecated") fun userId(): String? = userId.getNullable("userId")
 
         /**
          * Properties to set on the visitor. (optional) You can also update these properties via the
@@ -681,6 +686,18 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun userProperties(): UserProperties? = userProperties.getNullable("userProperties")
+
+        /**
+         * The Ours Visitor ID stored in local storage and cookies on your web properties. When
+         * present, this is used directly — no lookup by externalId, email, or phone is performed.
+         * If you have both a visitorId and an externalId, send both so the event is attached to the
+         * right visitor without any lookup overhead. visitorId takes precedence over the deprecated
+         * userId alias. Leading and trailing whitespace is removed before validation.
+         *
+         * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun visitorId(): String? = visitorId.getNullable("visitorId")
 
         /**
          * Returns the raw JSON value of [distinctId].
@@ -756,7 +773,10 @@ private constructor(
          *
          * Unlike [userId], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("userId") @ExcludeMissing fun _userId(): JsonField<String> = userId
+        @Deprecated("deprecated")
+        @JsonProperty("userId")
+        @ExcludeMissing
+        fun _userId(): JsonField<String> = userId
 
         /**
          * Returns the raw JSON value of [userProperties].
@@ -767,6 +787,13 @@ private constructor(
         @JsonProperty("userProperties")
         @ExcludeMissing
         fun _userProperties(): JsonField<UserProperties> = userProperties
+
+        /**
+         * Returns the raw JSON value of [visitorId].
+         *
+         * Unlike [visitorId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("visitorId") @ExcludeMissing fun _visitorId(): JsonField<String> = visitorId
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -807,6 +834,7 @@ private constructor(
             private var time: JsonField<Double> = JsonMissing.of()
             private var userId: JsonField<String> = JsonMissing.of()
             private var userProperties: JsonField<UserProperties> = JsonMissing.of()
+            private var visitorId: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(event: Event) = apply {
@@ -820,6 +848,7 @@ private constructor(
                 time = event.time
                 userId = event.userId
                 userProperties = event.userProperties
+                visitorId = event.visitorId
                 additionalProperties = event.additionalProperties.toMutableMap()
             }
 
@@ -874,9 +903,9 @@ private constructor(
             }
 
             /**
-             * The email address of a user. When userId is absent and externalId does not resolve a
-             * visitor, we search your account for a visitor with this email. If no match is found,
-             * we try userProperties.phone_number before creating a new visitor. Leading and
+             * The email address of a user. When visitorId is absent and externalId does not resolve
+             * a visitor, we search your account for a visitor with this email. If no match is
+             * found, we try userProperties.phone_number before creating a new visitor. Leading and
              * trailing whitespace is removed before validation.
              */
             fun email(email: String?) = email(JsonField.ofNullable(email))
@@ -912,12 +941,12 @@ private constructor(
             }
 
             /**
-             * Your system's unique identifier for this user. When userId is absent, we search your
-             * account for an existing visitor with this externalId. If no match is found, we try
-             * email and then userProperties.phone_number before creating a new visitor. If you also
-             * have the userId from cookies or local storage, send both — it removes the lookup
-             * round-trip. Non-string input is converted to text before validation; clients should
-             * send a string. Leading and trailing whitespace is removed before validation.
+             * Your system's unique identifier for this user. When visitorId is absent, we search
+             * your account for an existing visitor with this externalId. If no match is found, we
+             * try email and then userProperties.phone_number before creating a new visitor. If you
+             * also have the visitorId from cookies or local storage, send both — it removes the
+             * lookup round-trip. Non-string input is converted to text before validation; clients
+             * should send a string. Leading and trailing whitespace is removed before validation.
              */
             fun externalId(externalId: String?) = externalId(JsonField.ofNullable(externalId))
 
@@ -973,10 +1002,12 @@ private constructor(
             /**
              * The Ours Visitor ID stored in local storage and cookies on your web properties. When
              * present, this is used directly — no lookup by externalId, email, or phone is
-             * performed. If you have both a userId and an externalId, send both so the event is
-             * attached to the right visitor without any lookup overhead. Leading and trailing
-             * whitespace is removed before validation.
+             * performed. If you have both a visitorId and an externalId, send both so the event is
+             * attached to the right visitor without any lookup overhead. visitorId takes precedence
+             * over the deprecated userId alias. Leading and trailing whitespace is removed before
+             * validation.
              */
+            @Deprecated("deprecated")
             fun userId(userId: String?) = userId(JsonField.ofNullable(userId))
 
             /**
@@ -986,6 +1017,7 @@ private constructor(
              * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
+            @Deprecated("deprecated")
             fun userId(userId: JsonField<String>) = apply { this.userId = userId }
 
             /**
@@ -1005,6 +1037,25 @@ private constructor(
             fun userProperties(userProperties: JsonField<UserProperties>) = apply {
                 this.userProperties = userProperties
             }
+
+            /**
+             * The Ours Visitor ID stored in local storage and cookies on your web properties. When
+             * present, this is used directly — no lookup by externalId, email, or phone is
+             * performed. If you have both a visitorId and an externalId, send both so the event is
+             * attached to the right visitor without any lookup overhead. visitorId takes precedence
+             * over the deprecated userId alias. Leading and trailing whitespace is removed before
+             * validation.
+             */
+            fun visitorId(visitorId: String?) = visitorId(JsonField.ofNullable(visitorId))
+
+            /**
+             * Sets [Builder.visitorId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.visitorId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun visitorId(visitorId: JsonField<String>) = apply { this.visitorId = visitorId }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -1050,6 +1101,7 @@ private constructor(
                     time,
                     userId,
                     userProperties,
+                    visitorId,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -1080,6 +1132,7 @@ private constructor(
             time()
             userId()
             userProperties()?.validate()
+            visitorId()
             validated = true
         }
 
@@ -1107,7 +1160,8 @@ private constructor(
                 (identityContext.asKnown()?.validity() ?: 0) +
                 (if (time.asKnown() == null) 0 else 1) +
                 (if (userId.asKnown() == null) 0 else 1) +
-                (userProperties.asKnown()?.validity() ?: 0)
+                (userProperties.asKnown()?.validity() ?: 0) +
+                (if (visitorId.asKnown() == null) 0 else 1)
 
         /**
          * These properties are used throughout the Ours app to pass known values onto destinations
@@ -10142,6 +10196,7 @@ private constructor(
                 time == other.time &&
                 userId == other.userId &&
                 userProperties == other.userProperties &&
+                visitorId == other.visitorId &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -10157,6 +10212,7 @@ private constructor(
                 time,
                 userId,
                 userProperties,
+                visitorId,
                 additionalProperties,
             )
         }
@@ -10164,7 +10220,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Event{distinctId=$distinctId, event=$event, defaultProperties=$defaultProperties, email=$email, eventProperties=$eventProperties, externalId=$externalId, identityContext=$identityContext, time=$time, userId=$userId, userProperties=$userProperties, additionalProperties=$additionalProperties}"
+            "Event{distinctId=$distinctId, event=$event, defaultProperties=$defaultProperties, email=$email, eventProperties=$eventProperties, externalId=$externalId, identityContext=$identityContext, time=$time, userId=$userId, userProperties=$userProperties, visitorId=$visitorId, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

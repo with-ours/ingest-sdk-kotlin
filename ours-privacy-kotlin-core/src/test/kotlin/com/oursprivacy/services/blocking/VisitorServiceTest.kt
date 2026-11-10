@@ -198,6 +198,7 @@ internal class VisitorServiceTest {
                             .build()
                     )
                     .userId("P")
+                    .visitorId("P")
                     .build()
             )
 
