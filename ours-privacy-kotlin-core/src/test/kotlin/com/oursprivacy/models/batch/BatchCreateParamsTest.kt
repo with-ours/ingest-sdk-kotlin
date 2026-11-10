@@ -199,6 +199,7 @@ internal class BatchCreateParamsTest {
                             .zip("string")
                             .build()
                     )
+                    .visitorId("P")
                     .build()
             )
             .build()
@@ -397,6 +398,7 @@ internal class BatchCreateParamsTest {
                                 .zip("string")
                                 .build()
                         )
+                        .visitorId("P")
                         .build()
                 )
                 .build()
@@ -592,6 +594,7 @@ internal class BatchCreateParamsTest {
                             .zip("string")
                             .build()
                     )
+                    .visitorId("P")
                     .build()
             )
     }

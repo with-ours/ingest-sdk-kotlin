@@ -206,6 +206,7 @@ internal class TrackServiceTest {
                             .zip("string")
                             .build()
                     )
+                    .visitorId("P")
                     .build()
             )
 
