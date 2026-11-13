@@ -649,12 +649,12 @@ private constructor(
         fun externalId(): String? = externalId.getNullable("externalId")
 
         /**
-         * End-user network context for server-side calls. Required for probabilistic identity
-         * resolution when the caller is a backend server rather than an end-user browser.
+         * Deprecated and ignored. Accepted so existing clients keep working.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
+        @Deprecated("deprecated")
         fun identityContext(): IdentityContext? = identityContext.getNullable("identityContext")
 
         /**
@@ -757,6 +757,7 @@ private constructor(
          * Unlike [identityContext], this method doesn't throw if the JSON field has an unexpected
          * type.
          */
+        @Deprecated("deprecated")
         @JsonProperty("identityContext")
         @ExcludeMissing
         fun _identityContext(): JsonField<IdentityContext> = identityContext
@@ -959,10 +960,8 @@ private constructor(
              */
             fun externalId(externalId: JsonField<String>) = apply { this.externalId = externalId }
 
-            /**
-             * End-user network context for server-side calls. Required for probabilistic identity
-             * resolution when the caller is a backend server rather than an end-user browser.
-             */
+            /** Deprecated and ignored. Accepted so existing clients keep working. */
+            @Deprecated("deprecated")
             fun identityContext(identityContext: IdentityContext?) =
                 identityContext(JsonField.ofNullable(identityContext))
 
@@ -973,6 +972,7 @@ private constructor(
              * value instead. This method is primarily for setting the field to an undocumented or
              * not yet supported value.
              */
+            @Deprecated("deprecated")
             fun identityContext(identityContext: JsonField<IdentityContext>) = apply {
                 this.identityContext = identityContext
             }
@@ -5624,10 +5624,8 @@ private constructor(
             override fun toString() = "EventProperties{additionalProperties=$additionalProperties}"
         }
 
-        /**
-         * End-user network context for server-side calls. Required for probabilistic identity
-         * resolution when the caller is a backend server rather than an end-user browser.
-         */
+        /** Deprecated and ignored. Accepted so existing clients keep working. */
+        @Deprecated("deprecated")
         class IdentityContext
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(

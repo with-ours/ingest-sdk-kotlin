@@ -101,13 +101,12 @@ private constructor(
     fun externalId(): String? = body.externalId()
 
     /**
-     * End-user network context for server-side calls. Required for probabilistic identity
-     * resolution when the caller is a backend server rather than an end-user browser.
+     * Deprecated and ignored. Accepted so existing clients keep working.
      *
      * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun identityContext(): IdentityContext? = body.identityContext()
+    @Deprecated("deprecated") fun identityContext(): IdentityContext? = body.identityContext()
 
     /**
      * The Ours Visitor ID stored in local storage and cookies on your web properties. When present,
@@ -174,6 +173,7 @@ private constructor(
      *
      * Unlike [identityContext], this method doesn't throw if the JSON field has an unexpected type.
      */
+    @Deprecated("deprecated")
     fun _identityContext(): JsonField<IdentityContext> = body._identityContext()
 
     /**
@@ -327,10 +327,8 @@ private constructor(
          */
         fun externalId(externalId: JsonField<String>) = apply { body.externalId(externalId) }
 
-        /**
-         * End-user network context for server-side calls. Required for probabilistic identity
-         * resolution when the caller is a backend server rather than an end-user browser.
-         */
+        /** Deprecated and ignored. Accepted so existing clients keep working. */
+        @Deprecated("deprecated")
         fun identityContext(identityContext: IdentityContext?) = apply {
             body.identityContext(identityContext)
         }
@@ -342,6 +340,7 @@ private constructor(
          * value instead. This method is primarily for setting the field to an undocumented or not
          * yet supported value.
          */
+        @Deprecated("deprecated")
         fun identityContext(identityContext: JsonField<IdentityContext>) = apply {
             body.identityContext(identityContext)
         }
@@ -624,12 +623,12 @@ private constructor(
         fun externalId(): String? = externalId.getNullable("externalId")
 
         /**
-         * End-user network context for server-side calls. Required for probabilistic identity
-         * resolution when the caller is a backend server rather than an end-user browser.
+         * Deprecated and ignored. Accepted so existing clients keep working.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
+        @Deprecated("deprecated")
         fun identityContext(): IdentityContext? = identityContext.getNullable("identityContext")
 
         /**
@@ -705,6 +704,7 @@ private constructor(
          * Unlike [identityContext], this method doesn't throw if the JSON field has an unexpected
          * type.
          */
+        @Deprecated("deprecated")
         @JsonProperty("identityContext")
         @ExcludeMissing
         fun _identityContext(): JsonField<IdentityContext> = identityContext
@@ -864,10 +864,8 @@ private constructor(
              */
             fun externalId(externalId: JsonField<String>) = apply { this.externalId = externalId }
 
-            /**
-             * End-user network context for server-side calls. Required for probabilistic identity
-             * resolution when the caller is a backend server rather than an end-user browser.
-             */
+            /** Deprecated and ignored. Accepted so existing clients keep working. */
+            @Deprecated("deprecated")
             fun identityContext(identityContext: IdentityContext?) =
                 identityContext(JsonField.ofNullable(identityContext))
 
@@ -878,6 +876,7 @@ private constructor(
              * value instead. This method is primarily for setting the field to an undocumented or
              * not yet supported value.
              */
+            @Deprecated("deprecated")
             fun identityContext(identityContext: JsonField<IdentityContext>) = apply {
                 this.identityContext = identityContext
             }
@@ -9579,10 +9578,8 @@ private constructor(
             "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, adct=$adct, admitadUid=$admitadUid, adsetId=$adsetId, affiliatlyV3=$affiliatlyV3, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, graid=$graid, grclid=$grclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, obClickId=$obClickId, oppref=$oppref, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, ttdImpressionId=$ttdImpressionId, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, webview=$webview, ylpcid=$ylpcid, additionalProperties=$additionalProperties}"
     }
 
-    /**
-     * End-user network context for server-side calls. Required for probabilistic identity
-     * resolution when the caller is a backend server rather than an end-user browser.
-     */
+    /** Deprecated and ignored. Accepted so existing clients keep working. */
+    @Deprecated("deprecated")
     class IdentityContext
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
