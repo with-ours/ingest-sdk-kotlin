@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.oursprivacy/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.oursprivacy/ours-privacy-kotlin/1.27.0)
-[![javadoc](https://javadoc.io/badge2/com.oursprivacy/ours-privacy-kotlin/javadoc.svg)](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.27.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.oursprivacy/ours-privacy-kotlin)](https://central.sonatype.com/artifact/com.oursprivacy/ours-privacy-kotlin/1.28.0)
+[![javadoc](https://javadoc.io/badge2/com.oursprivacy/ours-privacy-kotlin/javadoc.svg)](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.28.0)
 
 <!-- x-release-please-end -->
 
@@ -11,7 +11,7 @@ The Ours Privacy Kotlin SDK provides convenient access to the [Ours Privacy REST
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.27.0).
+The REST API documentation can be found on [docs.oursprivacy.com](https://docs.oursprivacy.com). KDocs are available on [javadoc.io](https://javadoc.io/doc/com.oursprivacy/ours-privacy-kotlin/1.28.0).
 
 <!-- x-release-please-end -->
 
@@ -26,7 +26,7 @@ See the [SDK guide](https://docs.oursprivacy.com/docs/kotlin) and the runnable c
 ### Gradle
 
 ```kotlin
-implementation("com.oursprivacy:ours-privacy-kotlin:1.27.0")
+implementation("com.oursprivacy:ours-privacy-kotlin:1.28.0")
 ```
 
 ### Maven
@@ -35,7 +35,7 @@ implementation("com.oursprivacy:ours-privacy-kotlin:1.27.0")
 <dependency>
   <groupId>com.oursprivacy</groupId>
   <artifactId>ours-privacy-kotlin</artifactId>
-  <version>1.27.0</version>
+  <version>1.28.0</version>
 </dependency>
 ```
 
