@@ -1172,6 +1172,7 @@ private constructor(
             private val _efTransactionId: JsonField<String>,
             private val activeDuration: JsonField<Double>,
             private val adId: JsonField<String>,
+            private val adct: JsonField<String>,
             private val admitadUid: JsonField<String>,
             private val adsetId: JsonField<String>,
             private val affiliatlyV3: JsonField<String>,
@@ -1264,6 +1265,7 @@ private constructor(
                 @ExcludeMissing
                 activeDuration: JsonField<Double> = JsonMissing.of(),
                 @JsonProperty("ad_id") @ExcludeMissing adId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("adct") @ExcludeMissing adct: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("admitad_uid")
                 @ExcludeMissing
                 admitadUid: JsonField<String> = JsonMissing.of(),
@@ -1460,6 +1462,7 @@ private constructor(
                 _efTransactionId,
                 activeDuration,
                 adId,
+                adct,
                 admitadUid,
                 adsetId,
                 affiliatlyV3,
@@ -1569,6 +1572,15 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun adId(): String? = adId.getNullable("ad_id")
+
+            /**
+             * The AdRoll Click ID (adct) from the landing URL. Ex: adct123 Leading and trailing
+             * whitespace is removed before validation.
+             *
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun adct(): String? = adct.getNullable("adct")
 
             /**
              * The Admitad (Mitgo) affiliate Click ID. Ex: admitad_uid_abc123 Leading and trailing
@@ -2322,6 +2334,13 @@ private constructor(
             @JsonProperty("ad_id") @ExcludeMissing fun _adId(): JsonField<String> = adId
 
             /**
+             * Returns the raw JSON value of [adct].
+             *
+             * Unlike [adct], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("adct") @ExcludeMissing fun _adct(): JsonField<String> = adct
+
+            /**
              * Returns the raw JSON value of [admitadUid].
              *
              * Unlike [admitadUid], this method doesn't throw if the JSON field has an unexpected
@@ -3006,6 +3025,7 @@ private constructor(
                 private var _efTransactionId: JsonField<String> = JsonMissing.of()
                 private var activeDuration: JsonField<Double> = JsonMissing.of()
                 private var adId: JsonField<String> = JsonMissing.of()
+                private var adct: JsonField<String> = JsonMissing.of()
                 private var admitadUid: JsonField<String> = JsonMissing.of()
                 private var adsetId: JsonField<String> = JsonMissing.of()
                 private var affiliatlyV3: JsonField<String> = JsonMissing.of()
@@ -3092,6 +3112,7 @@ private constructor(
                     _efTransactionId = defaultProperties._efTransactionId
                     activeDuration = defaultProperties.activeDuration
                     adId = defaultProperties.adId
+                    adct = defaultProperties.adct
                     admitadUid = defaultProperties.admitadUid
                     adsetId = defaultProperties.adsetId
                     affiliatlyV3 = defaultProperties.affiliatlyV3
@@ -3233,6 +3254,21 @@ private constructor(
                  * supported value.
                  */
                 fun adId(adId: JsonField<String>) = apply { this.adId = adId }
+
+                /**
+                 * The AdRoll Click ID (adct) from the landing URL. Ex: adct123 Leading and trailing
+                 * whitespace is removed before validation.
+                 */
+                fun adct(adct: String?) = adct(JsonField.ofNullable(adct))
+
+                /**
+                 * Sets [Builder.adct] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.adct] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun adct(adct: JsonField<String>) = apply { this.adct = adct }
 
                 /**
                  * The Admitad (Mitgo) affiliate Click ID. Ex: admitad_uid_abc123 Leading and
@@ -4595,6 +4631,7 @@ private constructor(
                         _efTransactionId,
                         activeDuration,
                         adId,
+                        adct,
                         admitadUid,
                         adsetId,
                         affiliatlyV3,
@@ -4699,6 +4736,7 @@ private constructor(
                 _efTransactionId()
                 activeDuration()
                 adId()
+                adct()
                 admitadUid()
                 adsetId()
                 affiliatlyV3()
@@ -4800,6 +4838,7 @@ private constructor(
                 (if (_efTransactionId.asKnown() == null) 0 else 1) +
                     (if (activeDuration.asKnown() == null) 0 else 1) +
                     (if (adId.asKnown() == null) 0 else 1) +
+                    (if (adct.asKnown() == null) 0 else 1) +
                     (if (admitadUid.asKnown() == null) 0 else 1) +
                     (if (adsetId.asKnown() == null) 0 else 1) +
                     (if (affiliatlyV3.asKnown() == null) 0 else 1) +
@@ -5287,6 +5326,7 @@ private constructor(
                     _efTransactionId == other._efTransactionId &&
                     activeDuration == other.activeDuration &&
                     adId == other.adId &&
+                    adct == other.adct &&
                     admitadUid == other.admitadUid &&
                     adsetId == other.adsetId &&
                     affiliatlyV3 == other.affiliatlyV3 &&
@@ -5375,6 +5415,7 @@ private constructor(
                     _efTransactionId,
                     activeDuration,
                     adId,
+                    adct,
                     admitadUid,
                     adsetId,
                     affiliatlyV3,
@@ -5462,7 +5503,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, affiliatlyV3=$affiliatlyV3, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, graid=$graid, grclid=$grclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, obClickId=$obClickId, oppref=$oppref, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, ttdImpressionId=$ttdImpressionId, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, webview=$webview, ylpcid=$ylpcid, additionalProperties=$additionalProperties}"
+                "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, adct=$adct, admitadUid=$admitadUid, adsetId=$adsetId, affiliatlyV3=$affiliatlyV3, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, graid=$graid, grclid=$grclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, obClickId=$obClickId, oppref=$oppref, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, ttdImpressionId=$ttdImpressionId, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, webview=$webview, ylpcid=$ylpcid, additionalProperties=$additionalProperties}"
         }
 
         /**
@@ -5811,6 +5852,7 @@ private constructor(
         private constructor(
             private val _efTransactionId: JsonField<String>,
             private val adId: JsonField<String>,
+            private val adct: JsonField<String>,
             private val admitadUid: JsonField<String>,
             private val adsetId: JsonField<String>,
             private val affiliatlyV3: JsonField<String>,
@@ -5887,6 +5929,7 @@ private constructor(
                 @ExcludeMissing
                 _efTransactionId: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("ad_id") @ExcludeMissing adId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("adct") @ExcludeMissing adct: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("admitad_uid")
                 @ExcludeMissing
                 admitadUid: JsonField<String> = JsonMissing.of(),
@@ -6049,6 +6092,7 @@ private constructor(
             ) : this(
                 _efTransactionId,
                 adId,
+                adct,
                 admitadUid,
                 adsetId,
                 affiliatlyV3,
@@ -6132,6 +6176,14 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun adId(): String? = adId.getNullable("ad_id")
+
+            /**
+             * Leading and trailing whitespace is removed before validation.
+             *
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun adct(): String? = adct.getNullable("adct")
 
             /**
              * Leading and trailing whitespace is removed before validation.
@@ -6647,6 +6699,13 @@ private constructor(
              * Unlike [adId], this method doesn't throw if the JSON field has an unexpected type.
              */
             @JsonProperty("ad_id") @ExcludeMissing fun _adId(): JsonField<String> = adId
+
+            /**
+             * Returns the raw JSON value of [adct].
+             *
+             * Unlike [adct], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("adct") @ExcludeMissing fun _adct(): JsonField<String> = adct
 
             /**
              * Returns the raw JSON value of [admitadUid].
@@ -7213,6 +7272,7 @@ private constructor(
 
                 private var _efTransactionId: JsonField<String> = JsonMissing.of()
                 private var adId: JsonField<String> = JsonMissing.of()
+                private var adct: JsonField<String> = JsonMissing.of()
                 private var admitadUid: JsonField<String> = JsonMissing.of()
                 private var adsetId: JsonField<String> = JsonMissing.of()
                 private var affiliatlyV3: JsonField<String> = JsonMissing.of()
@@ -7285,6 +7345,7 @@ private constructor(
                 internal fun from(userProperties: UserProperties) = apply {
                     _efTransactionId = userProperties._efTransactionId
                     adId = userProperties.adId
+                    adct = userProperties.adct
                     admitadUid = userProperties.admitadUid
                     adsetId = userProperties.adsetId
                     affiliatlyV3 = userProperties.affiliatlyV3
@@ -7380,6 +7441,18 @@ private constructor(
                  * supported value.
                  */
                 fun adId(adId: JsonField<String>) = apply { this.adId = adId }
+
+                /** Leading and trailing whitespace is removed before validation. */
+                fun adct(adct: String?) = adct(JsonField.ofNullable(adct))
+
+                /**
+                 * Sets [Builder.adct] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.adct] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun adct(adct: JsonField<String>) = apply { this.adct = adct }
 
                 /** Leading and trailing whitespace is removed before validation. */
                 fun admitadUid(admitadUid: String?) = admitadUid(JsonField.ofNullable(admitadUid))
@@ -8342,6 +8415,7 @@ private constructor(
                     UserProperties(
                         _efTransactionId,
                         adId,
+                        adct,
                         admitadUid,
                         adsetId,
                         affiliatlyV3,
@@ -8432,6 +8506,7 @@ private constructor(
 
                 _efTransactionId()
                 adId()
+                adct()
                 admitadUid()
                 adsetId()
                 affiliatlyV3()
@@ -8519,6 +8594,7 @@ private constructor(
             internal fun validity(): Int =
                 (if (_efTransactionId.asKnown() == null) 0 else 1) +
                     (if (adId.asKnown() == null) 0 else 1) +
+                    (if (adct.asKnown() == null) 0 else 1) +
                     (if (admitadUid.asKnown() == null) 0 else 1) +
                     (if (adsetId.asKnown() == null) 0 else 1) +
                     (if (affiliatlyV3.asKnown() == null) 0 else 1) +
@@ -10029,6 +10105,7 @@ private constructor(
                 return other is UserProperties &&
                     _efTransactionId == other._efTransactionId &&
                     adId == other.adId &&
+                    adct == other.adct &&
                     admitadUid == other.admitadUid &&
                     adsetId == other.adsetId &&
                     affiliatlyV3 == other.affiliatlyV3 &&
@@ -10103,6 +10180,7 @@ private constructor(
                 Objects.hash(
                     _efTransactionId,
                     adId,
+                    adct,
                     admitadUid,
                     adsetId,
                     affiliatlyV3,
@@ -10177,7 +10255,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "UserProperties{_efTransactionId=$_efTransactionId, adId=$adId, admitadUid=$admitadUid, adsetId=$adsetId, affiliatlyV3=$affiliatlyV3, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, graid=$graid, grclid=$grclid, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, obClickId=$obClickId, oppref=$oppref, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, ttdImpressionId=$ttdImpressionId, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, ylpcid=$ylpcid, zip=$zip, additionalProperties=$additionalProperties}"
+                "UserProperties{_efTransactionId=$_efTransactionId, adId=$adId, adct=$adct, admitadUid=$admitadUid, adsetId=$adsetId, affiliatlyV3=$affiliatlyV3, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, campaignId=$campaignId, city=$city, clickid=$clickid, clid=$clid, companyName=$companyName, consent=$consent, country=$country, customProperties=$customProperties, dateOfBirth=$dateOfBirth, dclid=$dclid, email=$email, epik=$epik, externalId=$externalId, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, firstName=$firstName, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, gender=$gender, graid=$graid, grclid=$grclid, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, jobTitle=$jobTitle, lastName=$lastName, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, obClickId=$obClickId, oppref=$oppref, phoneNumber=$phoneNumber, qclid=$qclid, rdtCid=$rdtCid, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, sid=$sid, state=$state, ttclid=$ttclid, ttdImpressionId=$ttdImpressionId, twclid=$twclid, userAgent=$userAgent, userAgentFullList=$userAgentFullList, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, ylpcid=$ylpcid, zip=$zip, additionalProperties=$additionalProperties}"
         }
 
         override fun equals(other: Any?): Boolean {
