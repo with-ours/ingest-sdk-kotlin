@@ -42,23 +42,23 @@ val wiremockJar = tasks.register<ShadowJar>("wiremockJar") {
 
 dependencies {
     wiremockServer("org.wiremock:wiremock-jetty12:3.13.2")
-    wiremockServer(platform("org.eclipse.jetty:jetty-bom:12.0.40"))
-    wiremockServer(platform("org.eclipse.jetty.ee10:jetty-ee10-bom:12.0.40"))
-    wiremockServer(platform("com.fasterxml.jackson:jackson-bom:2.21.8"))
+    wiremockServer(platform("org.eclipse.jetty:jetty-bom:12.1.15"))
+    wiremockServer(platform("org.eclipse.jetty.ee10:jetty-ee10-bom:12.1.15"))
+    wiremockServer(platform("com.fasterxml.jackson:jackson-bom:2.23.0"))
     constraints {
-        add(wiremockServer.name, "com.github.jknack:handlebars:4.5.5")
+        add(wiremockServer.name, "com.github.jknack:handlebars:4.5.8")
         add(wiremockServer.name, "org.apache.commons:commons-lang3:3.21.0")
         add(wiremockServer.name, "org.apache.httpcomponents.client5:httpclient5:5.6.5")
         add(wiremockServer.name, "org.apache.httpcomponents.core5:httpcore5:5.4.4")
         add(wiremockServer.name, "org.apache.httpcomponents.core5:httpcore5-h2:5.4.4")
-        add(wiremockServer.name, "net.minidev:json-smart:2.6.0")
+        add(wiremockServer.name, "net.minidev:json-smart:2.6.1")
     }
 }
 
 dependencies {
     api("com.fasterxml.jackson.core:jackson-core:2.18.12")
     api("com.fasterxml.jackson.core:jackson-databind:2.18.12")
-    api("com.google.errorprone:error_prone_annotations:2.33.0")
+    api("com.google.errorprone:error_prone_annotations:2.52.0")
 
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.18.12")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.18.12")
@@ -70,11 +70,11 @@ dependencies {
     testImplementation(project(":ours-privacy-kotlin-client-okhttp"))
     testImplementation(files(wiremockJar))
     testImplementation("org.assertj:assertj-core:3.27.7")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.14.4")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.14.4")
     testImplementation("org.junit-pioneer:junit-pioneer:1.9.1")
-    testImplementation("org.mockito:mockito-core:5.14.2")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.14.2")
+    testImplementation("org.mockito:mockito-core:5.24.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.24.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
-    testImplementation("org.slf4j:slf4j-nop:2.0.18")
+    testImplementation("org.slf4j:slf4j-nop:2.0.20")
 }
