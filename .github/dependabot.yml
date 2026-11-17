@@ -1,6 +1,7 @@
 # Keep GitHub Actions and SDK dependencies up to date.
 # Match the weekly update policy used by the Node.js SDKs.
-# The root settings.gradle.kts includes all SDK subprojects.
+# settings.gradle.kts finds subprojects at build time, which Dependabot can't
+# evaluate, so the published subprojects are listed in their own entry.
 version: 2
 updates:
 - package-ecosystem: github-actions
@@ -45,3 +46,32 @@ updates:
   - dependency-name: '*'
     update-types:
     - version-update:semver-major
+- package-ecosystem: gradle
+  directories:
+  - /ours-privacy-kotlin-core
+  - /ours-privacy-kotlin-client-okhttp
+  schedule:
+    interval: weekly
+    day: monday
+  cooldown:
+    default-days: 7
+  open-pull-requests-limit: 5
+  labels:
+  - dependencies
+  commit-message:
+    prefix: fix
+  groups:
+    subproject-deps:
+      patterns:
+      - '*'
+      update-types:
+      - minor
+      - patch
+  ignore:
+  - dependency-name: '*'
+    update-types:
+    - version-update:semver-major
+  # Published floors that keep Kotlin 1.8 consumers working; CI tests the
+  # Jackson versions named in its matrix.
+  - dependency-name: com.fasterxml.jackson.*
+  - dependency-name: org.jetbrains.kotlinx:kotlinx-coroutines-core
