@@ -1,12 +1,14 @@
 buildscript {
     dependencies {
         // Dokka's Jackson parser also needs the security fixes used by the SDK.
-        classpath(platform("com.fasterxml.jackson:jackson-bom:2.22.4"))
+        classpath(platform("com.fasterxml.jackson:jackson-bom:2.23.0"))
     }
 }
 
 plugins {
-    id("org.jetbrains.dokka") version "2.2.0"
+    // Lets the root project read Maven BOMs such as jackson-bom as platforms.
+    `jvm-ecosystem`
+    id("org.jetbrains.dokka") version "2.3.0"
 }
 
 repositories {
@@ -32,6 +34,15 @@ subprojects {
 
 subprojects {
     apply(plugin = "org.jetbrains.dokka")
+}
+
+allprojects {
+    plugins.withId("org.jetbrains.dokka") {
+        dependencies {
+            // The Dokka worker has its own classpath, which the buildscript platform above doesn't reach.
+            "dokkaHtmlGeneratorRuntime"(platform("com.fasterxml.jackson:jackson-bom:2.23.0"))
+        }
+    }
 }
 
 dependencies {
