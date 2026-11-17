@@ -1172,6 +1172,11 @@ private constructor(
             private val _efTransactionId: JsonField<String>,
             private val activeDuration: JsonField<Double>,
             private val adId: JsonField<String>,
+            private val adTouchAdId: JsonField<String>,
+            private val adTouchAdsetId: JsonField<String>,
+            private val adTouchCampaignId: JsonField<String>,
+            private val adTouchPlatform: JsonField<String>,
+            private val adTouchSource: JsonField<String>,
             private val adct: JsonField<String>,
             private val admitadUid: JsonField<String>,
             private val adsetId: JsonField<String>,
@@ -1202,6 +1207,7 @@ private constructor(
             private val fbclid: JsonField<String>,
             private val fbp: JsonField<String>,
             private val fv: JsonField<Boolean>,
+            private val gadCampaignid: JsonField<String>,
             private val gadSource: JsonField<String>,
             private val gbraid: JsonField<String>,
             private val gclid: JsonField<String>,
@@ -1221,6 +1227,7 @@ private constructor(
             private val oppref: JsonField<String>,
             private val osName: JsonField<String>,
             private val osVersion: JsonField<String>,
+            private val oursAd: JsonField<String>,
             private val pageHash: JsonField<Double>,
             private val pathname: JsonField<String>,
             private val qclid: JsonField<String>,
@@ -1243,6 +1250,7 @@ private constructor(
             private val userAgent: JsonField<String>,
             private val utmCampaign: JsonField<String>,
             private val utmContent: JsonField<String>,
+            private val utmId: JsonField<String>,
             private val utmMedium: JsonField<String>,
             private val utmName: JsonField<String>,
             private val utmSource: JsonField<String>,
@@ -1265,6 +1273,21 @@ private constructor(
                 @ExcludeMissing
                 activeDuration: JsonField<Double> = JsonMissing.of(),
                 @JsonProperty("ad_id") @ExcludeMissing adId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("ad_touch_ad_id")
+                @ExcludeMissing
+                adTouchAdId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("ad_touch_adset_id")
+                @ExcludeMissing
+                adTouchAdsetId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("ad_touch_campaign_id")
+                @ExcludeMissing
+                adTouchCampaignId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("ad_touch_platform")
+                @ExcludeMissing
+                adTouchPlatform: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("ad_touch_source")
+                @ExcludeMissing
+                adTouchSource: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("adct") @ExcludeMissing adct: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("admitad_uid")
                 @ExcludeMissing
@@ -1335,6 +1358,9 @@ private constructor(
                 fbclid: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("fbp") @ExcludeMissing fbp: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("fv") @ExcludeMissing fv: JsonField<Boolean> = JsonMissing.of(),
+                @JsonProperty("gad_campaignid")
+                @ExcludeMissing
+                gadCampaignid: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("gad_source")
                 @ExcludeMissing
                 gadSource: JsonField<String> = JsonMissing.of(),
@@ -1378,6 +1404,9 @@ private constructor(
                 @JsonProperty("os_version")
                 @ExcludeMissing
                 osVersion: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("ours_ad")
+                @ExcludeMissing
+                oursAd: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("page_hash")
                 @ExcludeMissing
                 pageHash: JsonField<Double> = JsonMissing.of(),
@@ -1430,6 +1459,7 @@ private constructor(
                 @JsonProperty("utm_content")
                 @ExcludeMissing
                 utmContent: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("utm_id") @ExcludeMissing utmId: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("utm_medium")
                 @ExcludeMissing
                 utmMedium: JsonField<String> = JsonMissing.of(),
@@ -1462,6 +1492,11 @@ private constructor(
                 _efTransactionId,
                 activeDuration,
                 adId,
+                adTouchAdId,
+                adTouchAdsetId,
+                adTouchCampaignId,
+                adTouchPlatform,
+                adTouchSource,
                 adct,
                 admitadUid,
                 adsetId,
@@ -1492,6 +1527,7 @@ private constructor(
                 fbclid,
                 fbp,
                 fv,
+                gadCampaignid,
                 gadSource,
                 gbraid,
                 gclid,
@@ -1511,6 +1547,7 @@ private constructor(
                 oppref,
                 osName,
                 osVersion,
+                oursAd,
                 pageHash,
                 pathname,
                 qclid,
@@ -1533,6 +1570,7 @@ private constructor(
                 userAgent,
                 utmCampaign,
                 utmContent,
+                utmId,
                 utmMedium,
                 utmName,
                 utmSource,
@@ -1572,6 +1610,53 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun adId(): String? = adId.getNullable("ad_id")
+
+            /**
+             * The platform ad id resolved by the Ours server for this event. Ex: 120212 Leading and
+             * trailing whitespace is removed before validation.
+             *
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun adTouchAdId(): String? = adTouchAdId.getNullable("ad_touch_ad_id")
+
+            /**
+             * The platform ad set or ad group id resolved by the Ours server for this event. Ex:
+             * 120211 Leading and trailing whitespace is removed before validation.
+             *
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun adTouchAdsetId(): String? = adTouchAdsetId.getNullable("ad_touch_adset_id")
+
+            /**
+             * The platform campaign id resolved by the Ours server for this event. Ex: 120210
+             * Leading and trailing whitespace is removed before validation.
+             *
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun adTouchCampaignId(): String? = adTouchCampaignId.getNullable("ad_touch_campaign_id")
+
+            /**
+             * The ad platform resolved by the Ours server from the ad tag, ad ids, and click ids on
+             * this event. Ex: meta, google Leading and trailing whitespace is removed before
+             * validation.
+             *
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun adTouchPlatform(): String? = adTouchPlatform.getNullable("ad_touch_platform")
+
+            /**
+             * Which signal the Ours server used to resolve the ad touch: ours_ad, url_ids,
+             * gad_campaignid, utm_id, or click_id. Leading and trailing whitespace is removed
+             * before validation.
+             *
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun adTouchSource(): String? = adTouchSource.getNullable("ad_touch_source")
 
             /**
              * The AdRoll Click ID (adct) from the landing URL. Ex: adct123 Leading and trailing
@@ -1849,6 +1934,15 @@ private constructor(
             fun fv(): Boolean? = fv.getNullable("fv")
 
             /**
+             * The Google Ads campaign id that Google auto-tagging appends to ad clicks. Ex:
+             * 21780011223 Leading and trailing whitespace is removed before validation.
+             *
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun gadCampaignid(): String? = gadCampaignid.getNullable("gad_campaignid")
+
+            /**
              * The Google Ad Source. Ex: google Leading and trailing whitespace is removed before
              * validation.
              *
@@ -2020,6 +2114,16 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun osVersion(): String? = osVersion.getNullable("os_version")
+
+            /**
+             * The Ours ad tag from the ours_ad query parameter, as platform.campaign.adset.ad. Ex:
+             * meta.120210.120211.120212 Leading and trailing whitespace is removed before
+             * validation.
+             *
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun oursAd(): String? = oursAd.getNullable("ours_ad")
 
             /**
              * A random set of numbers for the page load
@@ -2216,6 +2320,15 @@ private constructor(
             fun utmContent(): String? = utmContent.getNullable("utm_content")
 
             /**
+             * The UTM ID. The web SDK automatically captures this from the query params. Leading
+             * and trailing whitespace is removed before validation.
+             *
+             * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun utmId(): String? = utmId.getNullable("utm_id")
+
+            /**
              * The UTM Medium. The web SDK automatically captures this from the query params.
              * Leading and trailing whitespace is removed before validation.
              *
@@ -2332,6 +2445,56 @@ private constructor(
              * Unlike [adId], this method doesn't throw if the JSON field has an unexpected type.
              */
             @JsonProperty("ad_id") @ExcludeMissing fun _adId(): JsonField<String> = adId
+
+            /**
+             * Returns the raw JSON value of [adTouchAdId].
+             *
+             * Unlike [adTouchAdId], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("ad_touch_ad_id")
+            @ExcludeMissing
+            fun _adTouchAdId(): JsonField<String> = adTouchAdId
+
+            /**
+             * Returns the raw JSON value of [adTouchAdsetId].
+             *
+             * Unlike [adTouchAdsetId], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("ad_touch_adset_id")
+            @ExcludeMissing
+            fun _adTouchAdsetId(): JsonField<String> = adTouchAdsetId
+
+            /**
+             * Returns the raw JSON value of [adTouchCampaignId].
+             *
+             * Unlike [adTouchCampaignId], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("ad_touch_campaign_id")
+            @ExcludeMissing
+            fun _adTouchCampaignId(): JsonField<String> = adTouchCampaignId
+
+            /**
+             * Returns the raw JSON value of [adTouchPlatform].
+             *
+             * Unlike [adTouchPlatform], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("ad_touch_platform")
+            @ExcludeMissing
+            fun _adTouchPlatform(): JsonField<String> = adTouchPlatform
+
+            /**
+             * Returns the raw JSON value of [adTouchSource].
+             *
+             * Unlike [adTouchSource], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("ad_touch_source")
+            @ExcludeMissing
+            fun _adTouchSource(): JsonField<String> = adTouchSource
 
             /**
              * Returns the raw JSON value of [adct].
@@ -2589,6 +2752,16 @@ private constructor(
             @JsonProperty("fv") @ExcludeMissing fun _fv(): JsonField<Boolean> = fv
 
             /**
+             * Returns the raw JSON value of [gadCampaignid].
+             *
+             * Unlike [gadCampaignid], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("gad_campaignid")
+            @ExcludeMissing
+            fun _gadCampaignid(): JsonField<String> = gadCampaignid
+
+            /**
              * Returns the raw JSON value of [gadSource].
              *
              * Unlike [gadSource], this method doesn't throw if the JSON field has an unexpected
@@ -2732,6 +2905,13 @@ private constructor(
             @JsonProperty("os_version")
             @ExcludeMissing
             fun _osVersion(): JsonField<String> = osVersion
+
+            /**
+             * Returns the raw JSON value of [oursAd].
+             *
+             * Unlike [oursAd], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("ours_ad") @ExcludeMissing fun _oursAd(): JsonField<String> = oursAd
 
             /**
              * Returns the raw JSON value of [pageHash].
@@ -2918,6 +3098,13 @@ private constructor(
             fun _utmContent(): JsonField<String> = utmContent
 
             /**
+             * Returns the raw JSON value of [utmId].
+             *
+             * Unlike [utmId], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("utm_id") @ExcludeMissing fun _utmId(): JsonField<String> = utmId
+
+            /**
              * Returns the raw JSON value of [utmMedium].
              *
              * Unlike [utmMedium], this method doesn't throw if the JSON field has an unexpected
@@ -3025,6 +3212,11 @@ private constructor(
                 private var _efTransactionId: JsonField<String> = JsonMissing.of()
                 private var activeDuration: JsonField<Double> = JsonMissing.of()
                 private var adId: JsonField<String> = JsonMissing.of()
+                private var adTouchAdId: JsonField<String> = JsonMissing.of()
+                private var adTouchAdsetId: JsonField<String> = JsonMissing.of()
+                private var adTouchCampaignId: JsonField<String> = JsonMissing.of()
+                private var adTouchPlatform: JsonField<String> = JsonMissing.of()
+                private var adTouchSource: JsonField<String> = JsonMissing.of()
                 private var adct: JsonField<String> = JsonMissing.of()
                 private var admitadUid: JsonField<String> = JsonMissing.of()
                 private var adsetId: JsonField<String> = JsonMissing.of()
@@ -3055,6 +3247,7 @@ private constructor(
                 private var fbclid: JsonField<String> = JsonMissing.of()
                 private var fbp: JsonField<String> = JsonMissing.of()
                 private var fv: JsonField<Boolean> = JsonMissing.of()
+                private var gadCampaignid: JsonField<String> = JsonMissing.of()
                 private var gadSource: JsonField<String> = JsonMissing.of()
                 private var gbraid: JsonField<String> = JsonMissing.of()
                 private var gclid: JsonField<String> = JsonMissing.of()
@@ -3074,6 +3267,7 @@ private constructor(
                 private var oppref: JsonField<String> = JsonMissing.of()
                 private var osName: JsonField<String> = JsonMissing.of()
                 private var osVersion: JsonField<String> = JsonMissing.of()
+                private var oursAd: JsonField<String> = JsonMissing.of()
                 private var pageHash: JsonField<Double> = JsonMissing.of()
                 private var pathname: JsonField<String> = JsonMissing.of()
                 private var qclid: JsonField<String> = JsonMissing.of()
@@ -3096,6 +3290,7 @@ private constructor(
                 private var userAgent: JsonField<String> = JsonMissing.of()
                 private var utmCampaign: JsonField<String> = JsonMissing.of()
                 private var utmContent: JsonField<String> = JsonMissing.of()
+                private var utmId: JsonField<String> = JsonMissing.of()
                 private var utmMedium: JsonField<String> = JsonMissing.of()
                 private var utmName: JsonField<String> = JsonMissing.of()
                 private var utmSource: JsonField<String> = JsonMissing.of()
@@ -3112,6 +3307,11 @@ private constructor(
                     _efTransactionId = defaultProperties._efTransactionId
                     activeDuration = defaultProperties.activeDuration
                     adId = defaultProperties.adId
+                    adTouchAdId = defaultProperties.adTouchAdId
+                    adTouchAdsetId = defaultProperties.adTouchAdsetId
+                    adTouchCampaignId = defaultProperties.adTouchCampaignId
+                    adTouchPlatform = defaultProperties.adTouchPlatform
+                    adTouchSource = defaultProperties.adTouchSource
                     adct = defaultProperties.adct
                     admitadUid = defaultProperties.admitadUid
                     adsetId = defaultProperties.adsetId
@@ -3142,6 +3342,7 @@ private constructor(
                     fbclid = defaultProperties.fbclid
                     fbp = defaultProperties.fbp
                     fv = defaultProperties.fv
+                    gadCampaignid = defaultProperties.gadCampaignid
                     gadSource = defaultProperties.gadSource
                     gbraid = defaultProperties.gbraid
                     gclid = defaultProperties.gclid
@@ -3161,6 +3362,7 @@ private constructor(
                     oppref = defaultProperties.oppref
                     osName = defaultProperties.osName
                     osVersion = defaultProperties.osVersion
+                    oursAd = defaultProperties.oursAd
                     pageHash = defaultProperties.pageHash
                     pathname = defaultProperties.pathname
                     qclid = defaultProperties.qclid
@@ -3183,6 +3385,7 @@ private constructor(
                     userAgent = defaultProperties.userAgent
                     utmCampaign = defaultProperties.utmCampaign
                     utmContent = defaultProperties.utmContent
+                    utmId = defaultProperties.utmId
                     utmMedium = defaultProperties.utmMedium
                     utmName = defaultProperties.utmName
                     utmSource = defaultProperties.utmSource
@@ -3254,6 +3457,98 @@ private constructor(
                  * supported value.
                  */
                 fun adId(adId: JsonField<String>) = apply { this.adId = adId }
+
+                /**
+                 * The platform ad id resolved by the Ours server for this event. Ex: 120212 Leading
+                 * and trailing whitespace is removed before validation.
+                 */
+                fun adTouchAdId(adTouchAdId: String?) =
+                    adTouchAdId(JsonField.ofNullable(adTouchAdId))
+
+                /**
+                 * Sets [Builder.adTouchAdId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.adTouchAdId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun adTouchAdId(adTouchAdId: JsonField<String>) = apply {
+                    this.adTouchAdId = adTouchAdId
+                }
+
+                /**
+                 * The platform ad set or ad group id resolved by the Ours server for this event.
+                 * Ex: 120211 Leading and trailing whitespace is removed before validation.
+                 */
+                fun adTouchAdsetId(adTouchAdsetId: String?) =
+                    adTouchAdsetId(JsonField.ofNullable(adTouchAdsetId))
+
+                /**
+                 * Sets [Builder.adTouchAdsetId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.adTouchAdsetId] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun adTouchAdsetId(adTouchAdsetId: JsonField<String>) = apply {
+                    this.adTouchAdsetId = adTouchAdsetId
+                }
+
+                /**
+                 * The platform campaign id resolved by the Ours server for this event. Ex: 120210
+                 * Leading and trailing whitespace is removed before validation.
+                 */
+                fun adTouchCampaignId(adTouchCampaignId: String?) =
+                    adTouchCampaignId(JsonField.ofNullable(adTouchCampaignId))
+
+                /**
+                 * Sets [Builder.adTouchCampaignId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.adTouchCampaignId] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun adTouchCampaignId(adTouchCampaignId: JsonField<String>) = apply {
+                    this.adTouchCampaignId = adTouchCampaignId
+                }
+
+                /**
+                 * The ad platform resolved by the Ours server from the ad tag, ad ids, and click
+                 * ids on this event. Ex: meta, google Leading and trailing whitespace is removed
+                 * before validation.
+                 */
+                fun adTouchPlatform(adTouchPlatform: String?) =
+                    adTouchPlatform(JsonField.ofNullable(adTouchPlatform))
+
+                /**
+                 * Sets [Builder.adTouchPlatform] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.adTouchPlatform] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun adTouchPlatform(adTouchPlatform: JsonField<String>) = apply {
+                    this.adTouchPlatform = adTouchPlatform
+                }
+
+                /**
+                 * Which signal the Ours server used to resolve the ad touch: ours_ad, url_ids,
+                 * gad_campaignid, utm_id, or click_id. Leading and trailing whitespace is removed
+                 * before validation.
+                 */
+                fun adTouchSource(adTouchSource: String?) =
+                    adTouchSource(JsonField.ofNullable(adTouchSource))
+
+                /**
+                 * Sets [Builder.adTouchSource] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.adTouchSource] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun adTouchSource(adTouchSource: JsonField<String>) = apply {
+                    this.adTouchSource = adTouchSource
+                }
 
                 /**
                  * The AdRoll Click ID (adct) from the landing URL. Ex: adct123 Leading and trailing
@@ -3760,6 +4055,24 @@ private constructor(
                 fun fv(fv: JsonField<Boolean>) = apply { this.fv = fv }
 
                 /**
+                 * The Google Ads campaign id that Google auto-tagging appends to ad clicks. Ex:
+                 * 21780011223 Leading and trailing whitespace is removed before validation.
+                 */
+                fun gadCampaignid(gadCampaignid: String?) =
+                    gadCampaignid(JsonField.ofNullable(gadCampaignid))
+
+                /**
+                 * Sets [Builder.gadCampaignid] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.gadCampaignid] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun gadCampaignid(gadCampaignid: JsonField<String>) = apply {
+                    this.gadCampaignid = gadCampaignid
+                }
+
+                /**
                  * The Google Ad Source. Ex: google Leading and trailing whitespace is removed
                  * before validation.
                  */
@@ -4071,6 +4384,22 @@ private constructor(
                  * yet supported value.
                  */
                 fun osVersion(osVersion: JsonField<String>) = apply { this.osVersion = osVersion }
+
+                /**
+                 * The Ours ad tag from the ours_ad query parameter, as platform.campaign.adset.ad.
+                 * Ex: meta.120210.120211.120212 Leading and trailing whitespace is removed before
+                 * validation.
+                 */
+                fun oursAd(oursAd: String?) = oursAd(JsonField.ofNullable(oursAd))
+
+                /**
+                 * Sets [Builder.oursAd] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.oursAd] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun oursAd(oursAd: JsonField<String>) = apply { this.oursAd = oursAd }
 
                 /** A random set of numbers for the page load */
                 fun pageHash(pageHash: Double?) = pageHash(JsonField.ofNullable(pageHash))
@@ -4440,6 +4769,21 @@ private constructor(
                 }
 
                 /**
+                 * The UTM ID. The web SDK automatically captures this from the query params.
+                 * Leading and trailing whitespace is removed before validation.
+                 */
+                fun utmId(utmId: String?) = utmId(JsonField.ofNullable(utmId))
+
+                /**
+                 * Sets [Builder.utmId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.utmId] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun utmId(utmId: JsonField<String>) = apply { this.utmId = utmId }
+
+                /**
                  * The UTM Medium. The web SDK automatically captures this from the query params.
                  * Leading and trailing whitespace is removed before validation.
                  */
@@ -4631,6 +4975,11 @@ private constructor(
                         _efTransactionId,
                         activeDuration,
                         adId,
+                        adTouchAdId,
+                        adTouchAdsetId,
+                        adTouchCampaignId,
+                        adTouchPlatform,
+                        adTouchSource,
                         adct,
                         admitadUid,
                         adsetId,
@@ -4661,6 +5010,7 @@ private constructor(
                         fbclid,
                         fbp,
                         fv,
+                        gadCampaignid,
                         gadSource,
                         gbraid,
                         gclid,
@@ -4680,6 +5030,7 @@ private constructor(
                         oppref,
                         osName,
                         osVersion,
+                        oursAd,
                         pageHash,
                         pathname,
                         qclid,
@@ -4702,6 +5053,7 @@ private constructor(
                         userAgent,
                         utmCampaign,
                         utmContent,
+                        utmId,
                         utmMedium,
                         utmName,
                         utmSource,
@@ -4736,6 +5088,11 @@ private constructor(
                 _efTransactionId()
                 activeDuration()
                 adId()
+                adTouchAdId()
+                adTouchAdsetId()
+                adTouchCampaignId()
+                adTouchPlatform()
+                adTouchSource()
                 adct()
                 admitadUid()
                 adsetId()
@@ -4766,6 +5123,7 @@ private constructor(
                 fbclid()
                 fbp()
                 fv()
+                gadCampaignid()
                 gadSource()
                 gbraid()
                 gclid()
@@ -4785,6 +5143,7 @@ private constructor(
                 oppref()
                 osName()
                 osVersion()
+                oursAd()
                 pageHash()
                 pathname()
                 qclid()
@@ -4807,6 +5166,7 @@ private constructor(
                 userAgent()
                 utmCampaign()
                 utmContent()
+                utmId()
                 utmMedium()
                 utmName()
                 utmSource()
@@ -4838,6 +5198,11 @@ private constructor(
                 (if (_efTransactionId.asKnown() == null) 0 else 1) +
                     (if (activeDuration.asKnown() == null) 0 else 1) +
                     (if (adId.asKnown() == null) 0 else 1) +
+                    (if (adTouchAdId.asKnown() == null) 0 else 1) +
+                    (if (adTouchAdsetId.asKnown() == null) 0 else 1) +
+                    (if (adTouchCampaignId.asKnown() == null) 0 else 1) +
+                    (if (adTouchPlatform.asKnown() == null) 0 else 1) +
+                    (if (adTouchSource.asKnown() == null) 0 else 1) +
                     (if (adct.asKnown() == null) 0 else 1) +
                     (if (admitadUid.asKnown() == null) 0 else 1) +
                     (if (adsetId.asKnown() == null) 0 else 1) +
@@ -4868,6 +5233,7 @@ private constructor(
                     (if (fbclid.asKnown() == null) 0 else 1) +
                     (if (fbp.asKnown() == null) 0 else 1) +
                     (if (fv.asKnown() == null) 0 else 1) +
+                    (if (gadCampaignid.asKnown() == null) 0 else 1) +
                     (if (gadSource.asKnown() == null) 0 else 1) +
                     (if (gbraid.asKnown() == null) 0 else 1) +
                     (if (gclid.asKnown() == null) 0 else 1) +
@@ -4887,6 +5253,7 @@ private constructor(
                     (if (oppref.asKnown() == null) 0 else 1) +
                     (if (osName.asKnown() == null) 0 else 1) +
                     (if (osVersion.asKnown() == null) 0 else 1) +
+                    (if (oursAd.asKnown() == null) 0 else 1) +
                     (if (pageHash.asKnown() == null) 0 else 1) +
                     (if (pathname.asKnown() == null) 0 else 1) +
                     (if (qclid.asKnown() == null) 0 else 1) +
@@ -4909,6 +5276,7 @@ private constructor(
                     (if (userAgent.asKnown() == null) 0 else 1) +
                     (if (utmCampaign.asKnown() == null) 0 else 1) +
                     (if (utmContent.asKnown() == null) 0 else 1) +
+                    (if (utmId.asKnown() == null) 0 else 1) +
                     (if (utmMedium.asKnown() == null) 0 else 1) +
                     (if (utmName.asKnown() == null) 0 else 1) +
                     (if (utmSource.asKnown() == null) 0 else 1) +
@@ -5326,6 +5694,11 @@ private constructor(
                     _efTransactionId == other._efTransactionId &&
                     activeDuration == other.activeDuration &&
                     adId == other.adId &&
+                    adTouchAdId == other.adTouchAdId &&
+                    adTouchAdsetId == other.adTouchAdsetId &&
+                    adTouchCampaignId == other.adTouchCampaignId &&
+                    adTouchPlatform == other.adTouchPlatform &&
+                    adTouchSource == other.adTouchSource &&
                     adct == other.adct &&
                     admitadUid == other.admitadUid &&
                     adsetId == other.adsetId &&
@@ -5356,6 +5729,7 @@ private constructor(
                     fbclid == other.fbclid &&
                     fbp == other.fbp &&
                     fv == other.fv &&
+                    gadCampaignid == other.gadCampaignid &&
                     gadSource == other.gadSource &&
                     gbraid == other.gbraid &&
                     gclid == other.gclid &&
@@ -5375,6 +5749,7 @@ private constructor(
                     oppref == other.oppref &&
                     osName == other.osName &&
                     osVersion == other.osVersion &&
+                    oursAd == other.oursAd &&
                     pageHash == other.pageHash &&
                     pathname == other.pathname &&
                     qclid == other.qclid &&
@@ -5397,6 +5772,7 @@ private constructor(
                     userAgent == other.userAgent &&
                     utmCampaign == other.utmCampaign &&
                     utmContent == other.utmContent &&
+                    utmId == other.utmId &&
                     utmMedium == other.utmMedium &&
                     utmName == other.utmName &&
                     utmSource == other.utmSource &&
@@ -5415,6 +5791,11 @@ private constructor(
                     _efTransactionId,
                     activeDuration,
                     adId,
+                    adTouchAdId,
+                    adTouchAdsetId,
+                    adTouchCampaignId,
+                    adTouchPlatform,
+                    adTouchSource,
                     adct,
                     admitadUid,
                     adsetId,
@@ -5445,6 +5826,7 @@ private constructor(
                     fbclid,
                     fbp,
                     fv,
+                    gadCampaignid,
                     gadSource,
                     gbraid,
                     gclid,
@@ -5464,6 +5846,7 @@ private constructor(
                     oppref,
                     osName,
                     osVersion,
+                    oursAd,
                     pageHash,
                     pathname,
                     qclid,
@@ -5486,6 +5869,7 @@ private constructor(
                     userAgent,
                     utmCampaign,
                     utmContent,
+                    utmId,
                     utmMedium,
                     utmName,
                     utmSource,
@@ -5503,7 +5887,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, adct=$adct, admitadUid=$admitadUid, adsetId=$adsetId, affiliatlyV3=$affiliatlyV3, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, graid=$graid, grclid=$grclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, obClickId=$obClickId, oppref=$oppref, osName=$osName, osVersion=$osVersion, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, ttdImpressionId=$ttdImpressionId, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, webview=$webview, ylpcid=$ylpcid, additionalProperties=$additionalProperties}"
+                "DefaultProperties{_efTransactionId=$_efTransactionId, activeDuration=$activeDuration, adId=$adId, adTouchAdId=$adTouchAdId, adTouchAdsetId=$adTouchAdsetId, adTouchCampaignId=$adTouchCampaignId, adTouchPlatform=$adTouchPlatform, adTouchSource=$adTouchSource, adct=$adct, admitadUid=$admitadUid, adsetId=$adsetId, affiliatlyV3=$affiliatlyV3, alart=$alart, aleid=$aleid, axwrt=$axwrt, basisCid=$basisCid, beeswaxAuctionId=$beeswaxAuctionId, browserLanguage=$browserLanguage, browserName=$browserName, browserVersion=$browserVersion, campaignId=$campaignId, clickid=$clickid, clid=$clid, cpuArchitecture=$cpuArchitecture, currentUrl=$currentUrl, dclid=$dclid, deviceModel=$deviceModel, deviceType=$deviceType, deviceVendor=$deviceVendor, duration=$duration, encoding=$encoding, engineName=$engineName, engineVersion=$engineVersion, epik=$epik, fbc=$fbc, fbclid=$fbclid, fbp=$fbp, fv=$fv, gadCampaignid=$gadCampaignid, gadSource=$gadSource, gbraid=$gbraid, gclid=$gclid, graid=$graid, grclid=$grclid, host=$host, iframe=$iframe, imRef=$imRef, ip=$ip, irclickid=$irclickid, isBot=$isBot, liFatId=$liFatId, msclkid=$msclkid, ndclid=$ndclid, newS=$newS, obClickId=$obClickId, oppref=$oppref, osName=$osName, osVersion=$osVersion, oursAd=$oursAd, pageHash=$pageHash, pathname=$pathname, qclid=$qclid, rdtCid=$rdtCid, receivedAt=$receivedAt, referrer=$referrer, referringDomain=$referringDomain, sacid=$sacid, sccid=$sccid, screenHeight=$screenHeight, screenWidth=$screenWidth, sessionCount=$sessionCount, sid=$sid, sr=$sr, title=$title, ttclid=$ttclid, ttdImpressionId=$ttdImpressionId, twclid=$twclid, uafvl=$uafvl, userAgent=$userAgent, utmCampaign=$utmCampaign, utmContent=$utmContent, utmId=$utmId, utmMedium=$utmMedium, utmName=$utmName, utmSource=$utmSource, utmTerm=$utmTerm, version=$version, viantClickId=$viantClickId, viantImpressionId=$viantImpressionId, wbraid=$wbraid, webview=$webview, ylpcid=$ylpcid, additionalProperties=$additionalProperties}"
         }
 
         /**
