@@ -6,6 +6,8 @@ buildscript {
 }
 
 plugins {
+    // Lets the root project read Maven BOMs such as jackson-bom as platforms.
+    `jvm-ecosystem`
     id("org.jetbrains.dokka") version "2.3.0"
 }
 
@@ -32,6 +34,15 @@ subprojects {
 
 subprojects {
     apply(plugin = "org.jetbrains.dokka")
+}
+
+allprojects {
+    plugins.withId("org.jetbrains.dokka") {
+        dependencies {
+            // The Dokka worker has its own classpath, which the buildscript platform above doesn't reach.
+            "dokkaHtmlGeneratorRuntime"(platform("com.fasterxml.jackson:jackson-bom:2.23.0"))
+        }
+    }
 }
 
 dependencies {
