@@ -1799,7 +1799,8 @@ private constructor(
         fun adId(): String? = adId.getNullable("ad_id")
 
         /**
-         * The platform ad id resolved by the Ours server for this event. Ex: 120212 Leading and
+         * The platform ad id resolved by the Ours server for this event. Ex: 120212 Non-string
+         * input is converted to text before validation; clients should send a string. Leading and
          * trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -1809,6 +1810,7 @@ private constructor(
 
         /**
          * The platform ad set or ad group id resolved by the Ours server for this event. Ex: 120211
+         * Non-string input is converted to text before validation; clients should send a string.
          * Leading and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -1817,8 +1819,9 @@ private constructor(
         fun adTouchAdsetId(): String? = adTouchAdsetId.getNullable("ad_touch_adset_id")
 
         /**
-         * The platform campaign id resolved by the Ours server for this event. Ex: 120210 Leading
-         * and trailing whitespace is removed before validation.
+         * The platform campaign id resolved by the Ours server for this event. Ex: 120210
+         * Non-string input is converted to text before validation; clients should send a string.
+         * Leading and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -1827,7 +1830,8 @@ private constructor(
 
         /**
          * The ad platform resolved by the Ours server from the ad tag, ad ids, and click ids on
-         * this event. Ex: meta, google Leading and trailing whitespace is removed before
+         * this event. Ex: meta, google Non-string input is converted to text before validation;
+         * clients should send a string. Leading and trailing whitespace is removed before
          * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -1837,8 +1841,9 @@ private constructor(
 
         /**
          * Which signal the Ours server used to resolve the ad touch: ours_ad, url_ids,
-         * gad_campaignid, utm_id, or click_id. Leading and trailing whitespace is removed before
-         * validation.
+         * gad_campaignid, utm_id, or click_id. Non-string input is converted to text before
+         * validation; clients should send a string. Leading and trailing whitespace is removed
+         * before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2122,6 +2127,7 @@ private constructor(
 
         /**
          * The Google Ads campaign id that Google auto-tagging appends to ad clicks. Ex: 21780011223
+         * Non-string input is converted to text before validation; clients should send a string.
          * Leading and trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -2304,7 +2310,9 @@ private constructor(
 
         /**
          * The Ours ad tag from the ours_ad query parameter, as platform.campaign.adset.ad. Ex:
-         * meta.120210.120211.120212 Leading and trailing whitespace is removed before validation.
+         * meta.120210.120211.120212 Non-string input is converted to text before validation;
+         * clients should send a string. Leading and trailing whitespace is removed before
+         * validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -2506,7 +2514,8 @@ private constructor(
         fun utmContent(): String? = utmContent.getNullable("utm_content")
 
         /**
-         * The UTM ID. The web SDK automatically captures this from the query params. Leading and
+         * The UTM ID. The web SDK automatically captures this from the query params. Non-string
+         * input is converted to text before validation; clients should send a string. Leading and
          * trailing whitespace is removed before validation.
          *
          * @throws OursPrivacyInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -3601,8 +3610,9 @@ private constructor(
             fun adId(adId: JsonField<String>) = apply { this.adId = adId }
 
             /**
-             * The platform ad id resolved by the Ours server for this event. Ex: 120212 Leading and
-             * trailing whitespace is removed before validation.
+             * The platform ad id resolved by the Ours server for this event. Ex: 120212 Non-string
+             * input is converted to text before validation; clients should send a string. Leading
+             * and trailing whitespace is removed before validation.
              */
             fun adTouchAdId(adTouchAdId: String?) = adTouchAdId(JsonField.ofNullable(adTouchAdId))
 
@@ -3619,7 +3629,8 @@ private constructor(
 
             /**
              * The platform ad set or ad group id resolved by the Ours server for this event. Ex:
-             * 120211 Leading and trailing whitespace is removed before validation.
+             * 120211 Non-string input is converted to text before validation; clients should send a
+             * string. Leading and trailing whitespace is removed before validation.
              */
             fun adTouchAdsetId(adTouchAdsetId: String?) =
                 adTouchAdsetId(JsonField.ofNullable(adTouchAdsetId))
@@ -3637,7 +3648,8 @@ private constructor(
 
             /**
              * The platform campaign id resolved by the Ours server for this event. Ex: 120210
-             * Leading and trailing whitespace is removed before validation.
+             * Non-string input is converted to text before validation; clients should send a
+             * string. Leading and trailing whitespace is removed before validation.
              */
             fun adTouchCampaignId(adTouchCampaignId: String?) =
                 adTouchCampaignId(JsonField.ofNullable(adTouchCampaignId))
@@ -3655,7 +3667,8 @@ private constructor(
 
             /**
              * The ad platform resolved by the Ours server from the ad tag, ad ids, and click ids on
-             * this event. Ex: meta, google Leading and trailing whitespace is removed before
+             * this event. Ex: meta, google Non-string input is converted to text before validation;
+             * clients should send a string. Leading and trailing whitespace is removed before
              * validation.
              */
             fun adTouchPlatform(adTouchPlatform: String?) =
@@ -3674,7 +3687,8 @@ private constructor(
 
             /**
              * Which signal the Ours server used to resolve the ad touch: ours_ad, url_ids,
-             * gad_campaignid, utm_id, or click_id. Leading and trailing whitespace is removed
+             * gad_campaignid, utm_id, or click_id. Non-string input is converted to text before
+             * validation; clients should send a string. Leading and trailing whitespace is removed
              * before validation.
              */
             fun adTouchSource(adTouchSource: String?) =
@@ -4185,7 +4199,8 @@ private constructor(
 
             /**
              * The Google Ads campaign id that Google auto-tagging appends to ad clicks. Ex:
-             * 21780011223 Leading and trailing whitespace is removed before validation.
+             * 21780011223 Non-string input is converted to text before validation; clients should
+             * send a string. Leading and trailing whitespace is removed before validation.
              */
             fun gadCampaignid(gadCampaignid: String?) =
                 gadCampaignid(JsonField.ofNullable(gadCampaignid))
@@ -4514,7 +4529,8 @@ private constructor(
 
             /**
              * The Ours ad tag from the ours_ad query parameter, as platform.campaign.adset.ad. Ex:
-             * meta.120210.120211.120212 Leading and trailing whitespace is removed before
+             * meta.120210.120211.120212 Non-string input is converted to text before validation;
+             * clients should send a string. Leading and trailing whitespace is removed before
              * validation.
              */
             fun oursAd(oursAd: String?) = oursAd(JsonField.ofNullable(oursAd))
@@ -4889,7 +4905,8 @@ private constructor(
             fun utmContent(utmContent: JsonField<String>) = apply { this.utmContent = utmContent }
 
             /**
-             * The UTM ID. The web SDK automatically captures this from the query params. Leading
+             * The UTM ID. The web SDK automatically captures this from the query params. Non-string
+             * input is converted to text before validation; clients should send a string. Leading
              * and trailing whitespace is removed before validation.
              */
             fun utmId(utmId: String?) = utmId(JsonField.ofNullable(utmId))
