@@ -8,7 +8,7 @@ repositories {
 
 allprojects {
     group = "com.oursprivacy"
-    version = "1.29.0" // x-release-please-version
+    version = "1.30.0" // x-release-please-version
 }
 
 subprojects {
